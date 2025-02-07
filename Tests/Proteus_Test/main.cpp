@@ -277,7 +277,7 @@ int SVMenu()
                     {
                         /* While the run button is being touched, increase or decrease the servo angle within the limits */
                         LCD.Touch(&x, &y);
-                        deg = deg+1-(m*2);
+                        deg = deg+1-(m*5);
                         if (deg<0)
                         {
                             deg = 0;
