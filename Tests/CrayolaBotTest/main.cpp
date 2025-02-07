@@ -31,30 +31,24 @@ int main(void)
     if(!LimitFrontLeft.Value()){
         right_motor.SetPercent(speed);
         LCD.WriteLine("FRONT LEFT");
+    }else if(!LimitBackLeft.Value()){
+        right_motor.SetPercent(-speed);
+        LCD.WriteLine("BACK LEFT");
     }else{
-        right_motor.SetPercent(0);
+        left_motor.SetPercent(0);
     }
 
     if(!LimitFrontRight.Value()){
         left_motor.SetPercent(speed);
         LCD.WriteLine("FRONT RIGHT");
-    }else{
-        left_motor.SetPercent(0);
-    }
-
-    if(!LimitBackLeft.Value()){
-        right_motor.SetPercent(-speed);
-        LCD.WriteLine("BACK LEFT");
+    }else if(!LimitBackRight.Value()){
+        left_motor.SetPercent(-speed);
+        LCD.WriteLine("BACK RIGHT");
     }else{
         right_motor.SetPercent(0);
     }
 
-    if(!LimitBackRight.Value()){
-        left_motor.SetPercent(-speed);
-        LCD.WriteLine("BACK RIGHT");
-    }else{
-        left_motor.SetPercent(0);
-    }
+    
     
     }
 	return 0;
