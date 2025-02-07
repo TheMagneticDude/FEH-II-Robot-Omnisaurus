@@ -27,27 +27,44 @@ int main(void)
     LCD.WriteLine("WEEE");
 
     float speed = 40.0;
+    //front switches
+    //move forward if switches not toggled
+    if(LimitFrontLeft.Value()){
+        left_motor.SetPercent(speed);
+    }
 
-    if(!LimitFrontLeft.Value()){
+    if(LimitFrontRight.Value()){
         right_motor.SetPercent(speed);
-        LCD.WriteLine("FRONT LEFT");
-    }else if(!LimitBackLeft.Value()){
-        right_motor.SetPercent(-speed);
-        LCD.WriteLine("BACK LEFT");
-    }else{
-        left_motor.SetPercent(0);
+    }
+
+//move backwards if switches toggled
+    if(!LimitFrontLeft.Value()){
+        left_motor.SetPercent(-speed);
     }
 
     if(!LimitFrontRight.Value()){
-        left_motor.SetPercent(speed);
-        LCD.WriteLine("FRONT RIGHT");
-    }else if(!LimitBackRight.Value()){
-        left_motor.SetPercent(-speed);
-        LCD.WriteLine("BACK RIGHT");
-    }else{
-        right_motor.SetPercent(0);
+        right_motor.SetPercent(-speed);
     }
+    
 
+    //back switches
+    //move forward if switches not toggled
+//     if(LimitBackLeft.Value()){
+//         left_motor.SetPercent(speed);
+//     }
+
+//     if(LimitBackRight.Value()){
+//         right_motor.SetPercent(speed);
+//     }
+
+// //move backwards if switches toggled
+//     if(!LimitBackLeft.Value()){
+//         left_motor.SetPercent(-speed);
+//     }
+
+//     if(!LimitBackRight.Value()){
+//         right_motor.SetPercent(-speed);
+//     }
     
     
     }
