@@ -38,14 +38,14 @@ int main(void)
     if(!LimitFrontRight.Value()){
         left_motor.SetPercent(speed);
         LCD.WriteLine("FRONT RIGHT");
-    }else{
+    } else {
         left_motor.SetPercent(0);
     }
 
     if(!LimitBackLeft.Value()){
         right_motor.SetPercent(-speed);
         LCD.WriteLine("BACK LEFT");
-    }else{
+    } else {
         right_motor.SetPercent(0);
     }
 
