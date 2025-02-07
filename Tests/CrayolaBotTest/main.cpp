@@ -32,7 +32,7 @@ int main(void)
     if(LimitFrontLeft.Value()){
         left_motor.SetPercent(speed);
     }
-
+ 
     if(LimitFrontRight.Value()){
         right_motor.SetPercent(speed);
     }
