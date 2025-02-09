@@ -54,6 +54,11 @@ class HolonomicTriangleDrive {
 //       \   /
 //        0
     FEHMotor BackRight;
+
+    
   public:
+  FEHMotor::FEHMotorPort FrontPort;
+  FEHMotor::FEHMotorPort BackLeftPort;
+  FEHMotor::FEHMotorPort BackRightPort;
     
 };
