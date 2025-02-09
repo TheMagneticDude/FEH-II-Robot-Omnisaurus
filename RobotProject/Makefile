@@ -3,6 +3,10 @@ TARGET = Proteus
 GITBINARY := git
 FEHURL := google.com
 FIRMWAREREPO := fehproteusfirmware
+#Force C++ 17
+export CXXFLAGS := -std=c++17
+
+
 
 ifeq ($(OS),Windows_NT)	
 	SHELL := CMD
@@ -41,7 +45,7 @@ else
 endif
 
 ifeq ($(OS),Windows_NT)	
-	@cd $(FIRMWAREREPO) && mingw32-make all TARGET=$(TARGET)
+	@cd $(FIRMWAREREPO) && mingw32-make all TARGET=$(TARGET) 
 	@cd $(FIRMWAREREPO) && mingw32-make deploy TARGET=$(TARGET)
 else
 	@cd $(FIRMWAREREPO) && make all TARGET=$(TARGET)

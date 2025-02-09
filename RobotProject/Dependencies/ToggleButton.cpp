@@ -118,16 +118,16 @@ void ToggleButton::updateButtonState() {
         bool withinY = false;
 
         // read where cursor is
-        LCD.Touch(&touchedX, &touchedY, false);
+        LCD.Touch(&touchedX, &touchedY);
         // change button highlight
         highlighted = touchedX >= buttonX && touchedX <= buttonX + buttonWidth && touchedY >= buttonY &&
                       touchedY <= buttonY + buttonHeight;
 
         // update touched location
-        if (!LCD.Touch(&touchedX, &touchedY, false)) {
+        if (!LCD.Touch(&touchedX, &touchedY)) {
 
             // wait until touch happens
-        } else if (LCD.Touch(&xTrash, &yTrash, false)) {
+        } else if (LCD.Touch(&xTrash, &yTrash)) {
             // wait until touch releases
             // no joke this is the actual code from FEH documentation -_-
             // if touch is within button boundery then set button state to true

@@ -65,9 +65,9 @@ void Slider::update() {
     bool withinBar = false;
     setString(sliderValue);
 
-    if (!LCD.Touch(&touchedX, &touchedY, false)) {
+    if (!LCD.Touch(&touchedX, &touchedY)) {
         // wait until touch happens
-    } else if (LCD.Touch(&xTrash, &yTrash, false)) {
+    } else if (LCD.Touch(&xTrash, &yTrash)) {
 
         // wait until touch releases
         // no joke this is the actual code from FEH documentation -_-
@@ -99,7 +99,7 @@ void Slider::update() {
         sliderX = touchedX;
     }
     // continue tracking pointer even if its no longer directly on the slider until user lets go
-    touched = LCD.Touch(&xTrash, &yTrash, false);
+    touched = LCD.Touch(&xTrash, &yTrash);
 
     if (toggled && touched) {
 
