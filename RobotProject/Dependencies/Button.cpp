@@ -179,7 +179,7 @@ void Button::setDisabledColor(unsigned int color) { disabledColor = color; }
 void Button::drawButton() {
     LCD.SetFontColor(currColor);
     LCD.DrawRectangle(buttonX - LCD.getCharWidth(), buttonY, buttonWidth + LCD.getCharWidth() * 2, buttonHeight);
-    LCD.WriteAt(buttonText, buttonX, buttonY + 4);
+    LCD.WriteAt(buttonText, (buttonX), (buttonY + 4));
 }
 
 // redraws button and also updates its state
@@ -189,15 +189,15 @@ void Button::updateButtonState() {
         bool withinY = false;
 
         // read where cursor is
-        LCD.Touch(&touchedX, &touchedY, false);
+        LCD.Touch(&touchedX, &touchedY);
         // change button highlight
         highlighted = touchedX >= buttonX - LCD.getCharWidth() &&
                       touchedX <= buttonX + buttonWidth + LCD.getCharWidth() - 1 && touchedY >= buttonY &&
                       touchedY <= buttonY + buttonHeight;
         // update touched location
-        if (!LCD.Touch(&touchedX, &touchedY, false)) {
+        if (!LCD.Touch(&touchedX, &touchedY)) {
             // wait until touch happens
-        } else if (LCD.Touch(&xTrash, &yTrash, false)) {
+        } else if (LCD.Touch(&xTrash, &yTrash)) {
             // wait until touch releases
             // no joke this is the actual code from FEH documentation -_-
             // if touch is within button boundery then set button state to true
