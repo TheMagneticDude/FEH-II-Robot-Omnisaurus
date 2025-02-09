@@ -7,7 +7,6 @@
 #include <FEHAccel.h>
 #include <FEHBattery.h>
 #include <FEHBuzzer.h>
-#include <FEHRCS.h>
 #include <FEHSD.h>
 #include <string.h>
 #include <stdio.h>
