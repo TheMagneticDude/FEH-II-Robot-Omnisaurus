@@ -84,8 +84,30 @@ int main(void)
 
     LCD.Clear(BLACK);
     LCD.WriteLine("WEEE");
+//CDS Cell Test
+AnalogInputPin Cds(FEHIO::P2_0);
+// AnalogInputPin Cds_R(FEHIO::P1_0);
+// AnalogInputPin Cds_G(FEHIO::P1_1);
+// AnalogInputPin Cds_B(FEHIO::P1_2);
+while(LimitFrontLeft.Value() && LimitFrontRight.Value()){
+    // LCD.WriteAt("Cds_R: ",0,0);
+    // LCD.WriteAt((Cds_R.Value()),0,15);
+    // LCD.WriteAt("Cds_G: ",0,30);
+    // LCD.WriteAt((Cds_G.Value()),0,45);
+    // LCD.WriteAt("Cds_B: ",0,60);
+    // LCD.WriteAt((Cds_B.Value()),0,75);
+    LCD.WriteAt("Cds: ",0,0);
+    LCD.WriteAt((Cds.Value()),0,15);
+    if(Cds.Value() < 0.1){
+        left_motor.SetPercent(40.0);
+    }
+}
+
+
+    if(!LimitFrontLeft.Value() && !LimitFrontRight.Value()){
     //hardcoded
     float speed = 40.0;
+    bool next = false;
     //forwards
     while(LimitFrontLeft.Value() && LimitFrontRight.Value()){
         LCD.WriteLine("Init move forwards");
@@ -101,44 +123,52 @@ int main(void)
         LCD.WriteLine("Turning right");
         left_motor.SetPercent(-speed);
         right_motor.SetPercent(speed);
-        Sleep(1000);
+        Sleep(700);
         LCD.WriteLine("move forwards");
         left_motor.SetPercent(speed);
         right_motor.SetPercent(speed);
         
-        if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
+        while(!next){
+            if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
+                next = true;
             LCD.WriteLine("FRONT TWO PRESSED AGAIN");
-            while(!LimitFrontLeft.Value() && !LimitFrontRight.Value()){
+            
                 left_motor.SetPercent(-speed);
                 right_motor.SetPercent(-speed);
                 Sleep(500);
                 LCD.WriteLine("Turning Left");
                 left_motor.SetPercent(speed);
                 right_motor.SetPercent(-speed);
+                Sleep(700);
             }
             
         }
+        next = false;
         LCD.WriteLine("move forwards");
         left_motor.SetPercent(speed);
         right_motor.SetPercent(speed);
-        if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
+        while(!next){
+            while(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
+                next = true;
             LCD.WriteLine("FRONT TWO PRESSED THIRD TIME");
-            while(!LimitFrontLeft.Value() && !LimitFrontRight.Value()){
-                left_motor.SetPercent(-speed);
-                right_motor.SetPercent(-speed);
-                Sleep(500);
                 LCD.WriteLine("Turning Left");
                 left_motor.SetPercent(speed);
                 right_motor.SetPercent(-speed);
+                Sleep(700);
             }
             
         }
-
+        next = false;
         LCD.WriteLine("move forwards");
         left_motor.SetPercent(speed);
         right_motor.SetPercent(speed);
 
+        if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
+        left_motor.SetPercent(0);
+        right_motor.SetPercent(0);
+        }
 
+    }
     
 	return 0;
 }
