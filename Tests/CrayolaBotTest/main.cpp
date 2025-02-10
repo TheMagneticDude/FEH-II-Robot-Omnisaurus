@@ -87,7 +87,7 @@ int main(void)
     //hardcoded
     float speed = 40.0;
     //forwards
-    while(LimitFrontLeft.Value() || LimitFrontRight.Value()){
+    while(LimitFrontLeft.Value() && LimitFrontRight.Value()){
         LCD.WriteLine("Init move forwards");
         left_motor.SetPercent(speed);
         right_motor.SetPercent(speed);
@@ -101,6 +101,11 @@ int main(void)
         LCD.WriteLine("Turning right");
         left_motor.SetPercent(-speed);
         right_motor.SetPercent(speed);
+        Sleep(1000);
+        LCD.WriteLine("move forwards");
+        left_motor.SetPercent(speed);
+        right_motor.SetPercent(speed);
+        
         if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
             LCD.WriteLine("FRONT TWO PRESSED AGAIN");
             while(!LimitFrontLeft.Value() && !LimitFrontRight.Value()){
@@ -113,7 +118,9 @@ int main(void)
             }
             
         }
-
+        LCD.WriteLine("move forwards");
+        left_motor.SetPercent(speed);
+        right_motor.SetPercent(speed);
         if(!LimitFrontLeft.Value() || !LimitFrontRight.Value()){
             LCD.WriteLine("FRONT TWO PRESSED THIRD TIME");
             while(!LimitFrontLeft.Value() && !LimitFrontRight.Value()){
@@ -126,6 +133,10 @@ int main(void)
             }
             
         }
+
+        LCD.WriteLine("move forwards");
+        left_motor.SetPercent(speed);
+        right_motor.SetPercent(speed);
 
 
     
