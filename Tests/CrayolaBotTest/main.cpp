@@ -100,6 +100,8 @@ while(LimitFrontLeft.Value() && LimitFrontRight.Value()){
     LCD.WriteAt((Cds.Value()),0,15);
     if(Cds.Value() < 0.1){
         left_motor.SetPercent(40.0);
+    }else{
+        left_motor.SetPercent(0.0);
     }
 }
 
