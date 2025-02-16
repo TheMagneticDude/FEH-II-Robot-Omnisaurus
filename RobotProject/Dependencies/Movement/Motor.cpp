@@ -2,11 +2,25 @@
 #include <limits>
 #include <string>
 #include <FEHLCD.h>
+#include <Motor.h>
 
 using namespace std;
 
 
+Motor::Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort) : M(p,maxvolt), encoder(encoderPort){
+    port = p;
+    MotorMaxVolt = maxvolt;
+}
 
+Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort) : M(p,defaultMotorMaxVolt), encoder(encoderPort){
+    port = p;
+    MotorMaxVolt = defaultMotorMaxVolt;
+}
 
+void Motor::SetPercent(float percent){
+    M.SetPercent(percent);
+}
 
-
+void Motor::Stop(){
+    M.Stop();
+}
