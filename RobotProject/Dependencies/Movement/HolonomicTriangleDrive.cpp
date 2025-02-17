@@ -46,9 +46,10 @@ BackRight(BR,defaultMotorMaxVolt)
 }
 
 //sets target movement vector
-void HolonomicTriangleDrive::setMovementVector(float x, float y){
+void HolonomicTriangleDrive::setMovementVector(float x, float y, float theta){
     MovementVector[0] = x;
     MovementVector[1] = y;
+    MovementVector[2] = theta;
 }
 
 //Updates all motor states every cycle
@@ -59,6 +60,7 @@ void HolonomicTriangleDrive::update(){
 
     //Get rotation speed
     float currentTheta = Pose[2];
+    float targetTheta = MovementVector[3];
     float deltaTheta = targetTheta - currentTheta;
     float angularVelocity = clamp(deltaTheta * rotationGain,-maxRotationSpeed,maxRotationSpeed);
 
@@ -99,8 +101,17 @@ void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
     TargetPose[2] = theta;
 }
 
-void HolonomicTriangleDrive::updatePose(){
+void HolonomicTriangleDrive::runToPose(){
+    float deltaX = TargetPose[0] - Pose[0];
+    float deltaY = TargetPose[1] - Pose[1];
+    //Target theta
+    float targetTheta = TargetPose[2];
 
+    MovementVector[0] = deltaX;
+    MovementVector[1] = deltaY;
+    MovementVector[2] = targetTheta;
+    
+    update();
 }
 
 

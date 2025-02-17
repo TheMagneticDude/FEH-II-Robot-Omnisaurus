@@ -25,9 +25,11 @@ class Motor {
   FEHMotor::FEHMotorPort port;
   const float defaultMotorMaxVolt = 9.0;
   float MotorMaxVolt;
+  float maxSpeed = 1;
   FEHMotor M;
 
-  DigitalEncoder encoder;
+  DigitalEncoder MotorEncoder;
+
   FEHIO::FEHIOPin encoderPort;
 
   float currPosition;
@@ -46,6 +48,7 @@ class Motor {
   Motor(FEHMotor::FEHMotorPort p,FEHIO::FEHIOPin encoderPort, float countsperrev);
   void SetPercent(float percent);
   void Stop();
+  void runToPosition(float pos);
   void runToPosition();
   void resetEncoderCounts();
   float getCounts();

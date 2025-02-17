@@ -7,13 +7,24 @@
 using namespace std;
 
 
-Motor::Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort, float countsperrev) : M(p,maxvolt), encoder(encoderPort){
+float clamp(float x, float min, float max){
+    if(x <= min){
+        return min;
+    }
+    if(x >= max){
+        return max;
+    }
+    return x;
+}
+
+
+Motor::Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort, float countsperrev) : M(p,maxvolt), MotorEncoder(encoderPort){
     port = p;
     MotorMaxVolt = maxvolt;
     encoderCountsPerRev = countsperrev;
 }
 
-Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float countsperrev) : M(p,defaultMotorMaxVolt), encoder(encoderPort){
+Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float countsperrev) : M(p,defaultMotorMaxVolt), MotorEncoder(encoderPort){
     port = p;
     MotorMaxVolt = defaultMotorMaxVolt;
     encoderCountsPerRev = countsperrev;
@@ -27,15 +38,27 @@ void Motor::Stop(){
     M.Stop();
 }
 
-void runToPosition(){
+void Motor::runToPosition(){
+    float target = targetPos;
+    currPosition = getCounts();
 
+    float delta = targetPos - currPosition;
+
+    float power = clamp(delta,-maxSpeed,maxSpeed);
+
+    M.SetPercent(power);
 }
-void resetEncoderCounts(){
 
+void Motor::runToPosition(float pos){
+    targetPos = pos;
+    runToPosition();
 }
-float getCounts(){
-
+void Motor::resetEncoderCounts(){
+    MotorEncoder.ResetCounts();
 }
-void runAtVelocity(float v){
-
+float Motor::getCounts(){
+    return MotorEncoder.Counts();
+}
+void Motor::runAtVelocity(float v){
+    
 }
