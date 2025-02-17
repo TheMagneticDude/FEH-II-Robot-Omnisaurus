@@ -58,11 +58,17 @@ class HolonomicTriangleDrive {
 
 
 
-    //motor vector directions
-    float M1[2] = {1,0};
-    float M2[2] = {-(std::sqrt(3) / 2.0),-0.5};
-    float M3[2] = {(std::sqrt(3) / 2.0),-0.5};
-    float MovementVector[2] = {0,0};
+  //motor vector directions
+  float M1[2] = {1,0};
+  float M2[2] = {-(std::sqrt(3) / 2.0),-0.5};
+  float M3[2] = {(std::sqrt(3) / 2.0),-0.5};
+  float MovementVector[2] = {0,0}; //<x,y> components
+  float targetTheta = 0; //0 degrees is default
+
+
+  float Pose[3] = {0,0,0}; //x,y,theta
+
+  float TargetPose[3] = {0,0,0}; //x,y,theta
 
     
   public:
@@ -79,9 +85,18 @@ class HolonomicTriangleDrive {
   //max speed percentage
   const float maxSpeedPercent = 1;
 
+  //max rotation speed
+  const float maxRotationSpeed = 1;
+  //how aggresivley robot rotates towards the target angle
+  //will need to tune for robot
+  const float rotationGain = 0.1;
+
   HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   void setMovementVector(float x, float y);
   void update();
+  void setPose(float x, float y, float theta);
+  void setTargetPose(float x, float y, float theta);
+  void calculatePose();
 
 
   

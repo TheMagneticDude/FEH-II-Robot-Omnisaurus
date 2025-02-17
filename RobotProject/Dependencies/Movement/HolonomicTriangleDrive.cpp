@@ -57,6 +57,16 @@ void HolonomicTriangleDrive::update(){
     float blSpd = proj(M2, MovementVector);
     float brSpd = proj(M3, MovementVector);
 
+    //Get rotation speed
+    float currentTheta = Pose[2];
+    float deltaTheta = targetTheta - currentTheta;
+    float angularVelocity = clamp(deltaTheta * rotationGain,-maxRotationSpeed,maxRotationSpeed);
+
+    //apply rotation
+    fSpd += angularVelocity;
+    blSpd += angularVelocity;
+    brSpd += angularVelocity;
+
     //get max speed out of three motors
 
     float maxSpeed = std::max(fabs(fSpd), std::max(fabs(blSpd), fabs(brSpd)));
