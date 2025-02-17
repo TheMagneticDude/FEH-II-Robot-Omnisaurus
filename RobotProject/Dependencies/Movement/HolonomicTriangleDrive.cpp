@@ -87,5 +87,21 @@ void HolonomicTriangleDrive::update(){
     BackRight.SetPercent(BackRightSped * 100);
 }
 
+void HolonomicTriangleDrive::setPose(float x, float y, float theta){
+    Pose[0] = x;
+    Pose[1] = y;
+    Pose[2] = theta;
+}
+
+void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
+    TargetPose[0] = x;
+    TargetPose[1] = y;
+    TargetPose[2] = theta;
+}
+
+void HolonomicTriangleDrive::updatePose(){
+
+}
+
 
 

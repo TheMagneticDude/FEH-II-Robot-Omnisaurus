@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <cmath>
+#include <math.h>
 
 
 
@@ -29,11 +30,20 @@ class Motor {
   DigitalEncoder encoder;
   FEHIO::FEHIOPin encoderPort;
 
+  float currPosition;
   float targetPos;
+
+  float encoderCountsPerRev;
+  
+  //VEX Omni wheel is about 2.335841 inch in diameter
+  const float wheelCircumference = M_PI * 2.335841;
+  
+  
+  
   public:
   
-  Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort);
-  Motor(FEHMotor::FEHMotorPort p,FEHIO::FEHIOPin encoderPort);
+  Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort, float countsperrev);
+  Motor(FEHMotor::FEHMotorPort p,FEHIO::FEHIOPin encoderPort, float countsperrev);
   void SetPercent(float percent);
   void Stop();
   void runToPosition();

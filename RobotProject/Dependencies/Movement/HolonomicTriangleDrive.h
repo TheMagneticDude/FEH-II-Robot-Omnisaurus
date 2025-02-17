@@ -96,7 +96,7 @@ class HolonomicTriangleDrive {
   void update();
   void setPose(float x, float y, float theta);
   void setTargetPose(float x, float y, float theta);
-  void calculatePose();
+  void updatePose();
 
 
   
