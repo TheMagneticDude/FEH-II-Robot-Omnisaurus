@@ -68,6 +68,8 @@ int main(void)
     float M_OptiEpsilon_Min = 1.9;
     float R_OptiEpsilon_Min = 1.9;
 
+    bool SDSaved = false;
+
     LCD.Clear(BLACK);
 
         int state = MIDDLE; // Set the initial state
@@ -92,7 +94,7 @@ int main(void)
 
                 LCD.WriteAt("State: Middle",0,90);
 
-                right_motor.SetPercent(-speed);
+                right_motor.SetPercent(speed);
                 left_motor.SetPercent(speed);
                 /* Drive */
                 if (isWithin(R_Opti.Value(),R_OptiEpsilon_Min,R_OptiEpsilon)/* Right sensor is on line */ ) {
@@ -109,7 +111,7 @@ int main(void)
                 onBack[2] = R_Opti.Value();
             LCD.WriteAt("State: Right",0,90);
                 // Set motor powers for right turn
-                right_motor.SetPercent(-speed);
+                right_motor.SetPercent(speed);
                 left_motor.SetPercent(speed*slowConst);
                 /* Drive */
 
@@ -126,7 +128,7 @@ int main(void)
                 /* Mirror operation of LEFT state */
 
                 // Set motor powers for left turn
-                right_motor.SetPercent(-speed*slowConst);
+                right_motor.SetPercent(speed*slowConst);
                 left_motor.SetPercent(speed);
                 /* Drive */
 
@@ -137,19 +139,27 @@ int main(void)
                 default: // Error. Something is very wrong.
                 LCD.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAaaAAaAAaAaAaAaAaAAaAA ERROR");
                 break; 
-        } 
+        }
 
-            if(!Limit.Value()){
+            if(!Limit.Value() && !SDSaved){
+            
             //Open output log file
-            FEHFile *ofptr = SD.FOpen("OutputLog.txt", "w");
+            FEHFile *ofptr = SD.FOpen("Out.txt", "w");
             //Print data using formatted string
-            SD.FPrintf(ofptr, "INT: %d, FLOAT: %f, CHAR: %c", onLine[0], onLine[1], onLine[3]);
-            SD.FPrintf(ofptr, "INT: %d, FLOAT: %f, CHAR: %c", onBack[0], onBack[1], onBack[3]);
+            SD.FPrintf(ofptr,"HOLAR\n");
+            SD.FPrintf(ofptr, "Straight: On line Left: %f, Middle: %f, Right: %f\n", onLine[0], onLine[1], onLine[3]);
+            SD.FPrintf(ofptr, "Straight: On Back Left: %f, Middle: %f, CHAR: %f\n", onBack[0], onBack[1], onBack[3]);
             //Close output log file
             SD.FClose(ofptr);
+            SDSaved = true;
+            LCD.WriteAt("SD Saved",0,120);
+            break;
             }
             
     }
+
+    right_motor.SetPercent(0);
+    left_motor.SetPercent(0);
 
 
     return 0;
