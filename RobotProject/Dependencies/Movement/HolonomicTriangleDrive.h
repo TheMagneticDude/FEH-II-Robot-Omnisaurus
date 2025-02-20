@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <cmath>
+#include "Motor.h"
 
 
 
@@ -60,8 +61,8 @@ class HolonomicTriangleDrive {
 
   //motor vector directions
   float M1[2] = {1,0};
-  float M2[2] = {-(std::sqrt(3) / 2.0),-0.5};
-  float M3[2] = {(std::sqrt(3) / 2.0),-0.5};
+  float M2[2] = {-0.5,-(std::sqrt(3) / 2.0)};
+  float M3[2] = {-0.5,(std::sqrt(3) / 2.0)};
   float MovementVector[3] = {0,0,0}; //<x,y,theta> components
   // float targetTheta = 0; //0 degrees is default
 
@@ -80,6 +81,8 @@ class HolonomicTriangleDrive {
   float BackLeftSped = 0;
   float BackRightSped = 0;
 
+  float motorMaxVolt;
+
   const float defaultMotorMaxVolt = 9.0;
 
   //max speed percentage
@@ -91,9 +94,16 @@ class HolonomicTriangleDrive {
   //will need to tune for robot
   const float rotationGain = 0.1;
 
-  HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
+  HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
+  HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
+
   void setMovementVector(float x, float y, float theta);
   void update();
+
+  float getFrontSpeed();
+  float getBackLeftSpeed();
+  float getBackRightSpeed();
+
   void setPose(float x, float y, float theta);
   void setTargetPose(float x, float y, float theta);
   void runToPose();

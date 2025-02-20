@@ -25,15 +25,7 @@ float proj(float v[], float a[]){
     return ( dot(a,v) / (vMag) );
 }
 
-float clamp(float x, float min, float max){
-    if(x <= min){
-        return min;
-    }
-    if(x >= max){
-        return max;
-    }
-    return x;
-}
+
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR) 
 : Front(F, defaultMotorMaxVolt), 
@@ -43,6 +35,20 @@ BackRight(BR,defaultMotorMaxVolt)
     FrontPort = F;
     BackLeftPort = BL;
     BackRightPort = BR;
+
+    motorMaxVolt = defaultMotorMaxVolt;
+}
+
+HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR, float maxVolt) 
+: Front(F, maxVolt), 
+BackLeft(BL, maxVolt),
+BackRight(BR,maxVolt)
+{
+    FrontPort = F;
+    BackLeftPort = BL;
+    BackRightPort = BR;
+
+    motorMaxVolt = maxVolt;
 }
 
 //sets target movement vector
@@ -60,7 +66,7 @@ void HolonomicTriangleDrive::update(){
 
     //Get rotation speed
     float currentTheta = Pose[2];
-    float targetTheta = MovementVector[3];
+    float targetTheta = MovementVector[2];
     float deltaTheta = targetTheta - currentTheta;
     float angularVelocity = clamp(deltaTheta * rotationGain,-maxRotationSpeed,maxRotationSpeed);
 
@@ -88,6 +94,11 @@ void HolonomicTriangleDrive::update(){
     BackLeft.SetPercent(BackLeftSped * 100);
     BackRight.SetPercent(BackRightSped * 100);
 }
+
+float HolonomicTriangleDrive::getFrontSpeed(){return FrontSped;}
+float HolonomicTriangleDrive::getBackLeftSpeed(){return BackLeftSped;}
+float HolonomicTriangleDrive::getBackRightSpeed(){return BackRightSped;}
+
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){
     Pose[0] = x;

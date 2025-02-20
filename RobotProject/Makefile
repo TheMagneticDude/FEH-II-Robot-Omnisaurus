@@ -3,10 +3,6 @@ TARGET = Proteus
 GITBINARY := git
 FEHURL := google.com
 FIRMWAREREPO := fehproteusfirmware
-#Force C++ 17
-export CXXFLAGS := -std=c++17
-
-
 
 ifeq ($(OS),Windows_NT)	
 	SHELL := CMD
@@ -16,6 +12,7 @@ all:
 ifeq ($(OS),Windows_NT)	
 # check for internet connection
 # if there's internet, check to see if FEHproteusfirmware folder exists
+# if it does, remove it before cloning the repo
 	@ping -n 1 -w 1000 $(FEHURL) > NUL & \
 	if errorlevel 1 \
 	( \
@@ -25,11 +22,15 @@ ifeq ($(OS),Windows_NT)
 	( \
 		( if exist "$(FIRMWAREREPO)" \
 		( \
-			echo NO OVERRIDING FIRMWARE \
+			cd $(FIRMWAREREPO) && \
+			$(GITBINARY) stash && \
+			$(GITBINARY) pull && \
+			cd .. \
 		) \
 		else \
 		( \
-			echo NO OVERRIDING FIRMWARE \
+			$(GITBINARY) config --global http.sslVerify false  && \
+			$(GITBINARY) clone https://code.osu.edu/fehelectronics/proteus_software/$(FIRMWAREREPO).git \
 		) \
 		) \
 	) 
@@ -39,13 +40,20 @@ else
 	if [ "$$?" -ne 0 ]; then \
 		echo "Warning: No internet connection!"; \
 	else \
-		echo "NO OVERRIDING FIRMWARE"; \
-	fi
+		if [ -d "$(FIRMWAREREPO)" ]; then \
+			cd $(FIRMWAREREPO) ; \
+			$(GITBINARY) stash ; \
+       		$(GITBINARY) pull ; \
+       		cd .. ; \
+		else \
+       		$(GITBINARY) clone https://code.osu.edu/fehelectronics/proteus_software/$(FIRMWAREREPO).git ; \
+		fi \
+	fi \
 
 endif
 
 ifeq ($(OS),Windows_NT)	
-	@cd $(FIRMWAREREPO) && mingw32-make all TARGET=$(TARGET) 
+	@cd $(FIRMWAREREPO) && mingw32-make all TARGET=$(TARGET)
 	@cd $(FIRMWAREREPO) && mingw32-make deploy TARGET=$(TARGET)
 else
 	@cd $(FIRMWAREREPO) && make all TARGET=$(TARGET)

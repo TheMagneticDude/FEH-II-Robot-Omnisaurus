@@ -1,21 +1,10 @@
-#include "HolonomicTriangleDrive.h"
 #include <limits>
 #include <string>
 #include <FEHLCD.h>
-#include <Motor.h>
+#include "Motor.h"
 
 using namespace std;
 
-
-float clamp(float x, float min, float max){
-    if(x <= min){
-        return min;
-    }
-    if(x >= max){
-        return max;
-    }
-    return x;
-}
 
 
 Motor::Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort, float countsperrev) : M(p,maxvolt), MotorEncoder(encoderPort){
