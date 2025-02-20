@@ -59,15 +59,34 @@ int main(void)
     LCD.Clear();
     while(true){
         LCD.WriteAt("Front Speed:",0,0);
-        LCD.WriteAt(drivetrain.getFrontSpeed(),0,90);
+        LCD.WriteAt(drivetrain.getFrontSpeed(),0,15);
         
-        LCD.WriteAt("Back Left Speed",0,105);
-        LCD.WriteAt(drivetrain.getBackLeftSpeed(),0,120);
+        LCD.WriteAt("Back Left Speed",0,30);
+        LCD.WriteAt(drivetrain.getBackLeftSpeed(),0,45);
 
-        LCD.WriteAt("Back Right Speed",0,135);
-        LCD.WriteAt(drivetrain.getBackRightSpeed(),0,150);
+        LCD.WriteAt("Back Right Speed",0,60);
+        LCD.WriteAt(drivetrain.getBackRightSpeed(),0,75);
 
-        drivetrain.update();
+
+        LCD.WriteAt("TouchX ",0,90);
+        LCD.WriteAt(x_position,0,105);
+        LCD.WriteAt("TouchY",0,135);
+        LCD.WriteAt((-y_position),0,150);
+
+
+        if(LCD.Touch(&x_position,&y_position)){
+            
+
+            movementVector[0] = ((x_position - (320/2.0)) / 320); 
+            movementVector[1] = ((y_position - (240/2.0)) / 240);
+
+            drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+
+            drivetrain.update();
+        }else{
+            drivetrain.stop();
+        }
+        
     }
 
 	return 0;

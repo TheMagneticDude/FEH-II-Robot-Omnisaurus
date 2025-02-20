@@ -95,6 +95,12 @@ void HolonomicTriangleDrive::update(){
     BackRight.SetPercent(BackRightSped * 100);
 }
 
+void HolonomicTriangleDrive::stop(){
+    Front.Stop();
+    BackLeft.Stop();
+    BackRight.Stop();
+}
+
 float HolonomicTriangleDrive::getFrontSpeed(){return FrontSped;}
 float HolonomicTriangleDrive::getBackLeftSpeed(){return BackLeftSped;}
 float HolonomicTriangleDrive::getBackRightSpeed(){return BackRightSped;}

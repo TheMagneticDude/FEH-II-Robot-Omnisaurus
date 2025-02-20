@@ -99,6 +99,7 @@ class HolonomicTriangleDrive {
 
   void setMovementVector(float x, float y, float theta);
   void update();
+  void stop();
 
   float getFrontSpeed();
   float getBackLeftSpeed();
