@@ -74,8 +74,17 @@ class HolonomicTriangleDrive {
     
   public:
   FEHMotor::FEHMotorPort FrontPort;
+  FEHIO::FEHIOPin FrontEncoder;
   FEHMotor::FEHMotorPort BackLeftPort;
+  FEHIO::FEHIOPin BackLeftEncoder;
   FEHMotor::FEHMotorPort BackRightPort;
+  FEHIO::FEHIOPin BackRightEncoder;
+
+
+  //default encoder vals
+  const FEHIO::FEHIOPin FrontDefaultEncoder = FEHIO::P0_0;
+  const FEHIO::FEHIOPin BackLeftDefaultEncoder = FEHIO::P0_1;
+  const FEHIO::FEHIOPin BackRightDefaultEncoder = FEHIO::P0_2;
 
   float FrontSped = 0;
   float BackLeftSped = 0;
@@ -96,6 +105,7 @@ class HolonomicTriangleDrive {
 
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
+  HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BackLeft,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BackRight,FEHIO::FEHIOPin E3, float maxVolt);
 
   void setMovementVector(float x, float y, float theta);
   void update();

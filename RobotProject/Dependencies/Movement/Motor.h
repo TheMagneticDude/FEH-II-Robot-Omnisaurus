@@ -47,8 +47,8 @@ class Motor {
 
   float encoderCountsPerRev;
   
-  //VEX Omni wheel is about 2.335841 inch in diameter
-  const float wheelCircumference = M_PI * 2.335841;
+  //VEX Omni wheel is about 2.5 inch in diameter
+  const float wheelCircumference = M_PI * 2.5;
   
   
   

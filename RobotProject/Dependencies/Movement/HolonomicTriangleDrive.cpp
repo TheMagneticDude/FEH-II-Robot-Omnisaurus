@@ -36,6 +36,10 @@ BackRight(BR,defaultMotorMaxVolt)
     BackLeftPort = BL;
     BackRightPort = BR;
 
+    FrontEncoder = FrontDefaultEncoder;
+    BackLeftEncoder = BackLeftDefaultEncoder;
+    BackRightEncoder = BackLeftDefaultEncoder;
+
     motorMaxVolt = defaultMotorMaxVolt;
 }
 
@@ -47,6 +51,26 @@ BackRight(BR,maxVolt)
     FrontPort = F;
     BackLeftPort = BL;
     BackRightPort = BR;
+
+    FrontEncoder = FrontDefaultEncoder;
+    BackLeftEncoder = BackLeftDefaultEncoder;
+    BackRightEncoder = BackLeftDefaultEncoder;
+
+    motorMaxVolt = maxVolt;
+}
+
+HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BL,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BR,FEHIO::FEHIOPin E3, float maxVolt)
+: Front(F, maxVolt), 
+BackLeft(BL, maxVolt),
+BackRight(BR,maxVolt)
+{
+    FrontPort = F;
+    BackLeftPort = BL;
+    BackRightPort = BR;
+
+    FrontEncoder = E1;
+    BackLeftEncoder = E2;
+    BackRightEncoder = E3;
 
     motorMaxVolt = maxVolt;
 }

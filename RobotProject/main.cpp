@@ -18,7 +18,6 @@
 //M3(BackRight) should be Motor 3 (the connectors are too big to fit all three next to each other...)
 int main(void)
 {
-
     float movementVector[3] = {0.8,0,0};
     LCD.Clear(BLACK);
     LCD.WriteAt("Movement Vector: X: ",0,0);
