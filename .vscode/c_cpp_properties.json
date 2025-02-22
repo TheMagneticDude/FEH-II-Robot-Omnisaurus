@@ -14,8 +14,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/RobotProject/**",
-                "${workspaceFolder}/RobotProject/Dependencies",
-                "${workspaceFolder}/RobotProject/Assets",
+                "${workspaceFolder}/RobotProject/Dependencies/*",
+                "${workspaceFolder}/RobotProject/Dependencies/Auto/*",
+                "${workspaceFolder}/RobotProject/Assets/*",
                 "C:/MinGW/mingw32/lib/gcc/i686-w64-mingw32/8.1.0/include/c++/parallel",
                 "${workspaceFolder}/RobotProject/fehproteusfirmware/Libraries"
             ]

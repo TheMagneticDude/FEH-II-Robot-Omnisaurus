@@ -10,11 +10,10 @@
 
 
 using namespace std;
-inline bool timeUp(std::chrono::steady_clock::time_point start, std::chrono::milliseconds duration){
-  auto start = std::chrono::steady_clock::now();
+inline bool timeUp(std::chrono::steady_clock::time_point start, std::chrono::milliseconds duration) {
   return (std::chrono::steady_clock::now() - start < duration);
-
 }
+
 
 inline void runForAsync(std::function<void()> function, std::chrono::milliseconds duration){
   

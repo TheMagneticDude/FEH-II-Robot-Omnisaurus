@@ -11,6 +11,12 @@
 #include <stdio.h>
 #include <cmath>
 #include "../Dependencies/Movement/HolonomicTriangleDrive.h"
+#include "../Dependencies/Auto/SequencialCommand.h"
+#include "PathTest.h"
+
+//helper methods
+
+
 
 //ROBOT MAIN
 //Motor M1 should be Motor 0
@@ -18,6 +24,7 @@
 //M3(BackRight) should be Motor 3 (the connectors are too big to fit all three next to each other...)
 int main(void)
 {
+    //Variables_________________________________________________________________________________________________________
     float movementVector[3] = {0.8,0,0};
     LCD.Clear(BLACK);
     LCD.WriteAt("Movement Vector: X: ",0,0);
@@ -44,6 +51,13 @@ int main(void)
     FEHIO::FEHIOPin E3 = FEHIO::P0_4;
     
     HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
+
+    //AutoInit_________________________________________________________________________________________________________
+    //Sequencial command group
+    SequencialCommand autonomous;
+
+    //Auto sequences:
+    autonomous.addCommand(std::make_unique<PathTest>());
 
 
     float x_position, y_position;
@@ -77,19 +91,23 @@ int main(void)
         LCD.WriteAt((-y_position),0,150);
 
 
-        if(LCD.Touch(&x_position,&y_position)){
+        // if(LCD.Touch(&x_position,&y_position)){
             
 
-            movementVector[0] = ((x_position - (320/2.0)) / 320); 
-            movementVector[1] = ((y_position - (240/2.0)) / 240);
+        //     movementVector[0] = ((x_position - (320/2.0)) / 320); 
+        //     movementVector[1] = ((y_position - (240/2.0)) / 240);
 
-            drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+        //     drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 
-            drivetrain.update();
-        }else{
-            drivetrain.stop();
-        }
-        
+        //     drivetrain.update();
+        // }else{
+        //     drivetrain.stop();
+        // }
+
+        //run auto
+        autonomous.runSequencialCommand();
+
+
     }
 
 	return 0;

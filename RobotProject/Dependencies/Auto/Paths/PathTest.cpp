@@ -18,6 +18,8 @@ PathTest::PathTest(HolonomicTriangleDrive &dt) : drivetrain(dt){
 //Runs the command every tick
 void PathTest::run(){
     //Command stuff
+
+    //basically drive forward for 3000 milisec
     drivetrain.setMovementVector(0,0.8,0);
     drivetrain.update();
 

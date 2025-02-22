@@ -9,9 +9,9 @@
 using namespace std;
 
 
-class PathTest : Command {
+class PathTest : public Command {
   private:
-  HolonomicTriangleDrive drivetrain;
+  HolonomicTriangleDrive &drivetrain;
   bool end;
   std::chrono::steady_clock::time_point start;
   public:

@@ -17,10 +17,11 @@ class SequencialCommand {
   private:
 
   //vector push back adds to back and pop back removes off the back
-  std::vector<Command> commandList;
+  //stores as a vector bc any class implement command and stil need to be sequencial
+  std::vector<std::unique_ptr<Command>> commandList;
 
   public:
     SequencialCommand();
-    void addCommand(Command command);
+    void addCommand(std::unique_ptr<Command> command);
     void runSequencialCommand();
 };
