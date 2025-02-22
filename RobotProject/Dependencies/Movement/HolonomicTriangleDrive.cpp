@@ -28,9 +28,9 @@ float proj(float v[], float a[]){
 
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR) 
-: Front(F, defaultMotorMaxVolt), 
-BackLeft(BL, defaultMotorMaxVolt),
-BackRight(BR,defaultMotorMaxVolt)
+: Front(F,FrontDefaultEncoder, defaultMotorMaxVolt), 
+BackLeft(BL,BackLeftDefaultEncoder, defaultMotorMaxVolt),
+BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -44,9 +44,9 @@ BackRight(BR,defaultMotorMaxVolt)
 }
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR, float maxVolt) 
-: Front(F, maxVolt), 
-BackLeft(BL, maxVolt),
-BackRight(BR,maxVolt)
+: Front(F,FrontDefaultEncoder, maxVolt), 
+BackLeft(BL,BackLeftDefaultEncoder, maxVolt),
+BackRight(BR,BackRightDefaultEncoder,maxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -60,9 +60,9 @@ BackRight(BR,maxVolt)
 }
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BL,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BR,FEHIO::FEHIOPin E3, float maxVolt)
-: Front(F, maxVolt), 
-BackLeft(BL, maxVolt),
-BackRight(BR,maxVolt)
+: Front(F,E1, maxVolt), 
+BackLeft(BL,E2, maxVolt),
+BackRight(BR,E3,maxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -128,6 +128,10 @@ void HolonomicTriangleDrive::stop(){
 float HolonomicTriangleDrive::getFrontSpeed(){return FrontSped;}
 float HolonomicTriangleDrive::getBackLeftSpeed(){return BackLeftSped;}
 float HolonomicTriangleDrive::getBackRightSpeed(){return BackRightSped;}
+
+float HolonomicTriangleDrive::getFrontPosition(){return Front.getCounts();}
+float HolonomicTriangleDrive::getBackLeftPosition(){return BackLeft.getCounts();}
+float HolonomicTriangleDrive::getBackRightPosition(){return BackRight.getCounts();}
 
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){

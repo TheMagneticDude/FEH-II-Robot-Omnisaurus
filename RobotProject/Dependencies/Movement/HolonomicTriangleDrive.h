@@ -31,7 +31,7 @@ class HolonomicTriangleDrive {
 //       \   /
 //        O
  
-    FEHMotor Front;//M1
+    Motor Front;//M1
 
 
 //BackLeft
@@ -43,7 +43,7 @@ class HolonomicTriangleDrive {
 //       \   /
 //        x
 
-    FEHMotor BackLeft;//M2
+  Motor BackLeft;//M2
 
 
 
@@ -55,7 +55,7 @@ class HolonomicTriangleDrive {
 //      \     /
 //       \   /
 //        0
-    FEHMotor BackRight;//M3
+  Motor BackRight;//M3
 
 
 
@@ -114,6 +114,10 @@ class HolonomicTriangleDrive {
   float getFrontSpeed();
   float getBackLeftSpeed();
   float getBackRightSpeed();
+
+  float getFrontPosition();
+  float getBackLeftPosition();
+  float getBackRightPosition();
 
   void setPose(float x, float y, float theta);
   void setTargetPose(float x, float y, float theta);

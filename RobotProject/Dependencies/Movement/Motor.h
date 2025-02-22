@@ -38,6 +38,15 @@ class Motor {
   float maxSpeed = 1;
   FEHMotor M;
 
+  //enum always represented by unsigned int
+  enum class Mode : uint8_t {
+    RUN_TO_POSITION,
+    VELOCITY,
+    POWER,
+  };
+
+  Mode motorMode;
+
   DigitalEncoder MotorEncoder;
 
   FEHIO::FEHIOPin encoderPort;
@@ -45,7 +54,9 @@ class Motor {
   float currPosition;
   float targetPos;
 
+  //For IGWAN is 318
   float encoderCountsPerRev;
+  const unsigned int defaultCountsPerRev = 318;
   
   //VEX Omni wheel is about 2.5 inch in diameter
   const float wheelCircumference = M_PI * 2.5;
@@ -53,14 +64,15 @@ class Motor {
   
   
   public:
-  
-  Motor(FEHMotor::FEHMotorPort p, float maxvolt, FEHIO::FEHIOPin encoderPort, float countsperrev);
-  Motor(FEHMotor::FEHMotorPort p,FEHIO::FEHIOPin encoderPort, float countsperrev);
+  Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float maxvolt);
+  Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float maxvolt, float countsperrev);
+  void setMode(Mode m);
   void SetPercent(float percent);
   void Stop();
-  void runToPosition(float pos);
+  void setTargetPos(float pos);
   void runToPosition();
   void resetEncoderCounts();
   float getCounts();
+  float getVelocity();
   void runAtVelocity(float v);
 };

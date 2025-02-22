@@ -38,8 +38,12 @@ int main(void)
     FEHMotor::FEHMotorPort M1(FEHMotor::Motor0);
     FEHMotor::FEHMotorPort M2(FEHMotor::Motor1);
     FEHMotor::FEHMotorPort M3(FEHMotor::Motor3);
+
+    FEHIO::FEHIOPin E1 = FEHIO::P0_0;
+    FEHIO::FEHIOPin E2 = FEHIO::P0_2;
+    FEHIO::FEHIOPin E3 = FEHIO::P0_4;
     
-    HolonomicTriangleDrive drivetrain(M1,M2,M3,motorMaxVolt);
+    HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
 
 
     float x_position, y_position;
@@ -57,14 +61,14 @@ int main(void)
 
     LCD.Clear();
     while(true){
-        LCD.WriteAt("Front Speed:",0,0);
-        LCD.WriteAt(drivetrain.getFrontSpeed(),0,15);
+        LCD.WriteAt("Front Pos:",0,0);
+        LCD.WriteAt(drivetrain.getFrontPosition(),0,15);
         
-        LCD.WriteAt("Back Left Speed",0,30);
-        LCD.WriteAt(drivetrain.getBackLeftSpeed(),0,45);
+        LCD.WriteAt("Back Left Pos",0,30);
+        LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45);
 
-        LCD.WriteAt("Back Right Speed",0,60);
-        LCD.WriteAt(drivetrain.getBackRightSpeed(),0,75);
+        LCD.WriteAt("Back Right Pos",0,60);
+        LCD.WriteAt(drivetrain.getBackRightPosition(),0,75);
 
 
         LCD.WriteAt("TouchX ",0,90);
