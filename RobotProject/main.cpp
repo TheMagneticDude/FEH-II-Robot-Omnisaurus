@@ -94,11 +94,11 @@ int main(void)
         LCD.WriteAt((-y_position),0,150);
 
 
-        LCD.WriteAt("Front Serial Speed: ", 0, 165);
-        LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 180);
+        // LCD.WriteAt("Front Serial Speed: ", 0, 165);
+        // LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 180);
 
-        LCD.WriteAt("Front Serial Speed: ", 0, 195);
-        LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 210);
+        // LCD.WriteAt("Front Serial Speed: ", 0, 195);
+        // LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 210);
 
         //joystick code
         if(LCD.Touch(&x_position,&y_position)){

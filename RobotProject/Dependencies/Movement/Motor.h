@@ -71,10 +71,6 @@ class Motor {
   const float wheelCircumference = M_PI * 2.5;
 
 
-
-  //motor data from serial
-  uint8 speed;
-  uint8 rate;
   
   
   
@@ -92,8 +88,5 @@ class Motor {
   float getVelocity();
   void runAtVelocity(float v);
 
-  void getMotorData(FEHMotor::FEHMotorPort port);
-
-  uint8 getSerialRate();
-  uint8 getSerialSpeed();
+  
 };

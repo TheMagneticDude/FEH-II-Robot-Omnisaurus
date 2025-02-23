@@ -14,7 +14,7 @@ inline bool timeUp(std::chrono::steady_clock::time_point start, std::chrono::mil
   return (std::chrono::steady_clock::now() - start < duration);
 }
 
-//Threads arent supported :[
+//Threads arent supported :[ boo
 // inline void runForAsync(std::function<void()> function, std::chrono::milliseconds duration){
   
 //   std::thread([function, duration](){

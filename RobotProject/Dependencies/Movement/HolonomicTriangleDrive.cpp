@@ -159,11 +159,3 @@ void HolonomicTriangleDrive::runToPose(){
     update();
 }
 
-
-uint8 HolonomicTriangleDrive::getSerialRate(){
-    return Front.getSerialRate();
-  }
-
-  uint8 HolonomicTriangleDrive::getSerialSpeed(){
-    return Front.getSerialSpeed();
-  }
