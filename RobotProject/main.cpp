@@ -14,6 +14,7 @@
 #include "../Dependencies/Auto/SequencialCommand.h"
 #include "../Dependencies/Auto/Paths/PathTest.h"
 #include "../Dependencies/Button.h"
+#include "../Dependencies/Slider.h"
 
 //helper methods_____________________________________________________
 
@@ -71,6 +72,7 @@ int main(void)
     bool autoMode = false;
     Button joystickModeButton(0,"Joystick",LCD.Blue);
     Button autoModeButton(15,"Auto",LCD.Blue);
+    Slider rotationControl("Rotation", 30, 100,0,LCD.Blue,LCD.Black,-1,1);
 
         /* Clear the touch buffer so touches made before
            this call are discarded */
@@ -128,11 +130,21 @@ int main(void)
             autonomous.runSequencialCommand();
         }else{
             //joystick code
+
+            //render rotation slider
+            rotationControl.update();
+            float sliderVal = rotationControl.getValue();
             if(LCD.Touch(&x_position,&y_position)){
-                        
+                
 
                 movementVector[0] = ((x_position - (320/2.0)) / 320); 
                 movementVector[1] = ((y_position - (240/2.0)) / 240);
+                //update rotation
+                if(rotationControl.getHeld()){
+                    //sets angular velocity
+                    //-1 to 1
+                    movementVector[2] = sliderVal;
+                }
 
                 drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 
