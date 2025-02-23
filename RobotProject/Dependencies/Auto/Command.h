@@ -33,7 +33,7 @@ inline std::chrono::milliseconds chronMiliSec(int t){
 }
 
 
-
+//Abstract class to set up command structure for paths
 class Command{
   private:
   public:
