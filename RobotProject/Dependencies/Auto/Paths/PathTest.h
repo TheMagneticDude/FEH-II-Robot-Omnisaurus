@@ -12,11 +12,15 @@ using namespace std;
 class PathTest : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
-  bool end;
   std::chrono::steady_clock::time_point start;
+
+  bool end;
+  const std::string commandName = "PathTest";
+
   public:
   PathTest(HolonomicTriangleDrive &dt);
   void run() override;    
   bool ended() override;  
   void stop() override;
+  std::string getName() override;
 };

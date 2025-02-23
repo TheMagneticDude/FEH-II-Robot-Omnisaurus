@@ -4,9 +4,9 @@
 #include <string>
 #include <functional>
 #include <chrono>
-#include <thread>
 #include <vector>
 #include "../Movement/HolonomicTriangleDrive.h"
+
 
 
 using namespace std;
@@ -27,6 +27,8 @@ inline bool timeUp(std::chrono::steady_clock::time_point start, std::chrono::mil
 //   }).detach();//thread detatches automatically
 // }
 
+
+
 //helper command to make chrono milisecs easier
 inline std::chrono::milliseconds chronMiliSec(int t){
   return std::chrono::milliseconds(t);
@@ -36,12 +38,14 @@ inline std::chrono::milliseconds chronMiliSec(int t){
 //Abstract class to set up command structure for paths
 class Command{
   private:
+  const std::string commandName;
   public:
   //default constructure
     Command() = default;
     virtual  void run() = 0;
     virtual bool ended() = 0;
     virtual void stop() = 0;
+    virtual std::string getName() = 0;
 
     //prevents memory leak, kills derived classes when it should
     virtual ~Command() = default;

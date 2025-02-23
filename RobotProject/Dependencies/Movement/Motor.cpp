@@ -2,6 +2,9 @@
 #include <string>
 #include <FEHLCD.h>
 #include "Motor.h"
+#include "../Dependencies/Assert.h"
+
+
 
 using namespace std;
 
@@ -37,7 +40,7 @@ void Motor::SetPercent(float percent){
     if(motorMode == Mode::POWER){
         M.SetPercent(percent);
     }else{
-        LCD.WriteLine("Motor is not in POWER mode");
+        assertError("Motor is not in POWER mode");
     }
 }
 
@@ -56,7 +59,7 @@ void Motor::runToPosition(){
 
         M.SetPercent(power);
     }else{
-        LCD.WriteLine("Motor is not in RUN_TO_POSITION mode");
+        assertError("Motor is not in RUN_TO_POSITION mode");
     }
 }
 
@@ -76,7 +79,7 @@ void Motor::runAtVelocity(float v){
     if(motorMode == Mode::VELOCITY){
         
     }else{
-        LCD.WriteLine("Motor is not in VELOCITY mode");
+        assertError("Motor is not in VELOCITY mode");
     }
     
 }

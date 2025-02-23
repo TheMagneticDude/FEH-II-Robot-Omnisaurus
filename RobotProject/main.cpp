@@ -16,8 +16,12 @@
 #include "../Dependencies/Button.h"
 #include "../Dependencies/Slider.h"
 
-//helper methods_____________________________________________________
+#include <pthread.h>
+#include <iostream>
 
+
+
+//helper methods_____________________________________________________
 
 
     //ROBOT MAIN
@@ -64,6 +68,9 @@ int main(void)
 
     float x_position, y_position;
     float x_trash, y_trash;
+
+
+
 
 
     //Code start________________________________________________________________________________________________________________

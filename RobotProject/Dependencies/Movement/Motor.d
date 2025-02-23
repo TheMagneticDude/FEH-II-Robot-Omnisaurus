@@ -7,7 +7,7 @@
  Drivers/i2c.h Libraries/FEHBattery.h Libraries/FEHIO.h \
  Libraries/FEHBuzzer.h Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h \
  Drivers/ff.h Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h \
- Libraries/FEHFile.h Drivers/uart.h
+ Libraries/FEHFile.h Drivers/uart.h ../Dependencies/Assert.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -34,3 +34,4 @@ Drivers/ffconf.h:
 Drivers/diskio.h:
 Libraries/FEHFile.h:
 Drivers/uart.h:
+../Dependencies/Assert.h:

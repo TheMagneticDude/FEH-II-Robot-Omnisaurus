@@ -35,3 +35,6 @@ bool PathTest::ended(){return end;}
 
 //Stops the command even if end condition has not been reached and triggers ended to move to next command in sequence
 void PathTest::stop(){end = true;}
+
+//returns path name
+std::string PathTest::getName(){return commandName;}
