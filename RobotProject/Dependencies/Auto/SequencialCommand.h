@@ -16,7 +16,7 @@ using namespace std;
 
 class SequencialCommand {
   private:
-
+  unsigned int currCommand;
   //vector push back adds to back and pop back removes off the back
   //stores as a vector bc any class implement command and stil need to be sequencial
   std::vector<std::unique_ptr<Command>> commandList;
