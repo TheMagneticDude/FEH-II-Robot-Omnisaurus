@@ -2,8 +2,8 @@
 
 #include <FEHLCD.h>
 #include <string>
-#include "Command.h"
-#include "HolonomicTriangleDrive.h"
+#include "../Dependencies/Auto/Command.h"
+#include "../Dependencies/Movement/HolonomicTriangleDrive.h"
 
 
 using namespace std;

@@ -12,7 +12,7 @@
 #include <cmath>
 #include "../Dependencies/Movement/HolonomicTriangleDrive.h"
 #include "../Dependencies/Auto/SequencialCommand.h"
-#include "PathTest.h"
+#include "../Dependencies/Auto/Paths/PathTest.h"
 
 //helper methods
 
@@ -57,7 +57,7 @@ int main(void)
     SequencialCommand autonomous;
 
     //Auto sequences:
-    autonomous.addCommand(std::make_unique<PathTest>());
+    autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
 
 
     float x_position, y_position;

@@ -7,7 +7,9 @@
  Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h Drivers/ff.h \
  Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h Libraries/FEHFile.h \
  ../Dependencies/Movement/HolonomicTriangleDrive.h \
- ../Dependencies/Movement/Motor.h
+ ../Dependencies/Movement/Motor.h Drivers/uart.h \
+ ../Dependencies/Auto/SequencialCommand.h ../Dependencies/Auto/Command.h \
+ ../Dependencies/Auto/Paths/PathTest.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -34,3 +36,7 @@ Drivers/diskio.h:
 Libraries/FEHFile.h:
 ../Dependencies/Movement/HolonomicTriangleDrive.h:
 ../Dependencies/Movement/Motor.h:
+Drivers/uart.h:
+../Dependencies/Auto/SequencialCommand.h:
+../Dependencies/Auto/Command.h:
+../Dependencies/Auto/Paths/PathTest.h:

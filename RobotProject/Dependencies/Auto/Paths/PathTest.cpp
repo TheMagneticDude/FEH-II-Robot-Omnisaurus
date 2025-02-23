@@ -23,11 +23,6 @@ void PathTest::run(){
     drivetrain.setMovementVector(0,0.8,0);
     drivetrain.update();
 
-    //async thread 
-    runForAsync([&]() {
-        //blink lights or something idk make sure the duration is before the command ends
-    }, std::chrono::milliseconds(2000));
-
 
     //end condition
     if(timeUp(start,chronMiliSec(3000))){
