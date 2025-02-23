@@ -13,19 +13,20 @@
 #include "../Dependencies/Movement/HolonomicTriangleDrive.h"
 #include "../Dependencies/Auto/SequencialCommand.h"
 #include "../Dependencies/Auto/Paths/PathTest.h"
+#include "../Dependencies/Button.h"
 
-//helper methods
+//helper methods_____________________________________________________
 
 
 
-//ROBOT MAIN
-//Motor M1 should be Motor 0
-//M2(BackLeft) should be Motor 1
-//M3(BackRight) should be Motor 3 (the connectors are too big to fit all three next to each other...)
+    //ROBOT MAIN
+    //Motor M1 should be Motor 0
+    //M2(BackLeft) should be Motor 1
+    //M3(BackRight) should be Motor 3 (the connectors are too big to fit all three next to each other...)
 int main(void)
 {
     //Variables_________________________________________________________________________________________________________
-    float movementVector[3] = {0.8,0,0};
+    float movementVector[3] = {0,0,0};
     LCD.Clear(BLACK);
     LCD.WriteAt("Movement Vector: X: ",0,0);
     LCD.WriteAt(movementVector[0],0,15);
@@ -56,42 +57,63 @@ int main(void)
     //Sequencial command group
     SequencialCommand autonomous;
 
-    //Auto sequences:
+    //Auto sequences (add paths below):
     autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
 
 
     float x_position, y_position;
     float x_trash, y_trash;
 
+
+    //Code start________________________________________________________________________________________________________________
+
+    //default is joystick control mode
+    bool autoMode = false;
+    Button joystickModeButton(0,"Joystick",LCD.Blue);
+    Button autoModeButton(15,"Auto",LCD.Blue);
+
         /* Clear the touch buffer so touches made before
            this call are discarded */
            LCD.ClearBuffer();
            /* Wait until the user touches the screen */
-           while(!LCD.Touch(&x_position,&y_position)) {};
+           while(!LCD.Touch(&x_position,&y_position)) {
+            joystickModeButton.updateButtonState();
+            autoModeButton.updateButtonState();
+
+            if(joystickModeButton.onButtonClicked()){
+                autoMode = false;
+            }
+            if(autoModeButton.onButtonClicked()){
+                autoMode = true;
+            }
+           };
            /* Wait until the touch releases */
-           while(LCD.Touch(&x_trash,&y_trash)) {};
+           while(LCD.Touch(&x_trash,&y_trash)) {
+           };
 
     drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 
     LCD.Clear();
     while(true){
-        LCD.WriteAt("Front Pos:",0,0);
-        LCD.WriteAt(drivetrain.getFrontPosition(),0,15);
+        float telemetryLineOffset = 20;
+        //Telemetry____________________________________________________________________________________________________
+        LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
+        LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
         
-        LCD.WriteAt("Back Left Pos",0,30);
-        LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45);
+        LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
+        LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
 
-        LCD.WriteAt("Back Right Pos",0,60);
-        LCD.WriteAt(drivetrain.getBackRightPosition(),0,75);
+        LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
+        LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
 
 
         
 
 
-        LCD.WriteAt("TouchX ",0,90);
-        LCD.WriteAt(x_position,0,105);
-        LCD.WriteAt("TouchY",0,135);
-        LCD.WriteAt((-y_position),0,150);
+        LCD.WriteAt("TouchX ",0,90+telemetryLineOffset);
+        LCD.WriteAt(x_position,0,105+telemetryLineOffset);
+        LCD.WriteAt("TouchY",0,135+telemetryLineOffset);
+        LCD.WriteAt((-y_position),0,150+telemetryLineOffset);
 
 
         // LCD.WriteAt("Front Serial Speed: ", 0, 165);
@@ -100,22 +122,28 @@ int main(void)
         // LCD.WriteAt("Front Serial Speed: ", 0, 195);
         // LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 210);
 
-        //joystick code
-        if(LCD.Touch(&x_position,&y_position)){
-            
 
-            movementVector[0] = ((x_position - (320/2.0)) / 320); 
-            movementVector[1] = ((y_position - (240/2.0)) / 240);
-
-            drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
-
-            drivetrain.update();
+        if(autoMode){
+            //run auto
+            autonomous.runSequencialCommand();
         }else{
-            drivetrain.stop();
-        }
+            //joystick code
+            if(LCD.Touch(&x_position,&y_position)){
+                        
 
-        //run auto
-        // autonomous.runSequencialCommand();
+                movementVector[0] = ((x_position - (320/2.0)) / 320); 
+                movementVector[1] = ((y_position - (240/2.0)) / 240);
+
+                drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+
+                drivetrain.update();
+            }else{
+                drivetrain.stop();
+            }
+        }
+        
+
+        
 
 
     }
