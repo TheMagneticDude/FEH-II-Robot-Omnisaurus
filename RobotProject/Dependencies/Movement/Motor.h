@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <cmath>
 #include <math.h>
+#include <uart.h>
 
 
 
@@ -28,6 +29,8 @@ inline float clamp(float x, float min, float max){
   }
   return x;
 }
+
+
 
 
 class Motor {
@@ -66,6 +69,13 @@ class Motor {
   
   //VEX Omni wheel is about 2.5 inch in diameter
   const float wheelCircumference = M_PI * 2.5;
+
+
+
+  //motor data from serial
+  uint8 speed;
+  uint8 rate;
+  
   
   
   
@@ -81,4 +91,9 @@ class Motor {
   float getCounts();
   float getVelocity();
   void runAtVelocity(float v);
+
+  void getMotorData(FEHMotor::FEHMotorPort port);
+
+  uint8 getSerialRate();
+  uint8 getSerialSpeed();
 };

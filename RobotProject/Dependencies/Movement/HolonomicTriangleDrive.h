@@ -125,6 +125,7 @@ class HolonomicTriangleDrive {
   void updatePose();
 
 
-  
+  uint8 getSerialSpeed();
+  uint8 getSerialRate();
     
 };

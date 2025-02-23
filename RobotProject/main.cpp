@@ -85,27 +85,37 @@ int main(void)
         LCD.WriteAt(drivetrain.getBackRightPosition(),0,75);
 
 
+        
+
+
         LCD.WriteAt("TouchX ",0,90);
         LCD.WriteAt(x_position,0,105);
         LCD.WriteAt("TouchY",0,135);
         LCD.WriteAt((-y_position),0,150);
 
 
-        // if(LCD.Touch(&x_position,&y_position)){
+        LCD.WriteAt("Front Serial Speed: ", 0, 165);
+        LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 180);
+
+        LCD.WriteAt("Front Serial Speed: ", 0, 195);
+        LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 210);
+
+        //joystick code
+        if(LCD.Touch(&x_position,&y_position)){
             
 
-        //     movementVector[0] = ((x_position - (320/2.0)) / 320); 
-        //     movementVector[1] = ((y_position - (240/2.0)) / 240);
+            movementVector[0] = ((x_position - (320/2.0)) / 320); 
+            movementVector[1] = ((y_position - (240/2.0)) / 240);
 
-        //     drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+            drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 
-        //     drivetrain.update();
-        // }else{
-        //     drivetrain.stop();
-        // }
+            drivetrain.update();
+        }else{
+            drivetrain.stop();
+        }
 
         //run auto
-        autonomous.runSequencialCommand();
+        // autonomous.runSequencialCommand();
 
 
     }
