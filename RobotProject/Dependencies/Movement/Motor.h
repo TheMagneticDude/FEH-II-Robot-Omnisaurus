@@ -42,6 +42,7 @@ class Motor {
   float MotorMaxVolt;
   float maxSpeed = 1;
   FEHMotor M;
+  
 
   //enum for motor mode always represented by unsigned int
   enum class Mode : uint8_t {
@@ -53,10 +54,13 @@ class Motor {
   //motor movement direction when not using power (voltage) control
   enum class Direction : uint8_t {
     FORWARD,
+    Idle,
     BACKWARD
   };
 
   Mode motorMode;
+
+  Direction motorDirection;
 
   DigitalEncoder MotorEncoder;
 
@@ -65,6 +69,11 @@ class Motor {
   float currPosition;
   float targetPos;
 
+
+  
+  VelocityPID velocityPID;
+  float targetVelocity;
+
   //For IGWAN is 318
   float encoderCountsPerRev;
   const unsigned int defaultCountsPerRev = 318;
@@ -72,7 +81,8 @@ class Motor {
   //VEX Omni wheel is about 2.5 inch in diameter
   const float wheelCircumference = M_PI * 2.5;
 
-
+  float lastEncoderCount = 0;
+  float lastTime = 0;
   
   
   
