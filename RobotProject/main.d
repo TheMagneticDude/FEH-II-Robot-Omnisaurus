@@ -9,8 +9,9 @@
  ../Dependencies/Movement/HolonomicTriangleDrive.h \
  ../Dependencies/Movement/Motor.h Drivers/uart.h \
  ../Dependencies/Auto/SequencialCommand.h ../Dependencies/Auto/Command.h \
- ../Dependencies/Auto/Paths/PathTest.h ../Dependencies/Button.h \
- ../Dependencies/Slider.h
+ ../Dependencies/Button.h ../Dependencies/Slider.h \
+ ../Dependencies/Auto/Paths/PathTest.h \
+ ../Dependencies/Auto/Paths/PathTest2.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -40,6 +41,7 @@ Libraries/FEHFile.h:
 Drivers/uart.h:
 ../Dependencies/Auto/SequencialCommand.h:
 ../Dependencies/Auto/Command.h:
-../Dependencies/Auto/Paths/PathTest.h:
 ../Dependencies/Button.h:
 ../Dependencies/Slider.h:
+../Dependencies/Auto/Paths/PathTest.h:
+../Dependencies/Auto/Paths/PathTest2.h:

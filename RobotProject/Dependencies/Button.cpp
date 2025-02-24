@@ -284,3 +284,10 @@ void Button::setString(std::string s) { buttonText = s; }
 void Button::setXPos(int x) { buttonX = x; }
 void Button::setYPos(int y) { buttonY = y; }
 std::string Button::getString() { return buttonText; }
+
+void Button::setWidth(int w){
+    buttonWidth = w;
+}
+void Button::setHeight(int h){
+    buttonHeight = h;
+}

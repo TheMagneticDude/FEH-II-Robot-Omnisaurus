@@ -10,9 +10,10 @@
 
 
 using namespace std;
-inline bool timeUp(std::chrono::steady_clock::time_point start, std::chrono::milliseconds duration) {
-  return (std::chrono::steady_clock::now() - start < duration);
+inline bool timeUp(float start, float durationMs) {
+  return (TimeNowMSec() - start >= durationMs);
 }
+
 
 //Threads arent supported :[ boo
 // inline void runForAsync(std::function<void()> function, std::chrono::milliseconds duration){
@@ -42,6 +43,7 @@ class Command{
   public:
   //default constructure
     Command() = default;
+    virtual void init() = 0;
     virtual  void run() = 0;
     virtual bool ended() = 0;
     virtual void stop() = 0;

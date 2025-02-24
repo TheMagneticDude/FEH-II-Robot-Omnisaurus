@@ -120,6 +120,7 @@ void HolonomicTriangleDrive::update(){
 }
 
 void HolonomicTriangleDrive::stop(){
+    setMovementVector(0,0,0);
     Front.Stop();
     BackLeft.Stop();
     BackRight.Stop();

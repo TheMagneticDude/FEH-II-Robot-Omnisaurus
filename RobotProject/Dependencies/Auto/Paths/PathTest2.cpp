@@ -3,35 +3,54 @@
 #include <FEHXBee.h>
 #include <FEHLCD.h>
 #include "PathTest2.h"
+#include <cstring>
 
 
 using namespace std;
 
+
 //take in the drivetrain object and any subsystems needed for path
 PathTest2::PathTest2(HolonomicTriangleDrive &dt) : drivetrain(dt){
+    
+
     //save start timepoint
-    start = std::chrono::steady_clock::now();
+    startTime = TimeNowMSec();
     //init end flag
     end = false;
+}
+
+void PathTest2::init(){
+    startTime = TimeNowMSec();
 }
 
 //Runs the command every tick
 void PathTest2::run(){
     //Command stuff
 
-    //basically drive backwards for 3000 milisec
+    //basically drive back for 3000 milisec
     drivetrain.setMovementVector(0,-0.8,0);
     drivetrain.update();
 
+    LCD.WriteAt("PathTest Running...",0,0);
+
+    auto elapsed = TimeNowMSec() - startTime;
+    std::string elapsedS = std::to_string(elapsed);
+    LCD.WriteAt("Elapsed: ",0,15);
+    LCD.WriteAt(elapsedS.c_str(),0,30);
+    LCD.WriteAt("ms",0,45);
+
 
     //end condition
-    if(timeUp(start,chronMiliSec(3000))){
+    if(timeUp(startTime,3000)){
+        drivetrain.stop();
         end = true;
     }
 }
 
 //exit condition, returns true once command sequence has ended
-bool PathTest2::ended(){return end;}
+bool PathTest2::ended(){
+    return end;
+}
 
 //Stops the command even if end condition has not been reached and triggers ended to move to next command in sequence
 void PathTest2::stop(){end = true;}

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <cmath>
+#include <chrono>
 #include "../Dependencies/Movement/HolonomicTriangleDrive.h"
 #include "../Dependencies/Auto/SequencialCommand.h"
 #include "../Dependencies/Button.h"
@@ -24,7 +25,16 @@
 
 
 //helper methods_____________________________________________________
-
+    bool checkInEllipse(int x, int y, int centerx, int centery, int width, int height) {
+    // taken from the equation of an ellipse
+    // if it is greater than 1 then its not in the ellipse
+    // recenters ellipse;
+    double dx = x - centerx;
+    double dy = y - centery;
+    // Check if inside ellipse
+    double p = (dx * dx / (width * width)) + (dy * dy / (height * height));
+    return p <= 1.0;
+}
 
     //ROBOT MAIN
     //Motor M1 should be Motor 0
@@ -34,16 +44,6 @@ int main(void)
 {
     //Variables_________________________________________________________________________________________________________
     float movementVector[3] = {0,0,0};
-    LCD.Clear(BLACK);
-    LCD.WriteAt("Movement Vector: X: ",0,0);
-    LCD.WriteAt(movementVector[0],0,15);
-
-    LCD.WriteAt("Movement Vector: Y: ",0,30);
-    LCD.WriteAt(movementVector[1],0,45);
-
-    LCD.WriteAt("Movement Vector: Rot: ",0,60);
-    LCD.WriteAt(movementVector[2],0,75);
-
     float motorMaxVolt = 6.0;//should be 9, im testing with lower voltage cap for now
 
     // FEHMotor M1(FEHMotor::Motor0,motorMaxVolt);
@@ -78,54 +78,67 @@ int main(void)
 
     //Code start________________________________________________________________________________________________________________
 
+    //Prev loop clock
+    auto start = std::chrono::steady_clock::now();
+
     //default is joystick control mode
     bool autoMode = false;
-    Button joystickModeButton(0,"Joystick",LCD.Blue);
-    Button autoModeButton(15,"Auto",LCD.Blue);
-    Slider rotationControl("Rotation", 30, 100,0,LCD.Blue,LCD.Black,-1,1);
+    Button joystickModeButton(0,"Joystick",BLUE,DARKBLUE);
+    joystickModeButton.setHeight(30);
+    Button autoModeButton(35,"Auto",BLUE,DARKBLUE);
+    autoModeButton.setHeight(30);
+    Slider rotationControl(0, 100,0,BLUE,DARKBLUE,-1,1);
 
-        /* Clear the touch buffer so touches made before
-           this call are discarded */
-           LCD.ClearBuffer();
-           /* Wait until the user touches the screen */
-           while(!LCD.Touch(&x_position,&y_position)) {
+    LCD.Clear();
+    /* Clear the touch buffer so touches made before
+    this call are discarded */
+    LCD.ClearBuffer();
+
+    bool init = false;
+        /* Wait until the user touches the screen */
+        while(!init) {
             joystickModeButton.updateButtonState();
             autoModeButton.updateButtonState();
 
             if(joystickModeButton.onButtonClicked()){
                 autoMode = false;
+                init = true;
             }
             if(autoModeButton.onButtonClicked()){
                 autoMode = true;
+                init = true;
             }
-           };
-           /* Wait until the touch releases */
-           while(LCD.Touch(&x_trash,&y_trash)) {
-           };
+        }
 
     drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 
     LCD.Clear();
-    while(true){
+    LCD.ClearBuffer();
+
+    bool exit = false;
+    while(!exit){
+
+        //measure loopspeed
+        float timeNow = TimeNowMSec();
+
+
         float telemetryLineOffset = 20;
         //Telemetry____________________________________________________________________________________________________
-        LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
-        LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
+        // LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
+        // LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
         
-        LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
-        LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
+        // LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
+        // LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
 
-        LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
-        LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
+        // LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
+        // LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
+
+        LCD.WriteAt("Elapsed Time: ",0, 180+30);
+        LCD.WriteAt(timeNow,0, 195+30);
 
 
         
-
-
-        LCD.WriteAt("TouchX ",0,90+telemetryLineOffset);
-        LCD.WriteAt(x_position,0,105+telemetryLineOffset);
-        LCD.WriteAt("TouchY",0,135+telemetryLineOffset);
-        LCD.WriteAt((-y_position),0,150+telemetryLineOffset);
+        
 
 
         // LCD.WriteAt("Front Serial Speed: ", 0, 165);
@@ -136,29 +149,56 @@ int main(void)
 
 
         if(autoMode){
+            LCD.WriteAt("Current Command: ",0,150+30);
+            LCD.WriteAt(autonomous.getCurrentCommandName(),0,165+30);
+            
             //run auto
             autonomous.runSequencialCommand();
+
+            if(autonomous.ended()){
+                exit = true;
+                drivetrain.stop();
+            }
         }else{
+
+            float telemetryOffsetTwo = 30;
+
+            LCD.WriteAt("TouchX ",0,90+telemetryOffsetTwo);
+            LCD.WriteAt(x_position,0,105+telemetryOffsetTwo);
+            LCD.WriteAt("TouchY",0,120+telemetryOffsetTwo);
+            LCD.WriteAt((-y_position),0,135+telemetryOffsetTwo);
+
+
             //joystick code
 
             //render rotation slider
             rotationControl.update();
             float sliderVal = rotationControl.getValue();
+
+            float joystickCenterX = (320/2.0);
+            float joystickCenterY = (240/2.0);
+
+            //show joystick area
+            unsigned int joystickSize = 50;
+            LCD.SetFontColor(BLUE);
+            LCD.DrawEllipse(joystickCenterX,joystickCenterY,joystickSize,joystickSize);
             if(LCD.Touch(&x_position,&y_position)){
-                
+                if(checkInEllipse(x_position,y_position,joystickCenterX,joystickCenterY,joystickSize,joystickSize)){
 
-                movementVector[0] = ((x_position - (320/2.0)) / 320); 
-                movementVector[1] = ((y_position - (240/2.0)) / 240);
-                //update rotation
-                if(rotationControl.getHeld()){
-                    //sets angular velocity
-                    //-1 to 1
-                    movementVector[2] = sliderVal;
+                    //calculate movement vector
+                    movementVector[0] = ((x_position - joystickCenterX) / joystickSize); 
+                    movementVector[1] = ((y_position - joystickCenterY) / joystickSize);
+                    //update rotation
+                    if(rotationControl.getHeld()){
+                        //sets angular velocity
+                        //-1 to 1
+                        movementVector[2] = sliderVal;
+                    }
+
+                    drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+
+                    drivetrain.update();
                 }
-
-                drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
-
-                drivetrain.update();
             }else{
                 drivetrain.stop();
             }

@@ -81,4 +81,7 @@ class Button {
     void setXPos(int x);
     void setYPos(int y);
     std::string getString();
+
+    void setWidth(int w);
+    void setHeight(int h);
 };
