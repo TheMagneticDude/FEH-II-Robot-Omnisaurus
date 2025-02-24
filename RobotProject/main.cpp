@@ -122,16 +122,8 @@ int main(void)
         float timeNow = TimeNowMSec();
 
 
-        float telemetryLineOffset = 20;
-        //Telemetry____________________________________________________________________________________________________
-        // LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
-        // LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
         
-        // LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
-        // LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
-
-        // LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
-        // LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
+        
 
         LCD.WriteAt("Elapsed Time: ",0, 180+30);
         LCD.WriteAt(timeNow,0, 195+30);
@@ -160,6 +152,17 @@ int main(void)
                 drivetrain.stop();
             }
         }else{
+            
+            //Telemetry____________________________________________________________________________________________________
+            float telemetryLineOffset = 20;
+            LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
+            LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
+            
+            LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
+            LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
+
+            LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
+            LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
 
             float telemetryOffsetTwo = 30;
 
