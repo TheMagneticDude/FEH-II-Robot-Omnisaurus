@@ -198,3 +198,8 @@ bool Slider::onSliderReleased() {
 // Returns true while held
 // Author: Nathan
 bool Slider::getHeld() { return toggled; }
+
+void Slider::setHeight(float h){
+    sliderHeight *= h/barHeight;
+    barHeight = h;
+}

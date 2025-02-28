@@ -12,7 +12,11 @@ class VelocityPID{
 	double errorSum;          //Integral     (I)
 	double errorRateOfChange; //Derivative   (D)
 
-  float output;
+	float k_P;
+	float k_I;
+	float k_D; 
+
+  	float output;
 
 	public:
 	int pidCalc(double currentRPM);
@@ -24,4 +28,5 @@ class VelocityPID{
 	//EFFECTS:  Initializes PID instance
   VelocityPID(double desiredRPM, double currentRPM);
   int pidCalc(double desiredRPM, double currentRPM);
+  void setPID(float P, float I, float D);
 };

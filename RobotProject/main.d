@@ -8,9 +8,9 @@
  Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h Libraries/FEHFile.h \
  ../Dependencies/Movement/HolonomicTriangleDrive.h \
  ../Dependencies/Movement/Motor.h Drivers/uart.h \
- ../Dependencies/Auto/SequencialCommand.h ../Dependencies/Auto/Command.h \
- ../Dependencies/Button.h ../Dependencies/Slider.h \
- ../Dependencies/Auto/Paths/PathTest.h \
+ ../Dependencies/VelocityPID.h ../Dependencies/Auto/SequencialCommand.h \
+ ../Dependencies/Auto/Command.h ../Dependencies/Button.h \
+ ../Dependencies/Slider.h ../Dependencies/Auto/Paths/PathTest.h \
  ../Dependencies/Auto/Paths/PathTest2.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -39,6 +39,7 @@ Libraries/FEHFile.h:
 ../Dependencies/Movement/HolonomicTriangleDrive.h:
 ../Dependencies/Movement/Motor.h:
 Drivers/uart.h:
+../Dependencies/VelocityPID.h:
 ../Dependencies/Auto/SequencialCommand.h:
 ../Dependencies/Auto/Command.h:
 ../Dependencies/Button.h:

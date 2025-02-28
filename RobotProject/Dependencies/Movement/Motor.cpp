@@ -22,6 +22,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt) : M(p,m
     motorDirection = Direction::Idle;
     lastEncoderCount = 0;
     lastTime = TimeNowMSec();
+    velocityLoopTimerPass = false;
 }
 
 Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt, float countsperrev) : M(p,maxvolt), MotorEncoder(ep),velocityPID(0, 0){
@@ -34,6 +35,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt, float c
     motorMode = Mode::POWER;
     lastEncoderCount = 0;
     lastTime = TimeNowMSec();
+    velocityLoopTimerPass = false;
 }
 
 void Motor::setMode(Mode m){
@@ -64,7 +66,7 @@ void Motor::runToPosition(){
         if(power ==0){motorDirection = Direction::Idle;}
         M.SetPercent(power);
     }else{
-        assertError("Motor is not in RUN_TO_POSITION mode");
+        assertError("Assertion Error: Motor is not in RUN_TO_POSITION mode");
     }
 }
 
@@ -77,21 +79,35 @@ void Motor::resetEncoderCounts(){
 float Motor::getCounts(){
     return MotorEncoder.Counts();
 }
+//get velocity in inch per second
 float Motor::getVelocity(){
-    lastEncoderCount = 0;
-    lastTime = TimeNowMSec();
+    float velocityLoopTimerMs = 1;//loop time of 1ms    
 
     float currTime = TimeNowMSec();
+    
+
+    if(!velocityLoopTimerPass){
+        lastTime = currTime;
+        velocityLoopTimerPass = true;
+        lastEncoderCount = MotorEncoder.Counts();
+        return currentVelocity;//prevent issues on first call
+    }
+    
+    float deltaTime = (currTime - lastTime); //in milisecs
+
+    if(deltaTime < velocityLoopTimerMs){
+        return currentVelocity;
+    }
     float currCount = MotorEncoder.Counts();
 
     float deltaCounts = currCount - lastEncoderCount;
-    float deltaTime = (currTime - lastTime); //in milisecs
+        
     if(deltaTime <= 0){
         //no divide by zero error
-        return 0;
+        return currentVelocity;
     }
     float rotations = deltaCounts / encoderCountsPerRev;
-    
+        
     float distance = rotations * wheelCircumference;
 
     float deltaTimeSec = deltaTime / 1000.0;
@@ -106,6 +122,11 @@ float Motor::getVelocity(){
     //update values for next loop
     lastEncoderCount = currCount;
     lastTime = currTime;
+
+    currentVelocity = velocity;
+        
+    // reset the timer pass so it waits for another interval
+    velocityLoopTimerPass = false;
 
     return velocity;
 }
@@ -123,12 +144,17 @@ void Motor::runAtVelocity(float v){
         //convert pid output to motor percentage
         float motorPower = (pidOutput/maxSpeed) * 100.0;
         motorPower = clamp(motorPower, -100,100);//clamp percentage between -100% and 100%
-
+        
         SetPercent(motorPower);
     }else{
-        assertError("Motor is not in VELOCITY mode");
+        assertError("Assertion Error: Motor is not in VELOCITY mode");
     }
     
+}
+
+void Motor::setPID(float P, float I, float D){
+    //set constants for PID loop for this specific motor
+    velocityPID.setPID(P,I,D);
 }
 
 

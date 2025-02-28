@@ -21,6 +21,10 @@ using namespace std;
 
 
 class HolonomicTriangleDrive {
+  //default PID constants
+//   #define KP 0.00001
+// #define KI 0.0000001
+// #define KD 0.00001
   private:
 //Front
 //        O
@@ -31,7 +35,8 @@ class HolonomicTriangleDrive {
 //       \   /
 //        O
  
-    Motor Front;//M1
+  Motor Front;//M1
+  const float M1PID[3] = {0.07,0.0000001,0.00001};
 
 
 //BackLeft
@@ -44,7 +49,7 @@ class HolonomicTriangleDrive {
 //        x
 
   Motor BackLeft;//M2
-
+  const float M2PID[3] = {0.07,0.0000001,0.00001};
 
 
 //BackRight
@@ -56,13 +61,14 @@ class HolonomicTriangleDrive {
 //       \   /
 //        0
   Motor BackRight;//M3
+  const float M3PID[3] = {0.07,0.0000001,0.00001};
 
 
 
   //motor vector directions
   float M1[2] = {1,0};
-  float M2[2] = {-0.5,-(std::sqrt(3) / 2.0)};
-  float M3[2] = {-0.5,(std::sqrt(3) / 2.0)};
+  float M2[2] = {-0.5,(std::sqrt(3) / 2.0)};
+  float M3[2] = {-0.5,-(std::sqrt(3) / 2.0)};
   float MovementVector[3] = {0,0,0}; //<x,y,theta> components
   // float targetTheta = 0; //0 degrees is default
 
@@ -97,11 +103,15 @@ class HolonomicTriangleDrive {
   //max speed percentage
   const float maxSpeedPercent = 1;
 
+  const float motorMaxVelocity = 12;//inch per sec
+
   //max rotation speed
   const float maxRotationSpeed = 1;
   //how aggresivley robot rotates towards the target angle
   //will need to tune for robot
   const float rotationGain = 0.1;
+
+  bool velocityControl;
 
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
@@ -119,10 +129,20 @@ class HolonomicTriangleDrive {
   float getBackLeftPosition();
   float getBackRightPosition();
 
+  float getFrontVelocity();
+  float getBackLeftVelocity();
+  float getBackRightVelocity();
+
   void setPose(float x, float y, float theta);
   void setTargetPose(float x, float y, float theta);
+  void turnToTheta(float theta);
   void runToPose();
   void updatePose();
+  void toggleVelocityControl(bool b);
+
+  void setMotorsToRunAtVelocityMode();
+  void setMotorsToPowerMode();
+  void setMotorsToRunToPositionMode();
 
 
  

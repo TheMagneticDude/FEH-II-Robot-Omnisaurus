@@ -23,6 +23,16 @@
 #include "../Dependencies/Auto/Paths/PathTest.h"
 #include "../Dependencies/Auto/Paths/PathTest2.h"
 
+//menu selector________________________________________________________
+enum class Menu : uint8_t {
+    Auto,
+    Joystick,
+    PIDTuning
+};
+
+//joystick by default
+Menu menuMode = Menu::Joystick;
+
 
 //helper methods_____________________________________________________
     bool checkInEllipse(int x, int y, int centerx, int centery, int width, int height) {
@@ -81,13 +91,18 @@ int main(void)
     //Prev loop clock
     auto start = std::chrono::steady_clock::now();
 
-    //default is joystick control mode
-    bool autoMode = false;
-    Button joystickModeButton(0,"Joystick",BLUE,DARKBLUE);
-    joystickModeButton.setHeight(30);
-    Button autoModeButton(35,"Auto",BLUE,DARKBLUE);
+    
+    Button autoModeButton(0,"Auto",BLUE,DARKBLUE);
     autoModeButton.setHeight(30);
-    Slider rotationControl(0, 100,0,BLUE,DARKBLUE,-1,1);
+    Button joystickModeButton(35,"Joystick",BLUE,DARKBLUE);
+    joystickModeButton.setHeight(30);
+    Button PIDTuningModeButton(70,"PID Tuning",BLUE,DARKBLUE);
+    PIDTuningModeButton.setHeight(30);
+
+    
+
+
+
 
     LCD.Clear();
     /* Clear the touch buffer so touches made before
@@ -101,11 +116,11 @@ int main(void)
             autoModeButton.updateButtonState();
 
             if(joystickModeButton.onButtonClicked()){
-                autoMode = false;
+                menuMode = Menu::Joystick;
                 init = true;
             }
             if(autoModeButton.onButtonClicked()){
-                autoMode = true;
+                menuMode = Menu::Auto;
                 init = true;
             }
         }
@@ -140,7 +155,7 @@ int main(void)
         // LCD.WriteAt(drivetrain.getSerialSpeed(), 0, 210);
 
 
-        if(autoMode){
+        if(menuMode == Menu::Auto){
             LCD.WriteAt("Current Command: ",0,150+30);
             LCD.WriteAt(autonomous.getCurrentCommandName(),0,165+30);
             
@@ -151,32 +166,67 @@ int main(void)
                 exit = true;
                 drivetrain.stop();
             }
+        } else if (menuMode == Menu::PIDTuning){
+            //PID Tuning
+
         }else{
+
             
+            //menuMode == Menu::Joystick
             //Telemetry____________________________________________________________________________________________________
-            float telemetryLineOffset = 20;
-            LCD.WriteAt("Front Pos:",0,0+telemetryLineOffset);
-            LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffset);
+            float telemetryLineOffsetVel = 0;
+            float telemetryLineOffsetEncoder = 95;
+            LCD.WriteAt("Front Vel:",0,0+telemetryLineOffsetVel);
+            LCD.WriteAt(drivetrain.getFrontVelocity(),0,15+telemetryLineOffsetVel);
             
-            LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffset);
-            LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffset);
+            LCD.WriteAt("Back Left Vel",0,30+telemetryLineOffsetVel);
+            LCD.WriteAt(drivetrain.getBackLeftVelocity(),0,45+telemetryLineOffsetVel);
 
-            LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffset);
-            LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffset);
+            LCD.WriteAt("Back Right Vel",0,60+telemetryLineOffsetVel);
+            LCD.WriteAt(drivetrain.getBackRightVelocity(),0,75+telemetryLineOffsetVel);
 
-            float telemetryOffsetTwo = 30;
+            LCD.WriteAt("Front Pos:",0,0+telemetryLineOffsetEncoder);
+            LCD.WriteAt(drivetrain.getFrontPosition(),0,15+telemetryLineOffsetEncoder);
+            
+            LCD.WriteAt("Back Left Pos",0,30+telemetryLineOffsetEncoder);
+            LCD.WriteAt(drivetrain.getBackLeftPosition(),0,45+telemetryLineOffsetEncoder);
 
-            LCD.WriteAt("TouchX ",0,90+telemetryOffsetTwo);
-            LCD.WriteAt(x_position,0,105+telemetryOffsetTwo);
-            LCD.WriteAt("TouchY",0,120+telemetryOffsetTwo);
-            LCD.WriteAt((-y_position),0,135+telemetryOffsetTwo);
+            LCD.WriteAt("Back Right Pos",0,60+telemetryLineOffsetEncoder);
+            LCD.WriteAt(drivetrain.getBackRightPosition(),0,75+telemetryLineOffsetEncoder);
 
+            float telemetryOffsetTwo = 60;
+            float telemetryYPos = 120+60;
+
+            LCD.WriteAt("TouchX ",telemetryYPos,90+telemetryOffsetTwo);
+            LCD.WriteAt(x_position,telemetryYPos,105+telemetryOffsetTwo);
+            LCD.WriteAt("TouchY",telemetryYPos,120+telemetryOffsetTwo);
+            LCD.WriteAt((-y_position),telemetryYPos,135+telemetryOffsetTwo);
+
+
+            //Vel/Pow mode buttons
+            Button velMode(250,60, "Vel",GREEN,DARKBLUE);
+            velMode.setHeight(30);
+            Button powMode(250,95, "Pow",CYAN,DARKBLUE);
+            powMode.setHeight(30);
+
+            bool velModeOn = false;
+            velMode.updateButtonState();
+            powMode.updateButtonState();
+
+            if(velMode.getButtonTriggered()){
+                velModeOn = true;
+                drivetrain.setMotorsToRunAtVelocityMode();
+            }
+            if(powMode.getButtonTriggered()){
+                velModeOn = false;
+                drivetrain.setMotorsToRunToPositionMode();
+            }
+
+            drivetrain.toggleVelocityControl(velModeOn);
 
             //joystick code
 
-            //render rotation slider
-            rotationControl.update();
-            float sliderVal = rotationControl.getValue();
+            
 
             float joystickCenterX = (320/2.0);
             float joystickCenterY = (240/2.0);
@@ -186,17 +236,18 @@ int main(void)
             LCD.SetFontColor(BLUE);
             LCD.DrawEllipse(joystickCenterX,joystickCenterY,joystickSize,joystickSize);
             if(LCD.Touch(&x_position,&y_position)){
+                
                 if(checkInEllipse(x_position,y_position,joystickCenterX,joystickCenterY,joystickSize,joystickSize)){
+                    //y is reversed bc of LCD y direction pos is down
+                    //but I dont reverse it bc the proteus screen is facing out towards the front
+                    //so the perspective of the joystick, up moves the bot back
+                    //and so x is reversed
 
                     //calculate movement vector
-                    movementVector[0] = ((x_position - joystickCenterX) / joystickSize); 
+                    movementVector[0] = -((x_position - joystickCenterX) / joystickSize); 
+                    
                     movementVector[1] = ((y_position - joystickCenterY) / joystickSize);
                     //update rotation
-                    if(rotationControl.getHeld()){
-                        //sets angular velocity
-                        //-1 to 1
-                        movementVector[2] = sliderVal;
-                    }
 
                     drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
 

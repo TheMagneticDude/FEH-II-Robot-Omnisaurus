@@ -15,6 +15,7 @@
 #include <cmath>
 #include <math.h>
 #include <uart.h>
+#include "../Dependencies/VelocityPID.h"
 
 
 
@@ -44,6 +45,39 @@ class Motor {
   FEHMotor M;
   
 
+  
+
+  
+
+  DigitalEncoder MotorEncoder;
+
+  FEHIO::FEHIOPin encoderPort;
+
+  float currPosition;
+  float targetPos;
+
+
+  bool velocityLoopTimerPass;
+
+  VelocityPID velocityPID;
+  float targetVelocity;
+  float currentVelocity;
+
+  //For IGWAN is 318
+  float encoderCountsPerRev;
+  const unsigned int defaultCountsPerRev = 318;
+  
+  //VEX Omni wheel is about 2.5 inch in diameter
+  const float wheelCircumference = M_PI * 2.5;
+
+  float lastEncoderCount = 0;
+  float lastTime = 0;
+  
+  
+  
+  
+  public:
+
   //enum for motor mode always represented by unsigned int
   enum class Mode : uint8_t {
     RUN_TO_POSITION,
@@ -62,32 +96,6 @@ class Motor {
 
   Direction motorDirection;
 
-  DigitalEncoder MotorEncoder;
-
-  FEHIO::FEHIOPin encoderPort;
-
-  float currPosition;
-  float targetPos;
-
-
-  
-  VelocityPID velocityPID;
-  float targetVelocity;
-
-  //For IGWAN is 318
-  float encoderCountsPerRev;
-  const unsigned int defaultCountsPerRev = 318;
-  
-  //VEX Omni wheel is about 2.5 inch in diameter
-  const float wheelCircumference = M_PI * 2.5;
-
-  float lastEncoderCount = 0;
-  float lastTime = 0;
-  
-  
-  
-  
-  public:
   Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float maxvolt);
   Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin encoderPort, float maxvolt, float countsperrev);
   void setMode(Mode m);
@@ -99,6 +107,6 @@ class Motor {
   float getCounts();
   float getVelocity();
   void runAtVelocity(float v);
-
+  void setPID(float P, float I, float D);
   
 };

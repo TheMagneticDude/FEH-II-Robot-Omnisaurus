@@ -8,7 +8,7 @@ using namespace std;
 //PID Code structure taken from:https://github.com/dcesiel/Velocity-PID-Example/blob/master/pid.h
 
 
-#define CONTROL_LOOP_TIME 0.02 //20 Millisecond loop time
+#define CONTROL_LOOP_TIME 0.001 //1 Millisecond loop time
 #define KP 0.00001
 #define KI 0.0000001
 #define KD 0.00001
@@ -20,6 +20,10 @@ VelocityPID::VelocityPID(double desiredRPM, double currentRPM){
     previousError = error;
     errorSum = 0;
     output = 0;
+    //default values
+    k_P = KP;
+    k_I = KI;
+    k_D = KD;
 }
 
 int VelocityPID::pidCalc(double desiredRPM, double currentRPM){
@@ -39,7 +43,14 @@ int VelocityPID::pidCalc(double desiredRPM, double currentRPM){
     //      as error goes to 0 P becomes very small. The velocity will decrease
     //      when you want it to stay at a constant high speed. This works because
     //      your taking the derivative of both sides of the equation
-    output += ((KP*error)+(KI*errorSum)+(KD*errorRateOfChange));
+    output += ((k_P*error)+(k_I*errorSum)+(k_D*errorRateOfChange));
 
     return output;
+}
+
+void VelocityPID::setPID(float P, float I, float D){
+    k_P = P;
+    k_I = I;
+    k_D = D;
+
 }

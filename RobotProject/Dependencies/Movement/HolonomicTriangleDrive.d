@@ -8,7 +8,8 @@
  Drivers/i2c.h Libraries/FEHBattery.h Libraries/FEHIO.h \
  Libraries/FEHBuzzer.h Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h \
  Drivers/ff.h Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h \
- Libraries/FEHFile.h ../Dependencies/Movement/Motor.h Drivers/uart.h
+ Libraries/FEHFile.h ../Dependencies/Movement/Motor.h Drivers/uart.h \
+ ../Dependencies/VelocityPID.h
 ../Dependencies/Movement/HolonomicTriangleDrive.h:
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -36,3 +37,4 @@ Drivers/diskio.h:
 Libraries/FEHFile.h:
 ../Dependencies/Movement/Motor.h:
 Drivers/uart.h:
+../Dependencies/VelocityPID.h:

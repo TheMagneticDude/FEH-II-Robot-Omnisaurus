@@ -41,6 +41,13 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
     BackRightEncoder = BackLeftDefaultEncoder;
 
     motorMaxVolt = defaultMotorMaxVolt;
+
+    velocityControl = false;
+
+    //initialize PID constants
+    Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
+    BackLeft.setPID(M2PID[0],M2PID[1],M2PID[2]);
+    BackRight.setPID(M3PID[0],M3PID[1],M3PID[2]);
 }
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR, float maxVolt) 
@@ -57,6 +64,13 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
     BackRightEncoder = BackLeftDefaultEncoder;
 
     motorMaxVolt = maxVolt;
+
+    velocityControl = false;
+
+    //initialize PID constants
+    Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
+    BackLeft.setPID(M2PID[0],M2PID[1],M2PID[2]);
+    BackRight.setPID(M3PID[0],M3PID[1],M3PID[2]);
 }
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BL,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BR,FEHIO::FEHIOPin E3, float maxVolt)
@@ -73,6 +87,13 @@ BackRight(BR,E3,maxVolt)
     BackRightEncoder = E3;
 
     motorMaxVolt = maxVolt;
+
+    velocityControl = false;
+
+    //initialize PID constants
+    Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
+    BackLeft.setPID(M2PID[0],M2PID[1],M2PID[2]);
+    BackRight.setPID(M3PID[0],M3PID[1],M3PID[2]);
 }
 
 //sets target movement vector
@@ -88,11 +109,8 @@ void HolonomicTriangleDrive::update(){
     float blSpd = proj(M2, MovementVector);
     float brSpd = proj(M3, MovementVector);
 
-    //Get rotation speed
-    float currentTheta = Pose[2];
-    float targetTheta = MovementVector[2];
-    float deltaTheta = targetTheta - currentTheta;
-    float angularVelocity = clamp(deltaTheta * rotationGain,-maxRotationSpeed,maxRotationSpeed);
+    float rotationPower = MovementVector[2];
+    float angularVelocity = clamp(rotationPower,-maxRotationSpeed,maxRotationSpeed);
 
     //apply rotation
     fSpd += angularVelocity;
@@ -114,9 +132,17 @@ void HolonomicTriangleDrive::update(){
     BackLeftSped = clamp(blSpd,-maxSpeed,maxSpeed);
     BackRightSped = clamp(brSpd,-maxSpeed,maxSpeed);
 
-    Front.SetPercent(FrontSped * 100);
-    BackLeft.SetPercent(BackLeftSped * 100);
-    BackRight.SetPercent(BackRightSped * 100);
+
+    if(velocityControl){
+        Front.runAtVelocity(FrontSped * motorMaxVelocity);
+        BackLeft.runAtVelocity(BackLeftSped * motorMaxVelocity);
+        BackRight.runAtVelocity(BackRightSped * motorMaxVelocity);
+    }else{
+        Front.SetPercent(FrontSped * 100);
+        BackLeft.SetPercent(BackLeftSped * 100);
+        BackRight.SetPercent(BackRightSped * 100);
+    }
+    
 }
 
 void HolonomicTriangleDrive::stop(){
@@ -133,6 +159,10 @@ float HolonomicTriangleDrive::getBackRightSpeed(){return BackRightSped;}
 float HolonomicTriangleDrive::getFrontPosition(){return Front.getCounts();}
 float HolonomicTriangleDrive::getBackLeftPosition(){return BackLeft.getCounts();}
 float HolonomicTriangleDrive::getBackRightPosition(){return BackRight.getCounts();}
+
+float HolonomicTriangleDrive::getFrontVelocity(){return Front.getVelocity();}
+float HolonomicTriangleDrive::getBackLeftVelocity(){return BackLeft.getVelocity();}
+float HolonomicTriangleDrive::getBackRightVelocity(){return BackRight.getVelocity();}
 
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){
@@ -157,6 +187,34 @@ void HolonomicTriangleDrive::runToPose(){
     MovementVector[1] = deltaY;
     MovementVector[2] = targetTheta;
     
-    update();
+    update();  
 }
 
+void HolonomicTriangleDrive::turnToTheta(float theta){
+    //Get rotation speed
+    float currentTheta = Pose[2];
+    float targetTheta = TargetPose[2];
+    float deltaTheta = targetTheta - currentTheta;
+    float angularVelocity = clamp(deltaTheta * rotationGain,-maxRotationSpeed,maxRotationSpeed);
+    MovementVector[2] = angularVelocity;
+}
+
+void HolonomicTriangleDrive::toggleVelocityControl(bool b){
+    velocityControl = b;
+}
+
+void HolonomicTriangleDrive::setMotorsToRunAtVelocityMode(){
+    Front.setMode(Motor::Mode::VELOCITY);
+    BackLeft.setMode(Motor::Mode::VELOCITY);
+    BackRight.setMode(Motor::Mode::VELOCITY);
+    }
+void HolonomicTriangleDrive::setMotorsToPowerMode(){
+    Front.setMode(Motor::Mode::POWER);
+    BackLeft.setMode(Motor::Mode::POWER);
+    BackRight.setMode(Motor::Mode::POWER);
+}
+void HolonomicTriangleDrive::setMotorsToRunToPositionMode(){
+    Front.setMode(Motor::Mode::RUN_TO_POSITION);
+    BackLeft.setMode(Motor::Mode::RUN_TO_POSITION);
+    BackRight.setMode(Motor::Mode::RUN_TO_POSITION);
+}

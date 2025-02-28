@@ -10,7 +10,8 @@
  Libraries/FEHBattery.h Libraries/FEHIO.h Libraries/FEHBuzzer.h \
  Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h Drivers/ff.h \
  Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h Libraries/FEHFile.h \
- ../Dependencies/Auto/../Movement/Motor.h Drivers/uart.h
+ ../Dependencies/Auto/../Movement/Motor.h Drivers/uart.h \
+ ../Dependencies/VelocityPID.h
 Drivers/FEHXBee.h:
 Startup/derivative.h:
 Startup/MK60DZ10.h:
@@ -41,3 +42,4 @@ Drivers/diskio.h:
 Libraries/FEHFile.h:
 ../Dependencies/Auto/../Movement/Motor.h:
 Drivers/uart.h:
+../Dependencies/VelocityPID.h:

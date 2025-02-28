@@ -27,11 +27,11 @@ void PathTest2::init(){
 void PathTest2::run(){
     //Command stuff
 
-    //basically drive back for 3000 milisec
-    drivetrain.setMovementVector(0,-0.8,0);
+    //basically drive back for 6000 milisec
+    drivetrain.setMovementVector(0,-0.5,0);
     drivetrain.update();
 
-    LCD.WriteAt("PathTest Running...",0,0);
+    LCD.WriteAt("PathTest2 Running...",0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
     std::string elapsedS = std::to_string(elapsed);
@@ -41,7 +41,7 @@ void PathTest2::run(){
 
 
     //end condition
-    if(timeUp(startTime,3000)){
+    if(timeUp(startTime,6000)){
         drivetrain.stop();
         end = true;
     }

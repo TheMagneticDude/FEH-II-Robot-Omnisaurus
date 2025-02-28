@@ -61,6 +61,7 @@ class Slider {
     void draw();
     void setString(float f);
     void setValue(float f);
+    void setHeight(float f);
     float getValue();
     bool checkInEllipse(int x, int y);
     bool onSliderClicked();
