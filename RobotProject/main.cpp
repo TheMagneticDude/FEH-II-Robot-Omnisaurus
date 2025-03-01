@@ -71,7 +71,7 @@ int main(void)
     HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
 
     //cds cell
-    AnalogInputPin CDS(FEHIO::P3_7);
+    AnalogInputPin CDS(FEHIO::P2_3);
 
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
