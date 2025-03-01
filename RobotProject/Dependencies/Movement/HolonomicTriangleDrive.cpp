@@ -134,10 +134,12 @@ void HolonomicTriangleDrive::update(){
 
 
     if(velocityControl){
+
         Front.runAtVelocity(FrontSped * motorMaxVelocity);
         BackLeft.runAtVelocity(BackLeftSped * motorMaxVelocity);
         BackRight.runAtVelocity(BackRightSped * motorMaxVelocity);
     }else{
+        
         Front.SetPercent(FrontSped * 100);
         BackLeft.SetPercent(BackLeftSped * 100);
         BackRight.SetPercent(BackRightSped * 100);
@@ -201,6 +203,7 @@ void HolonomicTriangleDrive::turnToTheta(float theta){
 
 void HolonomicTriangleDrive::toggleVelocityControl(bool b){
     velocityControl = b;
+    b ? setMotorsToRunAtVelocityMode():setMotorsToRunToPositionMode();
 }
 
 void HolonomicTriangleDrive::setMotorsToRunAtVelocityMode(){
@@ -217,4 +220,22 @@ void HolonomicTriangleDrive::setMotorsToRunToPositionMode(){
     Front.setMode(Motor::Mode::RUN_TO_POSITION);
     BackLeft.setMode(Motor::Mode::RUN_TO_POSITION);
     BackRight.setMode(Motor::Mode::RUN_TO_POSITION);
+}
+
+void HolonomicTriangleDrive::setMotorPID(int motor, float P, float I, float D){
+    
+    switch(motor){
+        case 1:
+        //motor1
+        Front.setPID(P,I,D);
+        break;
+        case 2:
+        //motor2
+        BackLeft.setPID(P,I,D);
+        break;
+        case 3:
+        //motor3
+        BackRight.setPID(P,I,D);
+        break;
+    }
 }

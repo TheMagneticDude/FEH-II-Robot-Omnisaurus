@@ -28,6 +28,7 @@ void PathTest::run(){
     //Command stuff
 
     //basically drive forward for 6000 milisec
+    // drivetrain.setMovementVector(0,1,0);
     drivetrain.setMovementVector(0,0.5,0);
     drivetrain.update();
 

@@ -17,6 +17,7 @@ class VelocityPID{
 	float k_D; 
 
   	float output;
+	double lastDesiredRPM;
 
 	public:
 	int pidCalc(double currentRPM);
@@ -27,6 +28,7 @@ class VelocityPID{
 	//CONSTRUCTOR
 	//EFFECTS:  Initializes PID instance
   VelocityPID(double desiredRPM, double currentRPM);
-  int pidCalc(double desiredRPM, double currentRPM);
+  float pidCalc(double desiredRPM, double currentRPM);
+  float pidCalcLoopTime(double desiredRPM, double currentRPM,double loopTime);
   void setPID(float P, float I, float D);
 };

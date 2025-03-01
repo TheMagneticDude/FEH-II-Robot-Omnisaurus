@@ -81,26 +81,32 @@ float Motor::getCounts(){
 }
 //get velocity in inch per second
 float Motor::getVelocity(){
-    float velocityLoopTimerMs = 1;//loop time of 1ms    
+    float velocityEpsilon = 1; //Min amount of encoder delta to update velocity
+    float velocityLoopTimerMs = 1;//max loop time of 1ms    
 
     float currTime = TimeNowMSec();
+    float deltaTime = (currTime - lastTime); //in milisecs
+    float currCount = MotorEncoder.Counts();
+
+    float deltaCounts = currCount - lastEncoderCount;
+    if (motorDirection == Direction::BACKWARD) {
+        deltaCounts = -deltaCounts;
+    }
     
 
     if(!velocityLoopTimerPass){
         lastTime = currTime;
         velocityLoopTimerPass = true;
-        lastEncoderCount = MotorEncoder.Counts();
+        lastEncoderCount = currCount;
         return currentVelocity;//prevent issues on first call
     }
     
-    float deltaTime = (currTime - lastTime); //in milisecs
-
-    if(deltaTime < velocityLoopTimerMs){
+    
+    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
+    if((fabs(deltaCounts) > velocityEpsilon) || (deltaTime >= velocityLoopTimerMs)){
         return currentVelocity;
     }
-    float currCount = MotorEncoder.Counts();
 
-    float deltaCounts = currCount - lastEncoderCount;
         
     if(deltaTime <= 0){
         //no divide by zero error
@@ -114,9 +120,9 @@ float Motor::getVelocity(){
 
     float velocity = distance / deltaTimeSec;
 
-    if(motorDirection == Direction::BACKWARD){
-        velocity = -velocity;
-    }
+    // if(motorDirection == Direction::BACKWARD){
+    //     velocity = -velocity;
+    // }
 
 
     //update values for next loop
@@ -133,18 +139,25 @@ float Motor::getVelocity(){
 void Motor::runAtVelocity(float v){
     if(motorMode == Mode::VELOCITY){
         targetVelocity = v;
-        (v > 0) ? motorDirection = Direction::FORWARD : motorDirection = Direction::BACKWARD;
-        if(v ==0){motorDirection = Direction::Idle;}
+        // (v > 0) ? motorDirection = Direction::FORWARD : motorDirection = Direction::BACKWARD;
+        // if(v ==0){motorDirection = Direction::Idle;}
 
         float currentVelocity = getVelocity();
+        float currTime = TimeNowMSec();
+        float loopTime = (currTime - lastTime);
+
+        if(loopTime <= 0){
+            loopTime = 0.001; //assume smol time if no time passed
+        }
 
         //get PID calculation
-        int pidOutput = velocityPID.pidCalc(targetVelocity,currentVelocity);
+        int pidOutput = velocityPID.pidCalcLoopTime(targetVelocity,currentVelocity,loopTime);
 
         //convert pid output to motor percentage
         float motorPower = (pidOutput/maxSpeed) * 100.0;
         motorPower = clamp(motorPower, -100,100);//clamp percentage between -100% and 100%
-        
+
+
         SetPercent(motorPower);
     }else{
         assertError("Assertion Error: Motor is not in VELOCITY mode");

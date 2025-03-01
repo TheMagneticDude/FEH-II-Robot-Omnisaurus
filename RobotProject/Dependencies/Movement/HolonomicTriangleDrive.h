@@ -36,7 +36,7 @@ class HolonomicTriangleDrive {
 //        O
  
   Motor Front;//M1
-  const float M1PID[3] = {0.07,0.0000001,0.00001};
+  const float M1PID[3] = {1,0.0000001,0.00001};
 
 
 //BackLeft
@@ -49,7 +49,7 @@ class HolonomicTriangleDrive {
 //        x
 
   Motor BackLeft;//M2
-  const float M2PID[3] = {0.07,0.0000001,0.00001};
+  const float M2PID[3] = {1,0.0000001,0.00001};
 
 
 //BackRight
@@ -61,7 +61,7 @@ class HolonomicTriangleDrive {
 //       \   /
 //        0
   Motor BackRight;//M3
-  const float M3PID[3] = {0.07,0.0000001,0.00001};
+  const float M3PID[3] = {1,0.0000001,0.00001};
 
 
 
@@ -143,6 +143,8 @@ class HolonomicTriangleDrive {
   void setMotorsToRunAtVelocityMode();
   void setMotorsToPowerMode();
   void setMotorsToRunToPositionMode();
+
+  void setMotorPID(int motor, float P, float I, float D);
 
 
  
