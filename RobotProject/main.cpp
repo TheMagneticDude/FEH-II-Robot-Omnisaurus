@@ -20,8 +20,10 @@
 #include <iostream>
 
 //Import Auto Paths_________________________________________________
+#include "../Dependencies/Auto/Paths/WaitForStartButton.h"
 #include "../Dependencies/Auto/Paths/PathTest.h"
 #include "../Dependencies/Auto/Paths/PathTest2.h"
+
 
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
@@ -71,15 +73,17 @@ int main(void)
     HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
 
     //cds cell
-    AnalogInputPin CDS(FEHIO::P2_3);
+    AnalogInputPin CDS(FEHIO::P2_0);
 
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
     SequencialCommand autonomous;
 
     //Auto sequences (add paths below):
+    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
     autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
+    
 
 
     float x_position, y_position;

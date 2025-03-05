@@ -11,14 +11,15 @@ using namespace std;
 
 class WaitForStartButton : public Command {
   private:
-  HolonomicTriangleDrive &drivetrain;
+  AnalogInputPin &CDS;
+  bool CDSTriggered;
   float startTime;
 
   bool end;
-  const std::string commandName = "PathTest";
+  const std::string commandName = "Wait for start";
 
   public:
-  WaitForStartButton(HolonomicTriangleDrive &dt);
+  WaitForStartButton( AnalogInputPin &CDS);
   void init() override;
   void run() override;    
   bool ended() override;  

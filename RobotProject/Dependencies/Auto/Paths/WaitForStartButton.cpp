@@ -10,25 +10,38 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-WaitForStartButton::WaitForStartButton(HolonomicTriangleDrive &dt) : drivetrain(dt){
+WaitForStartButton::WaitForStartButton(AnalogInputPin &CDS) : CDS(CDS){
     
 
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
     end = false;
+
+    std::string nameRunning = commandName + " Running...";
+    LCD.WriteAt(nameRunning,0,0);
+
+    auto elapsed = TimeNowMSec() - startTime;
+    std::string elapsedS = std::to_string(elapsed);
+    LCD.WriteAt("Elapsed: ",0,15);
+    LCD.WriteAt(elapsedS.c_str(),0,30);
+    LCD.WriteAt("ms",0,45);
+    
 }
 
 void WaitForStartButton::init(){
     startTime = TimeNowMSec();
+    CDSTriggered = false;
 }
 
 //Runs the command every tick
 void WaitForStartButton::run(){
-    
+    const float CDS_Red = 2;//need to change to threshold for CDS cell red light
+    if(CDS.Value() >= CDS_Red){
+        CDSTriggered = true;
+    }
     //end condition
-    if(timeUp(startTime,6000)){
-        drivetrain.stop();
+    if(CDSTriggered){
         end = true;
     }
 }
