@@ -18,6 +18,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt) : M(p,m
     MotorEncoder.ResetCounts();
     targetVelocity = 0;
     pidOut=0;
+    totalDisplacement = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
@@ -34,6 +35,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt, float c
     MotorEncoder.ResetCounts();
     targetVelocity = 0;
     pidOut=0;
+    totalDisplacement = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
@@ -50,7 +52,7 @@ void Motor::SetPercent(float percent){
     //Power is used by both velocity and run to position
     (percent > 0) ? motorDirection = Direction::FORWARD : motorDirection = Direction::BACKWARD;
     if(percent ==0){motorDirection = Direction::Idle;}
-    M.SetPercent(percent);
+    M.SetPercent(percent);   
 }
 
 void Motor::Stop(){
@@ -89,6 +91,9 @@ float Motor::getTargetVelocity(){
 float Motor::getPIDOut(){
     return pidOut;
 }
+float Motor::getTotalDisplacement(){
+    return totalDisplacement;
+}
 //get velocity in inch per second
 float Motor::getVelocity(){
     float velocityEpsilon = 1; //Min amount of encoder delta to update velocity
@@ -116,6 +121,8 @@ float Motor::getVelocity(){
         return currentVelocity;
     }
 
+    
+
         
     if(deltaTime <= 0){
         //no divide by zero error
@@ -139,9 +146,10 @@ float Motor::getVelocity(){
 
     float velocity = distance / deltaTimeSec;
 
-    // if(motorDirection == Direction::BACKWARD){
-    //     velocity = -velocity;
-    // }
+
+    //calculate totalDisplacement
+    totalDisplacement += distance; 
+
 
 
     //update values for next loop

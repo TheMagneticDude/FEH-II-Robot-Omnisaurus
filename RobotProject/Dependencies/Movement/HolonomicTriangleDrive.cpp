@@ -170,6 +170,10 @@ float HolonomicTriangleDrive::getFrontVelocity(){return Front.getVelocity();}
 float HolonomicTriangleDrive::getBackLeftVelocity(){return BackLeft.getVelocity();}
 float HolonomicTriangleDrive::getBackRightVelocity(){return BackRight.getVelocity();}
 
+float* HolonomicTriangleDrive::getPose(){
+    return Pose;
+}
+
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){
     Pose[0] = x;
@@ -181,6 +185,13 @@ void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
     TargetPose[0] = x;
     TargetPose[1] = y;
     TargetPose[2] = theta;
+}
+
+void HolonomicTriangleDrive::updatePose(){
+    Pose[0] = (Front.getTotalDisplacement() * cos(M1[0])) + (BackLeft.getTotalDisplacement() * cos(M2[0])) + (BackRight.getTotalDisplacement() * cos(M3[0]));//x component
+    Pose[1] = (Front.getTotalDisplacement() * sin(M1[1])) + (BackLeft.getTotalDisplacement() * sin(M2[1])) + (BackRight.getTotalDisplacement() * sin(M3[1]));//y component
+    float robotRadius = 2;
+    Pose[2] = (Front.getTotalDisplacement() * sin(M1[0] - M_PI / 2) + BackLeft.getTotalDisplacement() * sin(M2[0] - M_PI / 2) + BackRight.getTotalDisplacement() * sin(M3[0] - M_PI / 2)) / robotRadius;//theta rotation component
 }
 
 void HolonomicTriangleDrive::runToPose(){

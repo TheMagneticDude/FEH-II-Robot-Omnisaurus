@@ -30,7 +30,8 @@ enum class Menu : uint8_t {
     Idle,
     Auto,
     Joystick,
-    PIDTuning
+    PIDTuning,
+    PoseEstimate
 };
 
 //Idle by default
@@ -109,6 +110,9 @@ int main(void)
     joystickModeButton.setHeight(30);
     Button PIDTuningModeButton(70,"PID Tuning",BLUE,DARKBLUE);
     PIDTuningModeButton.setHeight(30);
+    Button PoseEstimateButton(105,"Pose Estimate",BLUE,DARKBLUE);
+    PoseEstimateButton.setHeight(30);
+     
     //for PID tuning
     int motorSelected = 1;
 
@@ -141,6 +145,10 @@ int main(void)
                 }
                 if(PIDTuningModeButton.onButtonClicked()){
                     menuMode = Menu::PIDTuning;
+                    init = true;
+                }
+                if(PoseEstimateButton.onButtonClicked()){
+                    menuMode = Menu::PoseEstimate;
                     init = true;
                 }
             }
@@ -299,6 +307,56 @@ int main(void)
 
 
                 
+
+                float joystickCenterX = (320/2.0);
+                float joystickCenterY = (240/2.0);
+
+                drivetrain.toggleVelocityControl(true);
+                //show joystick area
+                unsigned int joystickSize = 50;
+                LCD.SetFontColor(BLUE);
+                LCD.DrawEllipse(joystickCenterX,joystickCenterY,joystickSize,joystickSize);
+                if(LCD.Touch(&x_position,&y_position)){
+                    
+                    if(checkInEllipse(x_position,y_position,joystickCenterX,joystickCenterY,joystickSize,joystickSize)){
+                        //y is reversed bc of LCD y direction pos is down
+                        //but I dont reverse it bc the proteus screen is facing out towards the front
+                        //so the perspective of the joystick, up moves the bot back
+                        //and so x is reversed
+
+                        //calculate movement vector
+                        movementVector[0] = -((x_position - joystickCenterX) / joystickSize); 
+                        
+                        movementVector[1] = ((y_position - joystickCenterY) / joystickSize);
+                        //update rotation
+
+                        drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+
+                        drivetrain.update();
+                    }
+
+                }else{
+                    drivetrain.stop();
+                }
+
+            } else if (menuMode == Menu::PoseEstimate){
+                float telemetryLineOffsetVel = 0;
+                float telemetryLineOffsetEncoder = 95;
+                LCD.WriteAt("Pose x:",0,0+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[0],0,15+telemetryLineOffsetVel);
+                
+                LCD.WriteAt("Pose y",0,30+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[1],0,45+telemetryLineOffsetVel);
+
+                LCD.WriteAt("Pose theta",0,60+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[2],0,75+telemetryLineOffsetVel);
+
+
+
+
+
+
+
 
                 float joystickCenterX = (320/2.0);
                 float joystickCenterY = (240/2.0);

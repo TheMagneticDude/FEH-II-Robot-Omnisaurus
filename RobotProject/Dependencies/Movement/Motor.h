@@ -75,7 +75,7 @@ class Motor {
 
   float pidOut;
   
-  
+  float totalDisplacement;
   
   
   public:
@@ -109,6 +109,7 @@ class Motor {
   float getCounts();
   float getVelocity();
   float getTargetVelocity();
+  float getTotalDisplacement();
   float getPIDOut();
   void runAtVelocity(float v);
   void setPID(float P, float I, float D);

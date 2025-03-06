@@ -17,7 +17,16 @@ WaitForStartButton::WaitForStartButton(AnalogInputPin &CDS) : CDS(CDS){
     startTime = TimeNowMSec();
     //init end flag
     end = false;
+    
+}
 
+void WaitForStartButton::init(){
+    startTime = TimeNowMSec();
+    CDSTriggered = false;
+}
+
+//Runs the command every tick
+void WaitForStartButton::run(){
     std::string nameRunning = commandName + " Running...";
     LCD.WriteAt(nameRunning,0,0);
 
@@ -30,16 +39,8 @@ WaitForStartButton::WaitForStartButton(AnalogInputPin &CDS) : CDS(CDS){
 
     std::string CDSStr = "CDS:" + std::to_string(CDS.Value());
     LCD.WriteAt(CDSStr,0,60);
+
     
-}
-
-void WaitForStartButton::init(){
-    startTime = TimeNowMSec();
-    CDSTriggered = false;
-}
-
-//Runs the command every tick
-void WaitForStartButton::run(){
     const float CDS_Red = 2.9;//need to change to threshold for CDS cell red light
     if(CDS.Value() >= CDS_Red){
         CDSTriggered = true;
