@@ -41,7 +41,7 @@ class Motor {
   FEHMotor::FEHMotorPort port;
   const float defaultMotorMaxVolt = 9.0;
   float MotorMaxVolt;
-  float maxSpeed = 1;
+  float maxSpeed = 16;
   FEHMotor M;
   
 
@@ -72,6 +72,8 @@ class Motor {
 
   float lastEncoderCount = 0;
   float lastTime = 0;
+
+  float pidOut;
   
   
   
@@ -106,6 +108,8 @@ class Motor {
   void resetEncoderCounts();
   float getCounts();
   float getVelocity();
+  float getTargetVelocity();
+  float getPIDOut();
   void runAtVelocity(float v);
   void setPID(float P, float I, float D);
   

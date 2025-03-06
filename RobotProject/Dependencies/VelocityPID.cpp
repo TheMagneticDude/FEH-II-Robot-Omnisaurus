@@ -79,10 +79,20 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
 
 
         //integral windup prevention
-        if ((error > 0 && previousError < 0) || (error < 0 && previousError > 0)) {
-            errorSum = 0;  // Reset integral term when error sign flips
+        if ((error > 0 && previousError < 0) || (error < 0 && previousError > 0) || fabs(error) < 0.1) {
+            errorSum = 0;
         }
-        const double maxIntegral = 5;
+
+        if(fabs(lastDesiredRPM - desiredRPM) >= 0.1){
+            errorSum = 0;
+        }
+        
+        if(fabs(lastDesiredRPM - desiredRPM) >= 0.5){
+            //reset output if desired RPM changed enough
+            output = 0;
+        }
+        
+        const double maxIntegral = 50;
         errorSum = clamp(errorSum, -maxIntegral, maxIntegral);
     
         errorRateOfChange = (error - previousError)/loopTime;
@@ -91,8 +101,14 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
         //      as error goes to 0 P becomes very small. The velocity will decrease
         //      when you want it to stay at a constant high speed. This works because
         //      your taking the derivative of both sides of the equation
-        output = ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
+        output += ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
         lastDesiredRPM = desiredRPM;
+
+        const float MIN_OUTPUT_THRESHOLD = 0.1;
+        if (fabs(output) < MIN_OUTPUT_THRESHOLD && fabs(error) > 0.1) {
+            output = (output > 0) ? MIN_OUTPUT_THRESHOLD : -MIN_OUTPUT_THRESHOLD;
+        }
+
         return output;
     }
 

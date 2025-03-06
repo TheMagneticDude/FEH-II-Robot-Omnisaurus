@@ -36,7 +36,7 @@ class HolonomicTriangleDrive {
 //        O
  
   Motor Front;//M1
-  const float M1PID[3] = {1,0.0000001,0.00001};
+  const float M1PID[3] = {0.6,0,0};
 
 
 //BackLeft
@@ -49,7 +49,7 @@ class HolonomicTriangleDrive {
 //        x
 
   Motor BackLeft;//M2
-  const float M2PID[3] = {1,0.0000001,0.00001};
+  const float M2PID[3] = {0.6,0,0};
 
 
 //BackRight
@@ -61,7 +61,7 @@ class HolonomicTriangleDrive {
 //       \   /
 //        0
   Motor BackRight;//M3
-  const float M3PID[3] = {1,0.0000001,0.00001};
+  const float M3PID[3] = {0.6,0,0};
 
 
 
@@ -106,7 +106,7 @@ class HolonomicTriangleDrive {
   const float motorMaxVelocity = 12;//inch per sec
 
   //max rotation speed
-  const float maxRotationSpeed = 1;
+  const float maxRotationSpeed = 0.8;
   //how aggresivley robot rotates towards the target angle
   //will need to tune for robot
   const float rotationGain = 0.1;
@@ -145,6 +145,10 @@ class HolonomicTriangleDrive {
   void setMotorsToRunToPositionMode();
 
   void setMotorPID(int motor, float P, float I, float D);
+
+  //debug methods
+  float getFrontTargetVel();
+  float getFrontPIDOut();
 
 
  

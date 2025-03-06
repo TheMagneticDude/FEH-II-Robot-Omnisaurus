@@ -121,6 +121,10 @@ void HolonomicTriangleDrive::update(){
 
     float maxSpeed = std::max(fabs(fSpd), std::max(fabs(blSpd), fabs(brSpd)));
 
+
+    
+    
+
     //scales speed down so the movement vector is still correct
     if (maxSpeed > maxSpeedPercent) {
         fSpd *= (maxSpeedPercent / maxSpeed);
@@ -238,4 +242,12 @@ void HolonomicTriangleDrive::setMotorPID(int motor, float P, float I, float D){
         BackRight.setPID(P,I,D);
         break;
     }
+}
+
+float HolonomicTriangleDrive::getFrontTargetVel(){
+    return Front.getTargetVelocity();
+}
+
+float HolonomicTriangleDrive::getFrontPIDOut(){
+    return Front.getPIDOut();
 }

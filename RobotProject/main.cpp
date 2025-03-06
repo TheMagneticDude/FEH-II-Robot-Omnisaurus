@@ -27,13 +27,14 @@
 
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
+    Idle,
     Auto,
     Joystick,
     PIDTuning
 };
 
-//joystick by default
-Menu menuMode = Menu::Joystick;
+//Idle by default
+Menu menuMode = Menu::Idle;
 
 
 //helper methods_____________________________________________________
@@ -90,7 +91,7 @@ int main(void)
     float x_trash, y_trash;
     bool velModeOn = false;
 
-    float P = 0;
+    float P = 0.6;
     float I = 0;
     float D = 0;
 
@@ -125,7 +126,7 @@ int main(void)
         bool init = false;
         
             /* Wait until the user touches the screen */
-            while(!init) {
+            while(menuMode == Menu::Idle && !init) {
                 joystickModeButton.updateButtonState();
                 autoModeButton.updateButtonState();
                 PIDTuningModeButton.updateButtonState();
@@ -171,13 +172,12 @@ int main(void)
                 float timeNow = TimeNowMSec();
 
 
+
                 
-                
+                drivetrain.toggleVelocityControl(true);
 
                 LCD.WriteAt("Elapsed Time: ",0, 180+30);
                 LCD.WriteAt(timeNow,0, 195+30);
-
-                // drivetrain.toggleVelocityControl(true);
                 LCD.WriteAt("Current Command: ",0,150+30);
                 LCD.WriteAt(autonomous.getCurrentCommandName(),0,165+30);
                 
@@ -225,26 +225,26 @@ int main(void)
 
                 // Adjust P value
                 if (P_UP.onButtonClicked()) {
-                    P += 0.01;
+                    P += 0.1;
                 }
                 if (P_DOWN.onButtonClicked()) {
-                    P -= 0.01;
+                    P -= 0.1;
                 }
 
                 // Adjust I value
                 if (I_UP.onButtonClicked()) {
-                    I += 0.0001;
+                    I += 0.001;
                 }
                 if (I_DOWN.onButtonClicked()) {
-                    I -= 0.0001;
+                    I -= 0.001;
                 }
 
                 // Adjust D value
                 if (D_UP.onButtonClicked()) {
-                    D += 0.0001;
+                    D += 0.001;
                 }
                 if (D_DOWN.onButtonClicked()) {
-                    D -= 0.0001;
+                    D -= 0.001;
                 }
 
                 
@@ -271,13 +271,23 @@ int main(void)
                 drivetrain.setMotorPID(3,P,I,D);
 
                 LCD.WriteAt("P: ", 100, 180);
-                LCD.WriteAt(P, 140, 180);
+                LCD.WriteAt(P, 120, 180);
 
                 LCD.WriteAt("I: ", 100, 200);
-                LCD.WriteAt(I, 140, 200);
+                LCD.WriteAt(I, 120, 200);
 
                 LCD.WriteAt("D: ", 100, 220);
-                LCD.WriteAt(D, 140, 220);
+                LCD.WriteAt(D, 120, 220);
+
+
+                LCD.WriteAt("TV: ", 0, 100);
+                LCD.WriteAt(drivetrain.getFrontTargetVel(), 40, 100);
+
+                LCD.WriteAt("AV: ", 0, 120);
+                LCD.WriteAt(drivetrain.getFrontVelocity(), 40, 120);
+
+                LCD.WriteAt("PO: ", 0, 140);
+                LCD.WriteAt(drivetrain.getFrontPIDOut(), 40, 140);
 
 
                 float telemetryOffsetTwo = 150;
@@ -422,6 +432,7 @@ int main(void)
 
 
         }
+        menuMode = Menu::Idle;
     }
 
 	return 0;
