@@ -25,11 +25,16 @@ void PathTest::init(){
 
 //Runs the command every tick
 void PathTest::run(){
+    int totalDuration = 6800;
     //Command stuff
 
-    //basically drive forward for 6000 milisec
+    //basically drive forward for 6000 milisec and drift right slightly
 
-    drivetrain.setMovementVector(0.5,0,0);
+    drivetrain.setMovementVector(0.09,0.5,0);
+    //stop moving to right halfway through command
+    if(timeUp(startTime,totalDuration/2)){
+        drivetrain.setMovementVector(0,0.3,0);
+    }
     drivetrain.update();
 
     LCD.WriteAt("PathTest Running...",0,0);
@@ -42,7 +47,7 @@ void PathTest::run(){
 
 
     //end condition
-    if(timeUp(startTime,6000)){
+    if(timeUp(startTime,totalDuration)){
         drivetrain.stop();
         end = true;
     }

@@ -23,8 +23,14 @@
 #include "../Dependencies/Auto/Paths/WaitForStartButton.h"
 #include "../Dependencies/Auto/Paths/PathTest.h"
 #include "../Dependencies/Auto/Paths/PathTest2.h"
-
-
+#include "../Dependencies/Auto/Paths/SelectButton.h"
+#include "../Dependencies/Auto/Paths/Rotate90Left.h"
+#include "../Dependencies/Auto/Paths/AlignInCorner.h"
+#include "../Dependencies/Auto/Paths/BackUpFromButton.h"
+#include "../Dependencies/Auto/Paths/PressStartButton.h"
+#include "../Dependencies/Auto/Paths/FinalButton.h"
+#include "../Dependencies/Auto/Paths/Rotate45Right.h"
+#include "../Dependencies/Auto/Paths/Rotate90Left2.h"
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
     Idle,
@@ -82,9 +88,21 @@ int main(void)
     SequencialCommand autonomous;
 
     //Auto sequences (add paths below):
+
     autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<PressStartButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate45Right>(drivetrain));
     autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate90Left>(drivetrain));
+    autonomous.addCommand(std::make_unique<AlignInCorner>(drivetrain));
     autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
+    autonomous.addCommand(std::make_unique<SelectButton>(drivetrain,CDS));
+    autonomous.addCommand(std::make_unique<BackUpFromButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate90Left2>(drivetrain));
+    autonomous.addCommand(std::make_unique<FinalButton>(drivetrain));
+    
+    
+    
     
 
 

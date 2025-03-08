@@ -12,7 +12,15 @@
  ../Dependencies/Auto/Command.h ../Dependencies/Button.h \
  ../Dependencies/Slider.h ../Dependencies/Auto/Paths/WaitForStartButton.h \
  ../Dependencies/Auto/Paths/PathTest.h \
- ../Dependencies/Auto/Paths/PathTest2.h
+ ../Dependencies/Auto/Paths/PathTest2.h \
+ ../Dependencies/Auto/Paths/SelectButton.h \
+ ../Dependencies/Auto/Paths/Rotate90Left.h \
+ ../Dependencies/Auto/Paths/AlignInCorner.h \
+ ../Dependencies/Auto/Paths/BackUpFromButton.h \
+ ../Dependencies/Auto/Paths/PressStartButton.h \
+ ../Dependencies/Auto/Paths/FinalButton.h \
+ ../Dependencies/Auto/Paths/Rotate45Right.h \
+ ../Dependencies/Auto/Paths/Rotate90Left2.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -48,3 +56,11 @@ Drivers/uart.h:
 ../Dependencies/Auto/Paths/WaitForStartButton.h:
 ../Dependencies/Auto/Paths/PathTest.h:
 ../Dependencies/Auto/Paths/PathTest2.h:
+../Dependencies/Auto/Paths/SelectButton.h:
+../Dependencies/Auto/Paths/Rotate90Left.h:
+../Dependencies/Auto/Paths/AlignInCorner.h:
+../Dependencies/Auto/Paths/BackUpFromButton.h:
+../Dependencies/Auto/Paths/PressStartButton.h:
+../Dependencies/Auto/Paths/FinalButton.h:
+../Dependencies/Auto/Paths/Rotate45Right.h:
+../Dependencies/Auto/Paths/Rotate90Left2.h:

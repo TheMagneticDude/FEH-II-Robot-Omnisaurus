@@ -26,9 +26,9 @@ void PathTest2::init(){
 void PathTest2::run(){
     //Command stuff
 
-    //basically drive back for 6000 milisec
+    //basically drive to the side and somewhat forwards for 2200 milisec
 
-    drivetrain.setMovementVector(0,-0.5,0);
+    drivetrain.setMovementVector(-0.08,0.52,0);
     drivetrain.update();
 
     LCD.WriteAt("PathTest2 Running...",0,0);
@@ -41,7 +41,7 @@ void PathTest2::run(){
 
 
     //end condition
-    if(timeUp(startTime,6000)){
+    if(timeUp(startTime,3000)){
         drivetrain.stop();
         end = true;
     }
