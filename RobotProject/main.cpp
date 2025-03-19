@@ -20,18 +20,28 @@
 #include <iostream>
 
 //Import Auto Paths_________________________________________________
+#include "../Dependencies/Auto/Paths/WaitForStartButton.h"
 #include "../Dependencies/Auto/Paths/PathTest.h"
 #include "../Dependencies/Auto/Paths/PathTest2.h"
-
+#include "../Dependencies/Auto/Paths/SelectButton.h"
+#include "../Dependencies/Auto/Paths/Rotate90Left.h"
+#include "../Dependencies/Auto/Paths/AlignInCorner.h"
+#include "../Dependencies/Auto/Paths/BackUpFromButton.h"
+#include "../Dependencies/Auto/Paths/PressStartButton.h"
+#include "../Dependencies/Auto/Paths/FinalButton.h"
+#include "../Dependencies/Auto/Paths/Rotate45Right.h"
+#include "../Dependencies/Auto/Paths/Rotate90Left2.h"
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
+    Idle,
     Auto,
     Joystick,
-    PIDTuning
+    PIDTuning,
+    PoseEstimate
 };
 
-//joystick by default
-Menu menuMode = Menu::Joystick;
+//Idle by default
+Menu menuMode = Menu::Idle;
 
 
 //helper methods_____________________________________________________
@@ -71,22 +81,39 @@ int main(void)
     HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
 
     //cds cell
-    AnalogInputPin CDS(FEHIO::P2_3);
+    AnalogInputPin CDS(FEHIO::P2_0);
+
+    //Optosensor
+    AnalogInputPin OptoSensor(FEHIO::P3_7);
 
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
     SequencialCommand autonomous;
 
     //Auto sequences (add paths below):
+
+    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<PressStartButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate45Right>(drivetrain));
     autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate90Left>(drivetrain));
+    autonomous.addCommand(std::make_unique<AlignInCorner>(drivetrain));
     autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
+    autonomous.addCommand(std::make_unique<SelectButton>(drivetrain,CDS));
+    autonomous.addCommand(std::make_unique<BackUpFromButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<Rotate90Left2>(drivetrain));
+    autonomous.addCommand(std::make_unique<FinalButton>(drivetrain));
+    
+    
+    
+    
 
 
     float x_position, y_position;
     float x_trash, y_trash;
     bool velModeOn = false;
 
-    float P = 0;
+    float P = 0.6;
     float I = 0;
     float D = 0;
 
@@ -104,6 +131,9 @@ int main(void)
     joystickModeButton.setHeight(30);
     Button PIDTuningModeButton(70,"PID Tuning",BLUE,DARKBLUE);
     PIDTuningModeButton.setHeight(30);
+    Button PoseEstimateButton(105,"Pose Estimate",BLUE,DARKBLUE);
+    PoseEstimateButton.setHeight(30);
+     
     //for PID tuning
     int motorSelected = 1;
 
@@ -121,7 +151,7 @@ int main(void)
         bool init = false;
         
             /* Wait until the user touches the screen */
-            while(!init) {
+            while(menuMode == Menu::Idle && !init) {
                 joystickModeButton.updateButtonState();
                 autoModeButton.updateButtonState();
                 PIDTuningModeButton.updateButtonState();
@@ -136,6 +166,10 @@ int main(void)
                 }
                 if(PIDTuningModeButton.onButtonClicked()){
                     menuMode = Menu::PIDTuning;
+                    init = true;
+                }
+                if(PoseEstimateButton.onButtonClicked()){
+                    menuMode = Menu::PoseEstimate;
                     init = true;
                 }
             }
@@ -167,13 +201,12 @@ int main(void)
                 float timeNow = TimeNowMSec();
 
 
+
                 
-                
+                drivetrain.toggleVelocityControl(true);
 
                 LCD.WriteAt("Elapsed Time: ",0, 180+30);
                 LCD.WriteAt(timeNow,0, 195+30);
-
-                // drivetrain.toggleVelocityControl(true);
                 LCD.WriteAt("Current Command: ",0,150+30);
                 LCD.WriteAt(autonomous.getCurrentCommandName(),0,165+30);
                 
@@ -221,26 +254,26 @@ int main(void)
 
                 // Adjust P value
                 if (P_UP.onButtonClicked()) {
-                    P += 0.01;
+                    P += 0.1;
                 }
                 if (P_DOWN.onButtonClicked()) {
-                    P -= 0.01;
+                    P -= 0.1;
                 }
 
                 // Adjust I value
                 if (I_UP.onButtonClicked()) {
-                    I += 0.0001;
+                    I += 0.001;
                 }
                 if (I_DOWN.onButtonClicked()) {
-                    I -= 0.0001;
+                    I -= 0.001;
                 }
 
                 // Adjust D value
                 if (D_UP.onButtonClicked()) {
-                    D += 0.0001;
+                    D += 0.001;
                 }
                 if (D_DOWN.onButtonClicked()) {
-                    D -= 0.0001;
+                    D -= 0.001;
                 }
 
                 
@@ -267,13 +300,23 @@ int main(void)
                 drivetrain.setMotorPID(3,P,I,D);
 
                 LCD.WriteAt("P: ", 100, 180);
-                LCD.WriteAt(P, 140, 180);
+                LCD.WriteAt(P, 120, 180);
 
                 LCD.WriteAt("I: ", 100, 200);
-                LCD.WriteAt(I, 140, 200);
+                LCD.WriteAt(I, 120, 200);
 
                 LCD.WriteAt("D: ", 100, 220);
-                LCD.WriteAt(D, 140, 220);
+                LCD.WriteAt(D, 120, 220);
+
+
+                LCD.WriteAt("TV: ", 0, 100);
+                LCD.WriteAt(drivetrain.getFrontTargetVel(), 40, 100);
+
+                LCD.WriteAt("AV: ", 0, 120);
+                LCD.WriteAt(drivetrain.getFrontVelocity(), 40, 120);
+
+                LCD.WriteAt("PO: ", 0, 140);
+                LCD.WriteAt(drivetrain.getFrontPIDOut(), 40, 140);
 
 
                 float telemetryOffsetTwo = 150;
@@ -285,6 +328,59 @@ int main(void)
 
 
                 
+
+                float joystickCenterX = (320/2.0);
+                float joystickCenterY = (240/2.0);
+
+                drivetrain.toggleVelocityControl(true);
+                //show joystick area
+                unsigned int joystickSize = 50;
+                LCD.SetFontColor(BLUE);
+                LCD.DrawEllipse(joystickCenterX,joystickCenterY,joystickSize,joystickSize);
+                if(LCD.Touch(&x_position,&y_position)){
+                    
+                    if(checkInEllipse(x_position,y_position,joystickCenterX,joystickCenterY,joystickSize,joystickSize)){
+                        //y is reversed bc of LCD y direction pos is down
+                        //but I dont reverse it bc the proteus screen is facing out towards the front
+                        //so the perspective of the joystick, up moves the bot back
+                        //and so x is reversed
+
+                        //calculate movement vector
+                        movementVector[0] = -((x_position - joystickCenterX) / joystickSize); 
+                        
+                        movementVector[1] = ((y_position - joystickCenterY) / joystickSize);
+                        //update rotation
+
+                        drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);
+
+                        drivetrain.update();
+                    }
+
+                }else{
+                    drivetrain.stop();
+                }
+
+            } else if (menuMode == Menu::PoseEstimate){
+                float telemetryLineOffsetVel = 0;
+                float telemetryLineOffsetEncoder = 95;
+                LCD.WriteAt("Pose x:",0,0+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[0],0,15+telemetryLineOffsetVel);
+                
+                LCD.WriteAt("Pose y",0,30+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[1],0,45+telemetryLineOffsetVel);
+
+                LCD.WriteAt("Pose theta",0,60+telemetryLineOffsetVel);
+                LCD.WriteAt(drivetrain.getPose()[2],0,75+telemetryLineOffsetVel);
+
+                LCD.WriteAt("Opto: ",0,90+telemetryLineOffsetVel);
+                LCD.WriteAt(OptoSensor.Value(),0,105+telemetryLineOffsetVel);
+
+
+
+
+
+
+
 
                 float joystickCenterX = (320/2.0);
                 float joystickCenterY = (240/2.0);
@@ -418,6 +514,7 @@ int main(void)
 
 
         }
+        menuMode = Menu::Idle;
     }
 
 	return 0;

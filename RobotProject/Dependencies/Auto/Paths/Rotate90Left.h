@@ -9,17 +9,16 @@
 using namespace std;
 
 
-class WaitForStartButton : public Command {
+class Rotate90Left : public Command {
   private:
-  AnalogInputPin &CDS;
-  bool CDSTriggered;
+  HolonomicTriangleDrive &drivetrain;
   float startTime;
 
   bool end;
-  const std::string commandName = "Wait for start";
+  const std::string commandName = "Rotate90Left";
 
   public:
-  WaitForStartButton( AnalogInputPin &CDS);
+  Rotate90Left(HolonomicTriangleDrive &dt);
   void init() override;
   void run() override;    
   bool ended() override;  
