@@ -83,6 +83,9 @@ int main(void)
     //cds cell
     AnalogInputPin CDS(FEHIO::P2_0);
 
+    //Optosensor
+    AnalogInputPin OptoSensor(FEHIO::P3_7);
+
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
     SequencialCommand autonomous;
@@ -368,6 +371,9 @@ int main(void)
 
                 LCD.WriteAt("Pose theta",0,60+telemetryLineOffsetVel);
                 LCD.WriteAt(drivetrain.getPose()[2],0,75+telemetryLineOffsetVel);
+
+                LCD.WriteAt("Opto: ",0,90+telemetryLineOffsetVel);
+                LCD.WriteAt(OptoSensor.Value(),0,105+telemetryLineOffsetVel);
 
 
 
