@@ -4,9 +4,9 @@ GITBINARY := git
 FEHURL := google.com
 FIRMWAREREPO := fehproteusfirmware
 
-INCLUDE_DIRS := ../Dependencies ../Dependencies/Movement ../Dependencies/Auto ../Dependencies/Auto/Paths
+# Find all include directories recursively
+INCLUDE_DIRS := $(shell find ../Dependencies -type d)
 CXXFLAGS += $(foreach dir, $(INCLUDE_DIRS), -I$(dir))
-
 
 ifeq ($(OS),Windows_NT)	
 	SHELL := CMD
