@@ -117,6 +117,9 @@ void HolonomicTriangleDrive::setMovementVector(float x, float y, float theta){
 
 //Updates all motor states every cycle
 void HolonomicTriangleDrive::update(){
+    //update pose
+    updatePose();
+
     float fSpd = proj(M1, MovementVector);
     float blSpd = proj(M2, MovementVector);
     float brSpd = proj(M3, MovementVector);
@@ -200,23 +203,42 @@ void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
 }
 
 void HolonomicTriangleDrive::updatePose(){
-    Pose[0] = (Front.getTotalDisplacement() * cos(M1[0])) + (BackLeft.getTotalDisplacement() * cos(M2[0])) + (BackRight.getTotalDisplacement() * cos(M3[0]));//x component
-    Pose[1] = (Front.getTotalDisplacement() * sin(M1[1])) + (BackLeft.getTotalDisplacement() * sin(M2[1])) + (BackRight.getTotalDisplacement() * sin(M3[1]));//y component
+    Pose[0] = (Front.getTotalDisplacement() * cos(M1[1])) + 
+    (BackLeft.getTotalDisplacement() * cos(M2[1])) + 
+    (BackRight.getTotalDisplacement() * cos(M3[1]));//x component
+    Pose[1] = (Front.getTotalDisplacement() * sin(M1[1])) + 
+    (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
+    (BackRight.getTotalDisplacement() * sin(M3[1]));//y component
     float robotRadius = 2;
-    Pose[2] = (Front.getTotalDisplacement() * sin(M1[0] - M_PI / 2) + BackLeft.getTotalDisplacement() * sin(M2[0] - M_PI / 2) + BackRight.getTotalDisplacement() * sin(M3[0] - M_PI / 2)) / robotRadius;//theta rotation component
+    Pose[2] = (Front.getTotalDisplacement() * sin(M1[1] - M_PI / 2) + 
+    BackLeft.getTotalDisplacement() * sin(M2[1] - M_PI / 2) + 
+    BackRight.getTotalDisplacement() * sin(M3[1] - M_PI / 2)) / robotRadius;//theta rotation component
 }
 
 void HolonomicTriangleDrive::runToPose(){
     float deltaX = TargetPose[0] - Pose[0];
     float deltaY = TargetPose[1] - Pose[1];
-    //Target theta
-    float targetTheta = TargetPose[2];
+    float deltaTheta = TargetPose[2] - Pose[2];
 
-    MovementVector[0] = deltaX;
-    MovementVector[1] = deltaY;
-    MovementVector[2] = targetTheta;
-    
-    update();  
+    //P gains
+    float kp_translational = 0.7;
+    float kp_rotational = 0.3;
+
+
+    MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
+    MovementVector[1] = clamp(kp_translational*deltaY,-motorMaxVelocity,motorMaxVelocity);
+    MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
+
+    float positionEpsilon = 0.01;//distance tolerance
+    float angleEpsilon = 0.01;//angle tolerance
+
+    if(fabs(deltaX) < positionEpsilon & fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
+        MovementVector[0] = 0;
+        MovementVector[1] = 0;
+        MovementVector[2] = 0;
+    }else{
+        update();
+    }
 }
 
 void HolonomicTriangleDrive::turnToTheta(float theta){
