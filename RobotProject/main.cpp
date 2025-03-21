@@ -31,6 +31,10 @@
 #include "../Dependencies/Auto/Paths/FinalButton.h"
 #include "../Dependencies/Auto/Paths/Rotate45Right.h"
 #include "../Dependencies/Auto/Paths/Rotate90Left2.h"
+#include "../Dependencies/Auto/Paths/MoveForwardToWindow.h"
+#include "../Dependencies/Auto/Paths/TurnRight30Deg.h"
+#include "../Dependencies/Auto/Paths/MoveBackAgainstWall.h"
+
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
     Idle,
@@ -84,7 +88,7 @@ int main(void)
     AnalogInputPin CDS(FEHIO::P2_0);
 
     //Optosensor
-    AnalogInputPin OptoSensor(FEHIO::P3_7);
+    AnalogInputPin OptoSensor(FEHIO::P2_7);
 
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
@@ -93,16 +97,22 @@ int main(void)
     //Auto sequences (add paths below):
 
     autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
-    autonomous.addCommand(std::make_unique<PressStartButton>(drivetrain));
-    autonomous.addCommand(std::make_unique<Rotate45Right>(drivetrain));
-    autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
-    autonomous.addCommand(std::make_unique<Rotate90Left>(drivetrain));
-    autonomous.addCommand(std::make_unique<AlignInCorner>(drivetrain));
-    autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
-    autonomous.addCommand(std::make_unique<SelectButton>(drivetrain,CDS));
-    autonomous.addCommand(std::make_unique<BackUpFromButton>(drivetrain));
-    autonomous.addCommand(std::make_unique<Rotate90Left2>(drivetrain));
-    autonomous.addCommand(std::make_unique<FinalButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));
+    autonomous.addCommand(std::make_unique<TurnRight30Deg>(drivetrain));
+    autonomous.addCommand(std::make_unique<MoveBackAgainstWall>(drivetrain));
+    
+
+
+    // autonomous.addCommand(std::make_unique<PressStartButton>(drivetrain));
+    // autonomous.addCommand(std::make_unique<Rotate45Right>(drivetrain));
+    // autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
+    // autonomous.addCommand(std::make_unique<Rotate90Left>(drivetrain));
+    // autonomous.addCommand(std::make_unique<AlignInCorner>(drivetrain));
+    // autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
+    // autonomous.addCommand(std::make_unique<SelectButton>(drivetrain,CDS));
+    // autonomous.addCommand(std::make_unique<BackUpFromButton>(drivetrain));
+    // autonomous.addCommand(std::make_unique<Rotate90Left2>(drivetrain));
+    // autonomous.addCommand(std::make_unique<FinalButton>(drivetrain));
     
     
     
@@ -155,6 +165,7 @@ int main(void)
                 joystickModeButton.updateButtonState();
                 autoModeButton.updateButtonState();
                 PIDTuningModeButton.updateButtonState();
+                PoseEstimateButton.updateButtonState();
 
                 if(joystickModeButton.onButtonClicked()){
                     menuMode = Menu::Joystick;

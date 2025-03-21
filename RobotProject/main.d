@@ -20,7 +20,10 @@
  ../Dependencies/Auto/Paths/PressStartButton.h \
  ../Dependencies/Auto/Paths/FinalButton.h \
  ../Dependencies/Auto/Paths/Rotate45Right.h \
- ../Dependencies/Auto/Paths/Rotate90Left2.h
+ ../Dependencies/Auto/Paths/Rotate90Left2.h \
+ ../Dependencies/Auto/Paths/MoveForwardToWindow.h \
+ ../Dependencies/Auto/Paths/TurnRight30Deg.h \
+ ../Dependencies/Auto/Paths/MoveBackAgainstWall.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -64,3 +67,6 @@ Drivers/uart.h:
 ../Dependencies/Auto/Paths/FinalButton.h:
 ../Dependencies/Auto/Paths/Rotate45Right.h:
 ../Dependencies/Auto/Paths/Rotate90Left2.h:
+../Dependencies/Auto/Paths/MoveForwardToWindow.h:
+../Dependencies/Auto/Paths/TurnRight30Deg.h:
+../Dependencies/Auto/Paths/MoveBackAgainstWall.h:

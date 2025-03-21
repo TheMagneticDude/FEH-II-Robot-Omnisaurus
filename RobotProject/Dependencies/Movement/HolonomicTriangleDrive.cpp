@@ -44,6 +44,10 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 
     velocityControl = false;
 
+    Pose[0] = 0;
+    Pose[1] = 0;
+    Pose[2] = 0;
+
     //initialize PID constants
     Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
     BackLeft.setPID(M2PID[0],M2PID[1],M2PID[2]);
@@ -67,6 +71,10 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
 
     velocityControl = false;
 
+    Pose[0] = 0;
+    Pose[1] = 0;
+    Pose[2] = 0;
+
     //initialize PID constants
     Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
     BackLeft.setPID(M2PID[0],M2PID[1],M2PID[2]);
@@ -89,6 +97,10 @@ BackRight(BR,E3,maxVolt)
     motorMaxVolt = maxVolt;
 
     velocityControl = false;
+
+    Pose[0] = 0;
+    Pose[1] = 0;
+    Pose[2] = 0;
 
     //initialize PID constants
     Front.setPID(M1PID[0],M1PID[1],M1PID[2]);
