@@ -38,13 +38,40 @@ void MoveBackAgainstWall::run(){
         //back
         drivetrain.setMovementVector(0,-0.5,0);
         drivetrain.update();
-    }else{
+    }else if(!timeUp(startTime,4000)){
+        //left
+        drivetrain.setMovementVector(-0.5,-0.1,0);
+        drivetrain.update();
+    }else if(!timeUp(startTime,5000)){//back align
+        drivetrain.setMovementVector(0,-0.5,0.2);
+        drivetrain.update();
+    }else if(!timeUp(startTime,7500)){
+        //forwards
+        drivetrain.setMovementVector(0,0.5,0);
+        drivetrain.update();
+    }else if(!timeUp(startTime,10000)){
+        //left towards ramp
         drivetrain.setMovementVector(-0.5,0,0);
+        drivetrain.update();
+    }else if(!timeUp(startTime,15000)){
+        //backwards up ramp
+        drivetrain.setMovementVector(0,-0.5,0);
+        drivetrain.update();
+    }else if(!timeUp(startTime,17000)){
+        //rotate 180 deg
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+    }else if(!timeUp(startTime,20000)){
+        //move towards window
+        drivetrain.setMovementVector(-0.5,-0.01,0);
+        drivetrain.update();
+    }else if(!timeUp(startTime,25000)){
+        drivetrain.setMovementVector(-0.6,-0.05,0.05);
         drivetrain.update();
     }
 
     //end condition
-    if(timeUp(startTime,5000)){
+    if(timeUp(startTime,25000)){
         drivetrain.stop();
         end = true;
     }

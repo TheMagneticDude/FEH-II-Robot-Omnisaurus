@@ -43,6 +43,7 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
     motorMaxVolt = defaultMotorMaxVolt;
 
     velocityControl = false;
+    reachedTargetPose = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -70,6 +71,7 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
     motorMaxVolt = maxVolt;
 
     velocityControl = false;
+    reachedTargetPose = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -97,6 +99,7 @@ BackRight(BR,E3,maxVolt)
     motorMaxVolt = maxVolt;
 
     velocityControl = false;
+    reachedTargetPose = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -119,6 +122,16 @@ void HolonomicTriangleDrive::setMovementVector(float x, float y, float theta){
 void HolonomicTriangleDrive::update(){
     //update pose
     updatePose();
+
+    float poseEpsilon = 0.001;
+    float angleEpsilon = 0.1;
+    if((fabs(Pose[0] - TargetPose[0]) < poseEpsilon) && 
+   (fabs(Pose[1] - TargetPose[1]) < poseEpsilon) && 
+   (fabs(Pose[2] - TargetPose[2]) < angleEpsilon)){
+        reachedTargetPose = true;
+    }else{
+        reachedTargetPose = false;
+    }
 
     float fSpd = proj(M1, MovementVector);
     float blSpd = proj(M2, MovementVector);
@@ -232,7 +245,7 @@ void HolonomicTriangleDrive::runToPose(){
     float positionEpsilon = 0.01;//distance tolerance
     float angleEpsilon = 0.01;//angle tolerance
 
-    if(fabs(deltaX) < positionEpsilon & fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
+    if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
         MovementVector[0] = 0;
         MovementVector[1] = 0;
         MovementVector[2] = 0;
@@ -295,4 +308,8 @@ float HolonomicTriangleDrive::getFrontTargetVel(){
 
 float HolonomicTriangleDrive::getFrontPIDOut(){
     return Front.getPIDOut();
+}
+
+bool HolonomicTriangleDrive::getReachedTargetPos(){
+    return reachedTargetPose;
 }

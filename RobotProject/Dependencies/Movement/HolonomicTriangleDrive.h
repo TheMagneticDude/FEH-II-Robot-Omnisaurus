@@ -112,6 +112,7 @@ class HolonomicTriangleDrive {
   const float rotationGain = 0.1;
 
   bool velocityControl;
+  bool reachedTargetPose;
 
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
@@ -151,7 +152,7 @@ class HolonomicTriangleDrive {
   //debug methods
   float getFrontTargetVel();
   float getFrontPIDOut();
-
+  bool getReachedTargetPos();
 
  
     
