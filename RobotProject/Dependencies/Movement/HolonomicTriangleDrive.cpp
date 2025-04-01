@@ -123,7 +123,7 @@ void HolonomicTriangleDrive::update(){
     //update pose
     updatePose();
 
-    float poseEpsilon = 0.001;
+    float poseEpsilon = 0.01;
     float angleEpsilon = 0.1;
     if((fabs(Pose[0] - TargetPose[0]) < poseEpsilon) && 
    (fabs(Pose[1] - TargetPose[1]) < poseEpsilon) && 
@@ -234,8 +234,8 @@ void HolonomicTriangleDrive::runToPose(){
     float deltaTheta = TargetPose[2] - Pose[2];
 
     //P gains
-    float kp_translational = 0.7;
-    float kp_rotational = 0.3;
+    float kp_translational = 0.2;
+    float kp_rotational = 0.1;
 
 
     MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
@@ -249,6 +249,7 @@ void HolonomicTriangleDrive::runToPose(){
         MovementVector[0] = 0;
         MovementVector[1] = 0;
         MovementVector[2] = 0;
+        stop();
     }else{
         update();
     }

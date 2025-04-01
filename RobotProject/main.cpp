@@ -34,6 +34,7 @@
 #include "../Dependencies/Auto/Paths/MoveForwardToWindow.h"
 #include "../Dependencies/Auto/Paths/TurnRight30Deg.h"
 #include "../Dependencies/Auto/Paths/MoveBackAgainstWall.h"
+#include "../Dependencies/Auto/Paths/AppleBasket.h"
 
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
@@ -84,13 +85,26 @@ int main(void)
     
     HolonomicTriangleDrive drivetrain(M1,E1,M2,E2,M3,E3,motorMaxVolt);
 
+    FEHMotor::FEHMotorPort S1(FEHMotor::Motor2);
+    FEHMotor hackedServo(S1,4.5);
+
     //cds cell
-    AnalogInputPin CDS(FEHIO::P2_0);
+    AnalogInputPin CDS(FEHIO::P1_0);
 
     //Optosensor
     AnalogInputPin OptoSensorL(FEHIO::P2_5);
     AnalogInputPin OptoSensorM(FEHIO::P2_6);
     AnalogInputPin OptoSensorR(FEHIO::P2_7);
+
+    //declares a servo on servo port 7
+    //SERVO MIN 826
+    //SERVO MAX 2182
+    FEHServo arm_servo(FEHServo::Servo7);
+ 
+    //calibrate the servo
+    // arm_servo.TouchCalibrate();
+    arm_servo.SetMin(826);
+    arm_servo.SetMax(2182);
 
     //AutoInit_________________________________________________________________________________________________________
     //Sequencial command group
@@ -99,9 +113,13 @@ int main(void)
     //Auto sequences (add paths below):
 
     autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
-    autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));
-    autonomous.addCommand(std::make_unique<TurnRight30Deg>(drivetrain));
-    autonomous.addCommand(std::make_unique<MoveBackAgainstWall>(drivetrain));
+    autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo));
+
+
+
+    // autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));
+    // autonomous.addCommand(std::make_unique<TurnRight30Deg>(drivetrain));
+    // autonomous.addCommand(std::make_unique<MoveBackAgainstWall>(drivetrain));
     
 
 
@@ -148,6 +166,10 @@ int main(void)
      
     //for PID tuning
     int motorSelected = 1;
+
+
+    
+    
 
     
 
@@ -391,7 +413,32 @@ int main(void)
                 LCD.WriteAt(OptoSensorM.Value(),0,145+telemetryLineOffsetVel);
                 LCD.WriteAt("OptoR: ",0,160+telemetryLineOffsetVel);
                 LCD.WriteAt(OptoSensorR.Value(),0,175+telemetryLineOffsetVel);
-                
+
+                Button runComposter(30,"Composter->",GREEN,DARKGREEN);
+                runComposter.setHeight(30);
+                Button runComposterBack(60,"Composter<-",RED,DARKRED);
+                runComposterBack.setHeight(30);
+
+                Button servoZeroDeg(180,"Servo0deg",BLUE,DARKBLUE);
+                servoZeroDeg.setHeight(30);
+                Button servo180Deg(210,"Servo180deg",BLUE,DARKBLUE);
+                servo180Deg.setHeight(30);
+
+                runComposter.updateButtonState();
+                servoZeroDeg.updateButtonState();
+                servo180Deg.updateButtonState();
+
+                if(servoZeroDeg.getButtonTriggered()){
+                    arm_servo.SetDegree(0);
+                }
+                if(servo180Deg.getButtonTriggered()){
+                    arm_servo.SetDegree(180);
+                }
+                if(runComposter.getButtonTriggered()){
+                    hackedServo.SetPercent(80);
+                }else if(runComposterBack.getButtonTriggered()){
+                    hackedServo.SetPercent(-80);
+                }
 
 
 
