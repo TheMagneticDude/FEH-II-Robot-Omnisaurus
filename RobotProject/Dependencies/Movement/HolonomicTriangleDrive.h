@@ -149,6 +149,8 @@ class HolonomicTriangleDrive {
 
   void setMotorPID(int motor, float P, float I, float D);
 
+  void updateMotorDistances();
+
   //debug methods
   float getFrontTargetVel();
   float getFrontPIDOut();

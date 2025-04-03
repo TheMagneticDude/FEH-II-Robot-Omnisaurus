@@ -28,7 +28,7 @@ void AppleBasket::init(){
 void AppleBasket::run(){
     
     //Command stuff
-    std::string s = "AppleBasket Running... Path: " + i;
+    std::string s = "AppleBasket SubPath: " + i;
     LCD.WriteAt(s.c_str(),0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
@@ -111,7 +111,7 @@ void AppleBasket::run(){
         drivetrain.update();
         if(timeUp(startTime,1000)){
             startTime = TimeNowMSec();
-            i++;
+            i++; 
         }
         break;
         case 8:

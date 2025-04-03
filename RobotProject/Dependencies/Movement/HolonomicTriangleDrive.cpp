@@ -234,8 +234,8 @@ void HolonomicTriangleDrive::runToPose(){
     float deltaTheta = TargetPose[2] - Pose[2];
 
     //P gains
-    float kp_translational = 0.2;
-    float kp_rotational = 0.1;
+    float kp_translational = 0.3;
+    float kp_rotational = 0.3;
 
 
     MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
@@ -301,6 +301,12 @@ void HolonomicTriangleDrive::setMotorPID(int motor, float P, float I, float D){
         BackRight.setPID(P,I,D);
         break;
     }
+}
+
+void HolonomicTriangleDrive::updateMotorDistances(){
+    Front.updateDistance();
+    BackLeft.updateDistance();
+    BackRight.updateDistance();
 }
 
 float HolonomicTriangleDrive::getFrontTargetVel(){

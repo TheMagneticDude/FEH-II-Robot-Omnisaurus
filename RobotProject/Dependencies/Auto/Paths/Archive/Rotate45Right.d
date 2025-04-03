@@ -1,8 +1,8 @@
-../Dependencies/Auto/Paths/Rotate90Left.d: \
- ../Dependencies/Auto/Paths/Rotate90Left.cpp Drivers/FEHXBee.h \
+../Dependencies/Auto/Paths/Archive/Rotate45Right.d: \
+ ../Dependencies/Auto/Paths/Archive/Rotate45Right.cpp Drivers/FEHXBee.h \
  Startup/derivative.h Startup/MK60DZ10.h Libraries/FEHLCD.h Drivers/spi.h \
  ../fehproteusfirmware/Startup/derivative.h Libraries/FEHUtility.h \
- Libraries/LCDColors.h ../Dependencies/Auto/Paths/Rotate90Left.h \
+ Libraries/LCDColors.h ../Dependencies/Auto/Paths/Archive/Rotate45Right.h \
  ../Dependencies/Auto/Command.h \
  ../Dependencies/Auto/../Movement/HolonomicTriangleDrive.h \
  Libraries/FEHIO.h Drivers/adc16.h Libraries/FEHMotor.h \
@@ -20,7 +20,7 @@ Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
 Libraries/FEHUtility.h:
 Libraries/LCDColors.h:
-../Dependencies/Auto/Paths/Rotate90Left.h:
+../Dependencies/Auto/Paths/Archive/Rotate45Right.h:
 ../Dependencies/Auto/Command.h:
 ../Dependencies/Auto/../Movement/HolonomicTriangleDrive.h:
 Libraries/FEHIO.h:

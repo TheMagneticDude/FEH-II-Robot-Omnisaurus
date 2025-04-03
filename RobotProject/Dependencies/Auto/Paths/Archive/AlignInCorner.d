@@ -1,8 +1,8 @@
-../Dependencies/Auto/Paths/FinalButton.d: \
- ../Dependencies/Auto/Paths/FinalButton.cpp Drivers/FEHXBee.h \
+../Dependencies/Auto/Paths/Archive/AlignInCorner.d: \
+ ../Dependencies/Auto/Paths/Archive/AlignInCorner.cpp Drivers/FEHXBee.h \
  Startup/derivative.h Startup/MK60DZ10.h Libraries/FEHLCD.h Drivers/spi.h \
  ../fehproteusfirmware/Startup/derivative.h Libraries/FEHUtility.h \
- Libraries/LCDColors.h ../Dependencies/Auto/Paths/FinalButton.h \
+ Libraries/LCDColors.h ../Dependencies/Auto/Paths/Archive/AlignInCorner.h \
  ../Dependencies/Auto/Command.h \
  ../Dependencies/Auto/../Movement/HolonomicTriangleDrive.h \
  Libraries/FEHIO.h Drivers/adc16.h Libraries/FEHMotor.h \
@@ -20,7 +20,7 @@ Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
 Libraries/FEHUtility.h:
 Libraries/LCDColors.h:
-../Dependencies/Auto/Paths/FinalButton.h:
+../Dependencies/Auto/Paths/Archive/AlignInCorner.h:
 ../Dependencies/Auto/Command.h:
 ../Dependencies/Auto/../Movement/HolonomicTriangleDrive.h:
 Libraries/FEHIO.h:

@@ -106,6 +106,7 @@ class Motor {
   void setTargetPos(float pos);
   void runToPosition();
   void resetEncoderCounts();
+  void updateDistance();
   float getCounts();
   float getVelocity();
   float getTargetVelocity();

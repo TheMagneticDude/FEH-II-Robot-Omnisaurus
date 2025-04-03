@@ -13,12 +13,12 @@ class Composter : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
   FEHServo &arm;
-  float startTime;
+  float startTime; 
   int i;//path counter
   bool nextPathTriggered;
 
   bool end;
-  const std::string commandName = "AppleBasket";
+  const std::string commandName = "Composter";
 
   public:
   Composter(HolonomicTriangleDrive &dt, FEHServo &a);

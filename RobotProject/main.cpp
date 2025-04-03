@@ -19,22 +19,28 @@
 #include <pthread.h>
 #include <iostream>
 
+//archived auto paths 
+// #include "../Dependencies/Auto/Paths/PathTest.h"
+// #include "../Dependencies/Auto/Paths/PathTest2.h"
+// #include "../Dependencies/Auto/Paths/SelectButton.h"
+// #include "../Dependencies/Auto/Paths/Rotate90Left.h"
+// #include "../Dependencies/Auto/Paths/AlignInCorner.h"
+// #include "../Dependencies/Auto/Paths/BackUpFromButton.h"
+// #include "../Dependencies/Auto/Paths/PressStartButton.h"
+// #include "../Dependencies/Auto/Paths/FinalButton.h"
+// #include "../Dependencies/Auto/Paths/Rotate45Right.h"
+// #include "../Dependencies/Auto/Paths/Rotate90Left2.h"
+// #include "../Dependencies/Auto/Paths/MoveForwardToWindow.h"
+// #include "../Dependencies/Auto/Paths/TurnRight30Deg.h"
+// #include "../Dependencies/Auto/Paths/MoveBackAgainstWall.h"
+
+
+
+
 //Import Auto Paths_________________________________________________
 #include "../Dependencies/Auto/Paths/WaitForStartButton.h"
-#include "../Dependencies/Auto/Paths/PathTest.h"
-#include "../Dependencies/Auto/Paths/PathTest2.h"
-#include "../Dependencies/Auto/Paths/SelectButton.h"
-#include "../Dependencies/Auto/Paths/Rotate90Left.h"
-#include "../Dependencies/Auto/Paths/AlignInCorner.h"
-#include "../Dependencies/Auto/Paths/BackUpFromButton.h"
-#include "../Dependencies/Auto/Paths/PressStartButton.h"
-#include "../Dependencies/Auto/Paths/FinalButton.h"
-#include "../Dependencies/Auto/Paths/Rotate45Right.h"
-#include "../Dependencies/Auto/Paths/Rotate90Left2.h"
-#include "../Dependencies/Auto/Paths/MoveForwardToWindow.h"
-#include "../Dependencies/Auto/Paths/TurnRight30Deg.h"
-#include "../Dependencies/Auto/Paths/MoveBackAgainstWall.h"
 #include "../Dependencies/Auto/Paths/AppleBasket.h"
+#include "../Dependencies/Auto/Paths/Composter.h"
 
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
@@ -112,8 +118,9 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
-    autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo));
+    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo));
+    
 
 
 
@@ -216,7 +223,8 @@ int main(void)
 
         bool exit = false;
         while(!exit){
-
+            //always update motor distances so the displacement is always correct
+            drivetrain.updateMotorDistances(); 
             
 
 

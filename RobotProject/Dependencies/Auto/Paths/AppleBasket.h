@@ -14,7 +14,7 @@ class AppleBasket : public Command {
   HolonomicTriangleDrive &drivetrain;
   FEHServo &arm;
   float startTime;
-  int i;//path counter
+  int i;//path counter 
   bool nextPathTriggered;
 
   bool end;
