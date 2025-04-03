@@ -414,9 +414,9 @@ int main(void)
                 LCD.WriteAt("OptoR: ",0,160+telemetryLineOffsetVel);
                 LCD.WriteAt(OptoSensorR.Value(),0,175+telemetryLineOffsetVel);
 
-                Button runComposter(30,"Composter->",GREEN,DARKGREEN);
+                Button runComposter(0,"Composter->",GREEN,DARKGREEN);
                 runComposter.setHeight(30);
-                Button runComposterBack(60,"Composter<-",RED,DARKRED);
+                Button runComposterBack(30,"Composter<-",RED,DARKRED);
                 runComposterBack.setHeight(30);
 
                 Button servoZeroDeg(180,"Servo0deg",BLUE,DARKBLUE);
@@ -424,6 +424,7 @@ int main(void)
                 Button servo180Deg(210,"Servo180deg",BLUE,DARKBLUE);
                 servo180Deg.setHeight(30);
 
+                runComposterBack.updateButtonState();
                 runComposter.updateButtonState();
                 servoZeroDeg.updateButtonState();
                 servo180Deg.updateButtonState();
@@ -438,6 +439,8 @@ int main(void)
                     hackedServo.SetPercent(80);
                 }else if(runComposterBack.getButtonTriggered()){
                     hackedServo.SetPercent(-80);
+                }else{
+                    hackedServo.Stop();
                 }
 
 
