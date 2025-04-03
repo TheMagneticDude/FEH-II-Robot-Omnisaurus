@@ -164,22 +164,7 @@ float Motor::getVelocity(){
     return velocity;
 }
 
-void Motor::updateDistance(){
-    float currCount = MotorEncoder.Counts();
 
-    float deltaCounts = currCount - lastEncoderCount;
-
-    float rotations = deltaCounts / encoderCountsPerRev;
-        
-    float distance = rotations * wheelCircumference;
-
-    if (motorDirection == Direction::BACKWARD) {
-        deltaCounts = -deltaCounts;
-    }
-
-    //calculate totalDisplacement
-    totalDisplacement += distance;
-}
 void Motor::runAtVelocity(float v){
     if(motorMode == Mode::VELOCITY){
         targetVelocity = v;

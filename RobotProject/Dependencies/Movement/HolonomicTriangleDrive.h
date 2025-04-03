@@ -111,8 +111,20 @@ class HolonomicTriangleDrive {
   //will need to tune for robot
   const float rotationGain = 0.1;
 
+  float prevFrontDisp;
+  float prevBackLeftDisp;
+  float prevBackRightDisp;
+
   bool velocityControl;
   bool reachedTargetPose;
+  bool distanceSet;
+
+  //P gains
+  float kp_translational = 1;
+  float kp_rotational = 0.3;
+
+  float positionEpsilon = 0.1;//distance tolerance
+  float angleEpsilon = 0.1;//angle tolerance
 
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
@@ -135,11 +147,14 @@ class HolonomicTriangleDrive {
   float getBackRightVelocity();
 
   float* getPose();
+  float* getMovementVector();
 
   void setPose(float x, float y, float theta);
   void setTargetPose(float x, float y, float theta);
+  void driveByDistance(float x, float y, float theta);
   void turnToTheta(float theta);
   void runToPose();
+  void runToPoseLim(float maxVel);
   void updatePose();
   void toggleVelocityControl(bool b);
 
@@ -150,6 +165,7 @@ class HolonomicTriangleDrive {
   void setMotorPID(int motor, float P, float I, float D);
 
   void updateMotorDistances();
+  void resetMotorCounts();
 
   //debug methods
   float getFrontTargetVel();

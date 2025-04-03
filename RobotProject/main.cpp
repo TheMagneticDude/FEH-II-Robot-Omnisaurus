@@ -183,6 +183,7 @@ int main(void)
 
 
 //Code main loop__________________________________________________________________________________________________________________________________________________________________________________________
+    drivetrain.resetMotorCounts();
     while(true){
         LCD.Clear();
         /* Clear the touch buffer so touches made before

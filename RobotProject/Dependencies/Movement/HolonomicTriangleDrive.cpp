@@ -44,6 +44,7 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 
     velocityControl = false;
     reachedTargetPose = false;
+    distanceSet = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -72,6 +73,7 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
 
     velocityControl = false;
     reachedTargetPose = false;
+    distanceSet = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -100,6 +102,7 @@ BackRight(BR,E3,maxVolt)
 
     velocityControl = false;
     reachedTargetPose = false;
+    distanceSet = false;
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -123,15 +126,7 @@ void HolonomicTriangleDrive::update(){
     //update pose
     updatePose();
 
-    float poseEpsilon = 0.01;
-    float angleEpsilon = 0.1;
-    if((fabs(Pose[0] - TargetPose[0]) < poseEpsilon) && 
-   (fabs(Pose[1] - TargetPose[1]) < poseEpsilon) && 
-   (fabs(Pose[2] - TargetPose[2]) < angleEpsilon)){
-        reachedTargetPose = true;
-    }else{
-        reachedTargetPose = false;
-    }
+    
 
     float fSpd = proj(M1, MovementVector);
     float blSpd = proj(M2, MovementVector);
@@ -186,6 +181,15 @@ void HolonomicTriangleDrive::stop(){
     BackRight.Stop();
 }
 
+void HolonomicTriangleDrive::driveByDistance(float x, float y, float theta){
+    if(!distanceSet){
+        TargetPose[0] += x;
+        TargetPose[1] += y;
+        TargetPose[2] += theta;
+        distanceSet = true;
+    }
+}
+
 float HolonomicTriangleDrive::getFrontSpeed(){return FrontSped;}
 float HolonomicTriangleDrive::getBackLeftSpeed(){return BackLeftSped;}
 float HolonomicTriangleDrive::getBackRightSpeed(){return BackRightSped;}
@@ -201,6 +205,8 @@ float HolonomicTriangleDrive::getBackRightVelocity(){return BackRight.getVelocit
 float* HolonomicTriangleDrive::getPose(){
     return Pose;
 }
+
+float* HolonomicTriangleDrive::getMovementVector(){ return MovementVector;}
 
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){
@@ -223,34 +229,61 @@ void HolonomicTriangleDrive::updatePose(){
     (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
     (BackRight.getTotalDisplacement() * sin(M3[1]));//y component
     float robotRadius = 2;
-    Pose[2] = (Front.getTotalDisplacement() * sin(M1[1] - M_PI / 2) + 
-    BackLeft.getTotalDisplacement() * sin(M2[1] - M_PI / 2) + 
-    BackRight.getTotalDisplacement() * sin(M3[1] - M_PI / 2)) / robotRadius;//theta rotation component
+    Pose[2] = (Front.getTotalDisplacement() * sin(M1[1] - (M_PI / 2)) + 
+    BackLeft.getTotalDisplacement() * sin(M2[1] - (M_PI / 2)) + 
+    BackRight.getTotalDisplacement() * sin(M3[1] - (M_PI / 2))) / robotRadius;//theta rotation component
+
+    Pose[2] = 0; //disable theta calc for now
 }
 
 void HolonomicTriangleDrive::runToPose(){
+    updatePose();
     float deltaX = TargetPose[0] - Pose[0];
     float deltaY = TargetPose[1] - Pose[1];
     float deltaTheta = TargetPose[2] - Pose[2];
 
-    //P gains
-    float kp_translational = 0.3;
-    float kp_rotational = 0.3;
 
 
     MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
     MovementVector[1] = clamp(kp_translational*deltaY,-motorMaxVelocity,motorMaxVelocity);
     MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
 
-    float positionEpsilon = 0.01;//distance tolerance
-    float angleEpsilon = 0.01;//angle tolerance
+    
 
     if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
         MovementVector[0] = 0;
         MovementVector[1] = 0;
         MovementVector[2] = 0;
         stop();
+        reachedTargetPose = true;
+        distanceSet = false;
     }else{
+        reachedTargetPose = false;
+        update();
+    }
+}
+
+void HolonomicTriangleDrive::runToPoseLim(float maxVel){
+    updatePose();
+    float deltaX = TargetPose[0] - Pose[0];
+    float deltaY = TargetPose[1] - Pose[1];
+    float deltaTheta = TargetPose[2] - Pose[2];
+
+    MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity* maxVel,motorMaxVelocity * maxVel);
+    MovementVector[1] = clamp(kp_translational*deltaY,-motorMaxVelocity* maxVel,motorMaxVelocity * maxVel);
+    MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
+
+    
+
+    if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
+        MovementVector[0] = 0;
+        MovementVector[1] = 0;
+        MovementVector[2] = 0;
+        stop();
+        reachedTargetPose = true;
+        distanceSet = false;
+    }else{
+        reachedTargetPose = false;
         update();
     }
 }
@@ -304,9 +337,15 @@ void HolonomicTriangleDrive::setMotorPID(int motor, float P, float I, float D){
 }
 
 void HolonomicTriangleDrive::updateMotorDistances(){
-    Front.updateDistance();
-    BackLeft.updateDistance();
-    BackRight.updateDistance();
+        Front.getVelocity();
+        BackLeft.getVelocity();
+        BackRight.getVelocity();
+}
+
+void HolonomicTriangleDrive::resetMotorCounts(){
+    Front.resetEncoderCounts();
+    BackLeft.resetEncoderCounts();
+    BackRight.resetEncoderCounts();
 }
 
 float HolonomicTriangleDrive::getFrontTargetVel(){
