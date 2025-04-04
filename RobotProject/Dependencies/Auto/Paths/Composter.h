@@ -12,6 +12,7 @@ using namespace std;
 class Composter : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
+  FEHMotor &composterArm;
   FEHServo &arm;
   float startTime; 
   int i;//path counter
@@ -21,7 +22,7 @@ class Composter : public Command {
   const std::string commandName = "Composter";
 
   public:
-  Composter(HolonomicTriangleDrive &dt, FEHServo &a);
+  Composter(HolonomicTriangleDrive &dt, FEHServo &a, FEHMotor &composterArm);
   void init() override;
   void run() override;    
   bool ended() override;  

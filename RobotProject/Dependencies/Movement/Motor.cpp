@@ -81,6 +81,7 @@ void Motor::setTargetPos(float pos){
 }
 void Motor::resetEncoderCounts(){
     MotorEncoder.ResetCounts();
+    totalDisplacement = 0;
 }
 float Motor::getCounts(){
     return MotorEncoder.Counts();

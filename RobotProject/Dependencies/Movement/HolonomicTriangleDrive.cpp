@@ -269,11 +269,10 @@ void HolonomicTriangleDrive::runToPoseLim(float maxVel){
     float deltaY = TargetPose[1] - Pose[1];
     float deltaTheta = TargetPose[2] - Pose[2];
 
-    MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity* maxVel,motorMaxVelocity * maxVel);
-    MovementVector[1] = clamp(kp_translational*deltaY,-motorMaxVelocity* maxVel,motorMaxVelocity * maxVel);
+    MovementVector[0] = clamp(kp_translational*deltaX, -maxVel,maxVel);
+    MovementVector[1] = clamp(kp_translational*deltaY, -maxVel,maxVel);
     MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
 
-    
 
     if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
         MovementVector[0] = 0;

@@ -10,8 +10,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-Composter::Composter(HolonomicTriangleDrive &dt, FEHServo &a) : drivetrain(dt), arm(a){
-
+Composter::Composter(HolonomicTriangleDrive &dt, FEHServo &a, FEHMotor &ca) : drivetrain(dt), arm(a), composterArm(ca){
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
@@ -46,50 +45,53 @@ void Composter::run(){
     
     switch(i){
         case 0:
-        //path 1
         arm.SetDegree(180);
-        //forward 1 in
-        drivetrain.setTargetPose(0,1,0);
-        drivetrain.runToPoseLim(0.3);
-        if(drivetrain.getReachedTargetPos()){
+        //turn left 120 so straight with wall
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1600)){
+            drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
-            drivetrain.resetMotorCounts();
         }
         break;
 
         case 1:
-        //turn left 120 so straight with wall
-        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.setMovementVector(0.3,0.2,0);
         drivetrain.update();
-        if(timeUp(startTime,2000)){
-            drivetrain.setMovementVector(0,0,0);
+        if(timeUp(startTime,1600)){
             startTime = TimeNowMSec();
             i++; 
-            drivetrain.resetMotorCounts();
         }
         break;
 
         case 2:
-        drivetrain.setTargetPose(6,0,0);
-        drivetrain.runToPoseLim(0.3);
-        if(drivetrain.getReachedTargetPos()){
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+        if(timeUp(startTime,500)){
             startTime = TimeNowMSec();
             i++; 
-            drivetrain.resetMotorCounts();
         }
         break;
 
         case 3:
-        drivetrain.setTargetPose(0,-5,0);
-        drivetrain.runToPoseLim(0.3);
-        
-        if(drivetrain.getReachedTargetPos()){
+        drivetrain.setMovementVector(0.3,0.3,0);
+        drivetrain.update();
+        if(timeUp(startTime,800)){
             startTime = TimeNowMSec();
             i++; 
-            drivetrain.resetMotorCounts();
         }
         break;
+
+        case 4:
+        composterArm.SetPercent(80);
+        if(timeUp(startTime,800)){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        
 
         default:
         drivetrain.stop();
