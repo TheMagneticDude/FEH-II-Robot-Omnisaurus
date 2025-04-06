@@ -118,7 +118,7 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
     
 

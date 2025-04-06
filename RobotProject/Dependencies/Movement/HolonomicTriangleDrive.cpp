@@ -233,7 +233,7 @@ void HolonomicTriangleDrive::updatePose(){
     BackLeft.getTotalDisplacement() * sin(M2[1] - (M_PI / 2)) + 
     BackRight.getTotalDisplacement() * sin(M3[1] - (M_PI / 2))) / robotRadius;//theta rotation component
 
-    Pose[2] = 0; //disable theta calc for now
+    // Pose[2] = 0; //disable theta calc for now
 }
 
 void HolonomicTriangleDrive::runToPose(){

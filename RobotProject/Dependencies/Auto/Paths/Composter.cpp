@@ -29,17 +29,17 @@ void Composter::init(){
 void Composter::run(){
     
     //Command stuff
-    std::string s = "Composter SubPath: " + i;
+    std::string s = "Composter SubPath: " + std::to_string(i);
     LCD.WriteAt(s.c_str(),0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
-    std::string elapsedS = std::to_string(elapsed);
-    LCD.WriteAt("Elapsed: ",0,15);
+    std::string elapsedS = "Elapsed: " + std::to_string(elapsed) + " ms";
+    // LCD.WriteAt("Elapsed: ",0,15);
     LCD.WriteAt(elapsedS.c_str(),0,30);
-    LCD.WriteAt("ms",0,45);
-    LCD.WriteAt(drivetrain.getPose()[0],0,60);
-    LCD.WriteAt(drivetrain.getPose()[1],0,75);
-    LCD.WriteAt(drivetrain.getPose()[2],0,90);
+    // LCD.WriteAt("ms",0,45);
+    std::string pose = "Pose: [" + std::to_string(drivetrain.getPose()[0]) + ", " + std::to_string(drivetrain.getPose()[1]) + std::to_string(drivetrain.getPose()[2]) + "]";
+    LCD.WriteAt(pose,0,60);
+
 
 
     
@@ -49,7 +49,7 @@ void Composter::run(){
         //turn left 120 so straight with wall
         drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
-        if(timeUp(startTime,1600)){
+        if(timeUp(startTime,1200)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -57,7 +57,7 @@ void Composter::run(){
         break;
 
         case 1:
-        drivetrain.setMovementVector(0.3,0.2,0);
+        drivetrain.setMovementVector(0.3,0.4,0);
         drivetrain.update();
         if(timeUp(startTime,1600)){
             startTime = TimeNowMSec();
@@ -66,26 +66,62 @@ void Composter::run(){
         break;
 
         case 2:
-        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.setMovementVector(0.3,0.3,0);
         drivetrain.update();
-        if(timeUp(startTime,500)){
+        if(timeUp(startTime,800)){
+            drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 3:
-        drivetrain.setMovementVector(0.3,0.3,0);
+        drivetrain.setMovementVector(-0.2,-0.2,0);
         drivetrain.update();
-        if(timeUp(startTime,800)){
+        if(timeUp(startTime,100)){
+            drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+        
+
+        case 4:
+        composterArm.SetPercent(80);
+        if(timeUp(startTime,1500)){
+            startTime = TimeNowMSec();
+            i++; 
+        composterArm.SetPercent(0);
+        }
+        break;
+
+        case 5:
+        composterArm.SetPercent(-80);
+        if(timeUp(startTime,1500)){
+            startTime = TimeNowMSec();
+            i++; 
+        composterArm.SetPercent(0);
+        }
+        break;
+
+        case 6:
+        drivetrain.setMovementVector(-0.3,-0.3,0);
+        drivetrain.update();
+        arm.SetDegree(0);
+        if(timeUp(startTime,2000)){
+            drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
-        case 4:
-        composterArm.SetPercent(80);
-        if(timeUp(startTime,800)){
+        case 7:
+        drivetrain.setMovementVector(-0.5,0,0);
+        drivetrain.update();
+        if(timeUp(startTime,8000)){
+            drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
