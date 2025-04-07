@@ -4,3 +4,9 @@
 .vscode/c_cpp_properties.json
 .vscode/c_cpp_properties.json
 .o
+*.d
+*.o
+*.o
+*.o
+*.o
+*.o

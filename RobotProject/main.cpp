@@ -15,6 +15,7 @@
 #include "../Dependencies/Auto/SequencialCommand.h"
 #include "../Dependencies/Button.h"
 #include "../Dependencies/Slider.h"
+#include "../Dependencies/OptosensorArray.h"
 
 #include <pthread.h>
 #include <iostream>
@@ -41,6 +42,7 @@
 #include "../Dependencies/Auto/Paths/WaitForStartButton.h"
 #include "../Dependencies/Auto/Paths/AppleBasket.h"
 #include "../Dependencies/Auto/Paths/Composter.h"
+#include "../Dependencies/Auto/Paths/PoseTest.h"
 
 //menu selector________________________________________________________
 enum class Menu : uint8_t {
@@ -102,6 +104,18 @@ int main(void)
     AnalogInputPin OptoSensorM(FEHIO::P2_6);
     AnalogInputPin OptoSensorR(FEHIO::P2_7);
 
+    FEHIO::FEHIOPin L = FEHIO::P2_5;
+    FEHIO::FEHIOPin M = FEHIO::P2_5;
+    FEHIO::FEHIOPin R = FEHIO::P2_5;
+
+    OptoSensorArray OptoArr(L,M,R);
+
+    //limit switch
+    DigitalInputPin LimitSwitch(FEHIO::P1_7);
+
+
+
+
     //declares a servo on servo port 7
     //SERVO MIN 826
     //SERVO MAX 2182
@@ -118,10 +132,10 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
-    autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
+    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
     
-
+// autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
 
 
     // autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));
@@ -416,12 +430,12 @@ int main(void)
                 LCD.WriteAt("Pose theta",0,60+telemetryLineOffsetVel);
                 LCD.WriteAt(drivetrain.getPose()[2],0,75+telemetryLineOffsetVel);
 
-                LCD.WriteAt("OptoL: ",0,90+telemetryLineOffsetVel);
-                LCD.WriteAt(OptoSensorL.Value(),0,105+telemetryLineOffsetVel);
-                LCD.WriteAt("OptoM: ",0,130+telemetryLineOffsetVel);
-                LCD.WriteAt(OptoSensorM.Value(),0,145+telemetryLineOffsetVel);
-                LCD.WriteAt("OptoR: ",0,160+telemetryLineOffsetVel);
-                LCD.WriteAt(OptoSensorR.Value(),0,175+telemetryLineOffsetVel);
+                LCD.WriteAt("LimitState: ",0,90+telemetryLineOffsetVel);
+                LCD.WriteAt(LimitSwitch.Value(),0,105+telemetryLineOffsetVel);
+                // LCD.WriteAt("OptoM: ",0,130+telemetryLineOffsetVel);
+                // LCD.WriteAt(OptoSensorM.Value(),0,145+telemetryLineOffsetVel);
+                // LCD.WriteAt("OptoR: ",0,160+telemetryLineOffsetVel);
+                // LCD.WriteAt(OptoSensorR.Value(),0,175+telemetryLineOffsetVel);
 
                 Button runComposter(0,"Composter->",GREEN,DARKGREEN);
                 runComposter.setHeight(30);

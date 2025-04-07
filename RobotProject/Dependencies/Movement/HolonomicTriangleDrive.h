@@ -77,6 +77,8 @@ class HolonomicTriangleDrive {
 
   float TargetPose[3] = {0,0,0}; //x,y,theta
 
+  float PoseOffset[3] = {0,0,0};
+
     
   public:
   FEHMotor::FEHMotorPort FrontPort;

@@ -74,5 +74,4 @@ class OptoSensorArray {
     bool hasReachedGridLineTarget();
     bool crossedLine();
     bool isOnLine();
-    
 };

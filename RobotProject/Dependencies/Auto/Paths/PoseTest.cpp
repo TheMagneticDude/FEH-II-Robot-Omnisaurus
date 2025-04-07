@@ -19,7 +19,9 @@ PoseTest::PoseTest(HolonomicTriangleDrive &dt) : drivetrain(dt){
 }
 
 void PoseTest::init(){
-    drivetrain.setPose(0,0,0);
+    //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
+    //robot starts at a -45 degree angle  
+    drivetrain.setPose(0,0,-45);
     startTime = TimeNowMSec();
     i = 0;
     drivetrain.resetMotorCounts();
@@ -45,8 +47,39 @@ void PoseTest::run(){
     
     switch(i){
         case 0:
+        //rotate to face composter
+        drivetrain.setTargetPose(0,0,-90);
+        drivetrain.runToPose();
 
+        if(drivetrain.getReachedTargetPos()){
+            startTime = TimeNowMSec();
+            i++; 
+        }
         break;
+
+        case 1:
+        //move towards composter (-5 in away) still rotated - 90
+        drivetrain.setTargetPose(-5,0,-90);
+        drivetrain.runToPose();
+
+        if(drivetrain.getReachedTargetPos()){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 2:
+        //move back to starting pos but this time both rotate and move at the same time
+        //this is the true power of pose estimation
+        drivetrain.setTargetPose(0,0,0);
+        drivetrain.runToPose();
+
+        if(drivetrain.getReachedTargetPos()){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
         
 
         default:

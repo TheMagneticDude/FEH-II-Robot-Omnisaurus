@@ -10,9 +10,11 @@
  ../Dependencies/Movement/Motor.h Drivers/uart.h \
  ../Dependencies/VelocityPID.h ../Dependencies/Auto/SequencialCommand.h \
  ../Dependencies/Auto/Command.h ../Dependencies/Button.h \
- ../Dependencies/Slider.h ../Dependencies/Auto/Paths/WaitForStartButton.h \
+ ../Dependencies/Slider.h ../Dependencies/OptosensorArray.h \
+ ../Dependencies/Auto/Paths/WaitForStartButton.h \
  ../Dependencies/Auto/Paths/AppleBasket.h \
- ../Dependencies/Auto/Paths/Composter.h
+ ../Dependencies/Auto/Paths/Composter.h \
+ ../Dependencies/Auto/Paths/PoseTest.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
 ../fehproteusfirmware/Startup/derivative.h:
@@ -45,6 +47,8 @@ Drivers/uart.h:
 ../Dependencies/Auto/Command.h:
 ../Dependencies/Button.h:
 ../Dependencies/Slider.h:
+../Dependencies/OptosensorArray.h:
 ../Dependencies/Auto/Paths/WaitForStartButton.h:
 ../Dependencies/Auto/Paths/AppleBasket.h:
 ../Dependencies/Auto/Paths/Composter.h:
+../Dependencies/Auto/Paths/PoseTest.h:

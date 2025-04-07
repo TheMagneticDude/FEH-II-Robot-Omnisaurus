@@ -25,6 +25,16 @@ float proj(float v[], float a[]){
     return ( dot(a,v) / (vMag) );
 }
 
+const float DEG_TO_RAD = M_PI / 180.0;
+float deg2rad(float degrees) {
+    return degrees * DEG_TO_RAD;
+}
+
+const float RAD_TO_DEG = 180 / M_PI;
+float rad2deg(float rad){
+    return rad * RAD_TO_DEG;
+}
+
 
 
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR) 
@@ -210,9 +220,12 @@ float* HolonomicTriangleDrive::getMovementVector(){ return MovementVector;}
 
 
 void HolonomicTriangleDrive::setPose(float x, float y, float theta){
-    Pose[0] = x;
-    Pose[1] = y;
-    Pose[2] = theta;
+    updatePose();//get curr pose
+    PoseOffset[0] = x - Pose[0];
+    PoseOffset[1] = y - Pose[1];
+    PoseOffset[2] = theta - Pose[2];
+
+    updatePose();//apply offset to pose 
 }
 
 void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
@@ -222,16 +235,31 @@ void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
 }
 
 void HolonomicTriangleDrive::updatePose(){
-    Pose[0] = (Front.getTotalDisplacement() * cos(M1[1])) + 
-    (BackLeft.getTotalDisplacement() * cos(M2[1])) + 
-    (BackRight.getTotalDisplacement() * cos(M3[1]));//x component
-    Pose[1] = (Front.getTotalDisplacement() * sin(M1[1])) + 
-    (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
-    (BackRight.getTotalDisplacement() * sin(M3[1]));//y component
+    float x = (Front.getTotalDisplacement() * cos(M1[1])) + 
+          (BackLeft.getTotalDisplacement() * cos(M2[1])) + 
+          (BackRight.getTotalDisplacement() * cos(M3[1])); // x component
+
+    float y = (Front.getTotalDisplacement() * sin(M1[1])) + 
+            (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
+            (BackRight.getTotalDisplacement() * sin(M3[1])); // y component
+
     float robotRadius = 2;
-    Pose[2] = (Front.getTotalDisplacement() * sin(M1[1] - (M_PI / 2)) + 
-    BackLeft.getTotalDisplacement() * sin(M2[1] - (M_PI / 2)) + 
-    BackRight.getTotalDisplacement() * sin(M3[1] - (M_PI / 2))) / robotRadius;//theta rotation component
+
+    float theta = (
+        Front.getTotalDisplacement() * sin(M1[1] - (M_PI / 2)) +
+        BackLeft.getTotalDisplacement() * sin(M2[1] - (M_PI / 2)) +
+        BackRight.getTotalDisplacement() * sin(M3[1] - (M_PI / 2)))
+     / robotRadius;//theta rotation component
+
+     theta = rad2deg(theta);
+     
+    //apply pose offset
+
+    Pose[0] = x + PoseOffset[0];
+    Pose[1] = y + PoseOffset[1];
+    Pose[2] = theta + PoseOffset[2];
+
+
 
     // Pose[2] = 0; //disable theta calc for now
 }
