@@ -10,3 +10,11 @@
 *.o
 *.o
 *.o
+RobotProject/Dependencies/Auto/Paths/Archive/TurnRight30Deg.o
+RobotProject/Dependencies/Auto/Paths/Archive/TurnRight30Deg.o
+*.o
+RobotProject/Dependencies/Auto/Paths/Archive/TurnRight30Deg.o
+RobotProject/Dependencies/Auto/Paths/Archive/TurnRight30Deg.o
+RobotProject/Dependencies/Movement/HolonomicTriangleDrive.o
+RobotProject/Dependencies/Auto/Paths/Composter.o
+RobotProject/main.o
