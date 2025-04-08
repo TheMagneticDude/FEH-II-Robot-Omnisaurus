@@ -149,6 +149,7 @@ class HolonomicTriangleDrive {
   float getBackRightVelocity();
 
   float* getPose();
+  float* getTargetPos();
   float* getMovementVector();
 
   void setPose(float x, float y, float theta);

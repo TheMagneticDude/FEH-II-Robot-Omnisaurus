@@ -31,7 +31,6 @@ void PoseTest::init(){
 
 //Runs the command every tick
 void PoseTest::run(){
-    
     //Command stuff
     std::string s = "PoseTest SubPath: " + std::to_string(i);
     LCD.WriteAt(s.c_str(),0,0);
@@ -52,6 +51,14 @@ void PoseTest::run(){
 
     std::string pose = "Pose: [" + x.str() + ", " + y.str() + ", " + theta.str() + "]";
     LCD.WriteAt(pose,0,60);
+
+    stringstream targetPose;
+    targetPose << "TGPose: [" << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[2] << "]";
+    LCD.WriteAt(targetPose.str(),0,75);
+
+    stringstream movementVector;
+    movementVector << "MovVect: [" << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[2] << "]";
+    
 
 
 

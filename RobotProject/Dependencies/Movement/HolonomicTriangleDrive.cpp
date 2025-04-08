@@ -30,7 +30,7 @@ float deg2rad(float degrees) {
     return degrees * DEG_TO_RAD;
 }
 
-const float RAD_TO_DEG = 180 / M_PI;
+const float RAD_TO_DEG = 180.0 / M_PI;
 float rad2deg(float rad){
     return rad * RAD_TO_DEG;
 }
@@ -216,6 +216,10 @@ float* HolonomicTriangleDrive::getPose(){
     return Pose;
 }
 
+float* HolonomicTriangleDrive::getTargetPos(){
+    return TargetPose;
+}
+
 float* HolonomicTriangleDrive::getMovementVector(){ return MovementVector;}
 
 
@@ -243,13 +247,35 @@ void HolonomicTriangleDrive::updatePose(){
             (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
             (BackRight.getTotalDisplacement() * sin(M3[1])); // y component
 
-    float robotRadius = 2;
+    float robotRadius = 4;//radius is 3.9 in
 
+    float d1 = Front.getTotalDisplacement();
+    float d2 = BackLeft.getTotalDisplacement();
+    float d3 = BackRight.getTotalDisplacement();
+
+
+    float avgTranslational = (
+        d1 * cos(M1[1]) +
+        d2 * cos(M2[1]) +
+        d3 * cos(M3[1])
+    ) / 3.0;
+    
+    float avgStrafe = (
+        d1 * sin(M1[1]) +
+        d2 * sin(M2[1]) +
+        d3 * sin(M3[1])
+    ) / 3.0;
+    
+    // aproximate theta only from rotational components
     float theta = (
-        Front.getTotalDisplacement() * sin(M1[1] - (M_PI / 2)) +
-        BackLeft.getTotalDisplacement() * sin(M2[1] - (M_PI / 2)) +
-        BackRight.getTotalDisplacement() * sin(M3[1] - (M_PI / 2)))
-     / robotRadius;//theta rotation component
+        (d1 - avgTranslational) * sin(M1[1] - M_PI/2) +
+        (d2 - avgTranslational) * sin(M2[1] - M_PI/2) +
+        (d3 - avgTranslational) * sin(M3[1] - M_PI/2)
+    ) / robotRadius;
+
+
+    
+
 
      theta = rad2deg(theta);
      
@@ -257,7 +283,11 @@ void HolonomicTriangleDrive::updatePose(){
 
     Pose[0] = x + PoseOffset[0];
     Pose[1] = y + PoseOffset[1];
-    Pose[2] = theta + PoseOffset[2];
+    if(fabs(Pose[2] - TargetPose[2]) < 0.1){
+        //trust me bro its straight
+    }else{
+        Pose[2] = theta + PoseOffset[2];
+    }
 
 
 

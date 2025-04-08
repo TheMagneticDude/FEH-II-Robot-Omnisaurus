@@ -27,7 +27,7 @@ void QuadratureEncoder::update(){
     int currB = inputB.Value();
     //based on diagram: https://www.dynapar.com/hs-fs/hubfs/uploadedImages/_Site_Root/technology/encoder_basics/quadrature.jpg?width=525&name=quadrature.jpg
     //lookup table stolen from here:https://daniellethurow.com/blog/2021/8/30/how-to-use-quadrature-rotary-encoders
-    const unsigned int lookupTable[16] = {
+    const int lookupTable[16] = {
         0,  // 00 -> 00 (DIDN’T MOVE)
         -1, // 00 -> 01
         1,  // 00 -> 10

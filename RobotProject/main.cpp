@@ -259,8 +259,9 @@ int main(void)
 
             if(menuMode == Menu::Auto){
                 //initialize RCS_________________________________________________________________________________________________
-                RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
-                int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
+                //UNCOMMENT RCS INITIALIZATION WHEN DOING RUN
+                // RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
+                // int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
 
                 
                 //measure loopspeed
@@ -428,6 +429,7 @@ int main(void)
 
             } else if (menuMode == Menu::PoseEstimate){
                 float telemetryLineOffsetVel = 0;
+                float offset2 = 30;
                 float telemetryLineOffsetEncoder = 95;
                 LCD.WriteAt("Pose x:",0,0+telemetryLineOffsetVel);
                 LCD.WriteAt(drivetrain.getPose()[0],0,15+telemetryLineOffsetVel);
@@ -440,10 +442,17 @@ int main(void)
 
                 LCD.WriteAt("LimitState: ",0,90+telemetryLineOffsetVel);
                 LCD.WriteAt(LimitSwitch.Value(),0,105+telemetryLineOffsetVel);
-                // LCD.WriteAt("OptoM: ",0,130+telemetryLineOffsetVel);
-                // LCD.WriteAt(OptoSensorM.Value(),0,145+telemetryLineOffsetVel);
-                // LCD.WriteAt("OptoR: ",0,160+telemetryLineOffsetVel);
-                // LCD.WriteAt(OptoSensorR.Value(),0,175+telemetryLineOffsetVel);
+
+                //2.751 avg when on black line
+                //L offset = -0.212
+                //M offset = +0.101
+                //R offset = +0.111
+                LCD.WriteAt("OptoL: ",0,90+offset2);
+                LCD.WriteAt(OptoSensorL.Value()-0.212,0,105+offset2);
+                LCD.WriteAt("OptoM: ",0,130+offset2);
+                LCD.WriteAt(OptoSensorM.Value()+0.101,0,145+offset2);
+                LCD.WriteAt("OptoR: ",0,160+offset2);
+                LCD.WriteAt(OptoSensorR.Value()+0.111,0,175+offset2);
 
                 Button runComposter(0,"Composter->",GREEN,DARKGREEN);
                 runComposter.setHeight(30);
@@ -473,12 +482,6 @@ int main(void)
                 }else{
                     hackedServo.Stop();
                 }
-
-
-
-
-
-
 
                 float joystickCenterX = (320/2.0);
                 float joystickCenterY = (240/2.0);
