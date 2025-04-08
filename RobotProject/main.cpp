@@ -6,6 +6,7 @@
 #include <FEHAccel.h>
 #include <FEHBattery.h>
 #include <FEHBuzzer.h>
+#include <FEHRCS.h>
 #include <FEHSD.h>
 #include <string.h>
 #include <stdio.h>
@@ -168,7 +169,9 @@ int main(void)
     float I = 0;
     float D = 0;
 
-
+    //RCS_______________________________________________________________________________________________________________________
+    std::string RCS_String = "0150F2QWD";
+    
 
     //Code start________________________________________________________________________________________________________________
 
@@ -255,6 +258,11 @@ int main(void)
 
 
             if(menuMode == Menu::Auto){
+                //initialize RCS_________________________________________________________________________________________________
+                RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
+                int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
+
+                
                 //measure loopspeed
                 float timeNow = TimeNowMSec();
 

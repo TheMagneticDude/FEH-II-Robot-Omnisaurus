@@ -52,7 +52,7 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 
     motorMaxVolt = defaultMotorMaxVolt;
 
-    velocityControl = false;
+    velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
 
@@ -81,7 +81,7 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
 
     motorMaxVolt = maxVolt;
 
-    velocityControl = false;
+    velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
 
@@ -110,7 +110,7 @@ BackRight(BR,E3,maxVolt)
 
     motorMaxVolt = maxVolt;
 
-    velocityControl = false;
+    velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
 
