@@ -108,7 +108,7 @@ class HolonomicTriangleDrive {
   const float motorMaxVelocity = 12;//inch per sec
 
   //max rotation speed
-  const float maxRotationSpeed = 0.8;
+  const float maxRotationSpeed = 0.8 * motorMaxVelocity;
   //how aggresivley robot rotates towards the target angle
   //will need to tune for robot
   const float rotationGain = 0.1;

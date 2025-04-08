@@ -40,25 +40,19 @@ void PoseTest::run(){
     // LCD.WriteAt("Elapsed: ",0,15);
     LCD.WriteAt(elapsedS.c_str(),0,30);
     // LCD.WriteAt("ms",0,45);
-    stringstream x;
-    x << std::fixed << std::setprecision(2) << drivetrain.getPose()[0];
     
-    stringstream y;
-    y << std::fixed << std::setprecision(2) << drivetrain.getPose()[1];
     
-    stringstream theta;
-    theta << std::fixed << std::setprecision(2) << drivetrain.getPose()[2];
-
-    std::string pose = "Pose: [" + x.str() + ", " + y.str() + ", " + theta.str() + "]";
-    LCD.WriteAt(pose,0,60);
+    stringstream pose;
+    pose << "Po: [" << std::fixed << std::setprecision(2) << drivetrain.getPose()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getPose()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getPose()[2] << "]";
+    LCD.WriteAt(pose.str(),0,60);
 
     stringstream targetPose;
-    targetPose << "TGPose: [" << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[2] << "]";
+    targetPose << "TG: [" << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getTargetPos()[2] << "]";
     LCD.WriteAt(targetPose.str(),0,75);
 
     stringstream movementVector;
-    movementVector << "MovVect: [" << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[2] << "]";
-    
+    movementVector << "MV: [" << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getMovementVector()[2] << "]";
+    LCD.WriteAt(movementVector.str(),0,90);
 
 
 

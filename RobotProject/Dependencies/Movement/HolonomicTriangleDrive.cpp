@@ -309,6 +309,10 @@ void HolonomicTriangleDrive::runToPose(){
         deltaTheta += 360;
     }
 
+    if(fabs(deltaX) < positionEpsilon){deltaX  = 0;}
+    if(fabs(deltaY) < positionEpsilon){deltaY  = 0;}
+    if(fabs(deltaTheta) < positionEpsilon){deltaTheta  = 0;}
+
 
 
     MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
