@@ -9,69 +9,33 @@
 using namespace std;
 
 
-class OptoSensorArray {
+class QuadratureEncoder {
   private:
-  //nonreflective is 3.3V
-    //reflective is 0
-  const float triggerThresholdMin = 1.9;//min threashold to detect nonreflective line
-  const float triggerThresholdMax = 3.3;//max threashold for nonreflective line (0 reflection)
-  
-  AnalogInputPin LOpto;
-  AnalogInputPin MOpto;
-  AnalogInputPin ROpto;
+  // DigitalEncoder EA;
+  // DigitalEncoder EB;
 
-  int gridLineCount = 0;
-  int targetGridLines = 0;
-  bool lastLineDetected = false;
-  bool gridCounterActive = false;
-  
+  DigitalInputPin inputA;
+  DigitalInputPin inputB;
 
-  bool previousCrossed;
+  int ticks;
 
-  unsigned int lastLineTriggerTime;
-  //1ms debounce
-  const unsigned int debounceTimeMS = 1;
+  int prevA;
+  int prevB;
 
-  
   public:
-    enum class OptoState : uint32{
-      INACTIVE,
-      ACTIVE
-    };
+  enum class encoderState : uint32{
+    FORWARD,
+    IDLE,
+    BACKWARD
+  };
 
-    enum class LineStates : uint32{ 
-      MIDDLE, 
-      RIGHT, 
-      LEFT
-     };
+  encoderState currState;
 
-    enum class Direction : uint32{
-      FORWARD,
-      TURN_LEFT,
-      TURN_RIGHT,
-      LOST
-    };
+  QuadratureEncoder(FEHIO::FEHIOPin E1, FEHIO::FEHIOPin E2);
+  void update();
+  void ResetCounts();
+  encoderState getCurrentState();
+  //capital so its same as FEHIO
+  int Counts();
 
-    OptoState LStat;
-    OptoState MStat;
-    OptoState RStat;
-
-    LineStates arrayState;
-
-    Direction suggestedDirection;
-
-    OptoSensorArray(FEHIO::FEHIOPin L, FEHIO::FEHIOPin M, FEHIO::FEHIOPin R);
-    void update();
-    void startGridLineCounter(int lines);
-    void updateGridLineCounter();
-    void interruptGridLineCounter();
-    float optoLValue();
-    float optoMValue();
-    float optoRValue();
-    int getGridLineCount();
-    LineStates getArrayState();
-    Direction getSuggestedDirection();
-    bool hasReachedGridLineTarget();
-    bool crossedLine();
-    bool isOnLine();
 };

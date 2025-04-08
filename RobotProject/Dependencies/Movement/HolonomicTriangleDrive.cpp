@@ -270,6 +270,15 @@ void HolonomicTriangleDrive::runToPose(){
     float deltaY = TargetPose[1] - Pose[1];
     float deltaTheta = TargetPose[2] - Pose[2];
 
+    //use while to safeguard against angles outside of -360 to 360 range
+    //just in case, it should never get stuck in an infinite loop
+    while (deltaTheta > 180) {
+        deltaTheta -= 360;
+    }
+    while (deltaTheta < -180) {
+        deltaTheta += 360;
+    }
+
 
 
     MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
