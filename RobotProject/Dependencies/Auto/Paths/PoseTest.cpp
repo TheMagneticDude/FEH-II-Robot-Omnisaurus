@@ -4,6 +4,7 @@
 #include <FEHLCD.h>
 #include "PoseTest.h"
 #include <cstring>
+#include <iomanip>
 
 
 using namespace std;
@@ -21,10 +22,11 @@ PoseTest::PoseTest(HolonomicTriangleDrive &dt) : drivetrain(dt){
 void PoseTest::init(){
     //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
     //robot starts at a -45 degree angle  
+    drivetrain.resetMotorCounts();
     drivetrain.setPose(0,0,-45);
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.resetMotorCounts();
+    
 }
 
 //Runs the command every tick
@@ -39,7 +41,16 @@ void PoseTest::run(){
     // LCD.WriteAt("Elapsed: ",0,15);
     LCD.WriteAt(elapsedS.c_str(),0,30);
     // LCD.WriteAt("ms",0,45);
-    std::string pose = "Pose: [" + std::to_string(drivetrain.getPose()[0]) + ", " + std::to_string(drivetrain.getPose()[1]) + std::to_string(drivetrain.getPose()[2]) + "]";
+    stringstream x;
+    x << std::fixed << std::setprecision(2) << drivetrain.getPose()[0];
+    
+    stringstream y;
+    y << std::fixed << std::setprecision(2) << drivetrain.getPose()[1];
+    
+    stringstream theta;
+    theta << std::fixed << std::setprecision(2) << drivetrain.getPose()[2];
+
+    std::string pose = "Pose: [" + x.str() + ", " + y.str() + ", " + theta.str() + "]";
     LCD.WriteAt(pose,0,60);
 
 
@@ -57,28 +68,28 @@ void PoseTest::run(){
         }
         break;
 
-        case 1:
-        //move towards composter (-5 in away) still rotated - 90
-        drivetrain.setTargetPose(-5,0,-90);
-        drivetrain.runToPose();
+        // case 1:
+        // //move towards composter (-5 in away) still rotated - 90
+        // drivetrain.setTargetPose(-5,0,-90);
+        // drivetrain.runToPose();
 
-        if(drivetrain.getReachedTargetPos()){
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
+        // if(drivetrain.getReachedTargetPos()){
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
 
-        case 2:
-        //move back to starting pos but this time both rotate and move at the same time
-        //this is the true power of pose estimation
-        drivetrain.setTargetPose(0,0,0);
-        drivetrain.runToPose();
+        // case 2:
+        // //move back to starting pos but this time both rotate and move at the same time
+        // //this is the true power of pose estimation
+        // drivetrain.setTargetPose(0,0,0);
+        // drivetrain.runToPose();
 
-        if(drivetrain.getReachedTargetPos()){
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
+        // if(drivetrain.getReachedTargetPos()){
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
 
         
 
