@@ -41,8 +41,10 @@
 
 //Import Auto Paths_________________________________________________
 #include "../Dependencies/Auto/Paths/WaitForStartButton.h"
-#include "../Dependencies/Auto/Paths/AppleBasket.h"
+#include "../Dependencies/Auto/Paths/StartButton.h"
 #include "../Dependencies/Auto/Paths/Composter.h"
+
+#include "../Dependencies/Auto/Paths/AppleBasket.h"
 #include "../Dependencies/Auto/Paths/PoseTest.h"
 
 //menu selector________________________________________________________
@@ -133,10 +135,14 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
-    autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
+    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
+    autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
+
+
+    // autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
     
-// autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
+
 
 
     // autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));

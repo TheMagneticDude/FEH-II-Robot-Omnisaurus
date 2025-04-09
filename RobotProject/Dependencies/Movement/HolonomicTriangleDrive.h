@@ -76,7 +76,7 @@ class HolonomicTriangleDrive {
   float Pose[3] = {0,0,0}; //x,y,theta
 
   float TargetPose[3] = {0,0,0}; //x,y,theta
-
+  float prevPose[3] = {0,0,0};
   float PoseOffset[3] = {0,0,0};
 
     
@@ -113,13 +113,14 @@ class HolonomicTriangleDrive {
   //will need to tune for robot
   const float rotationGain = 0.1;
 
-  float prevFrontDisp;
-  float prevBackLeftDisp;
-  float prevBackRightDisp;
-
   bool velocityControl;
   bool reachedTargetPose;
   bool distanceSet;
+
+  float prevEncoderFront = 0;
+  float prevEncoderBackLeft = 0;
+  float prevEncoderBackRight = 0;
+
 
   //P gains
   float kp_translational = 1;

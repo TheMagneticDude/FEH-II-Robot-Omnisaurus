@@ -13,8 +13,9 @@
  ../Dependencies/Auto/Command.h ../Dependencies/Button.h \
  ../Dependencies/Slider.h ../Dependencies/OptosensorArray.h \
  ../Dependencies/Auto/Paths/WaitForStartButton.h \
- ../Dependencies/Auto/Paths/AppleBasket.h \
+ ../Dependencies/Auto/Paths/StartButton.h \
  ../Dependencies/Auto/Paths/Composter.h \
+ ../Dependencies/Auto/Paths/AppleBasket.h \
  ../Dependencies/Auto/Paths/PoseTest.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -52,6 +53,7 @@ Drivers/uart.h:
 ../Dependencies/Slider.h:
 ../Dependencies/OptosensorArray.h:
 ../Dependencies/Auto/Paths/WaitForStartButton.h:
-../Dependencies/Auto/Paths/AppleBasket.h:
+../Dependencies/Auto/Paths/StartButton.h:
 ../Dependencies/Auto/Paths/Composter.h:
+../Dependencies/Auto/Paths/AppleBasket.h:
 ../Dependencies/Auto/Paths/PoseTest.h:

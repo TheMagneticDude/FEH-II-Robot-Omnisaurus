@@ -2,7 +2,7 @@
 #include <string>
 #include <FEHXBee.h>
 #include <FEHLCD.h>
-#include "Composter.h"
+#include "StartButton.h"
 #include <cstring>
 #include <iomanip>
 
@@ -11,7 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-Composter::Composter(HolonomicTriangleDrive &dt, FEHServo &a, FEHMotor &ca) : drivetrain(dt), arm(a), composterArm(ca){
+StartButton::StartButton(HolonomicTriangleDrive &dt) : drivetrain(dt){
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
@@ -19,18 +19,18 @@ Composter::Composter(HolonomicTriangleDrive &dt, FEHServo &a, FEHMotor &ca) : dr
     i = 0;
 }
 
-void Composter::init(){
+void StartButton::init(){
     //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
     //robot starts at a -45 degree angle  
     drivetrain.resetMotorCounts();
-    drivetrain.setPose(0,0,-45);
+    drivetrain.setPose(0,0,0);
     startTime = TimeNowMSec();
     i = 0;
     drivetrain.resetMotorCounts();
 }
 
 //Runs the command every tick
-void Composter::run(){
+void StartButton::run(){
     
     //Command stuff
     std::string s = "Composter SubPath: " + std::to_string(i);
@@ -59,13 +59,11 @@ void Composter::run(){
     
     switch(i){
         case 0:
-        arm.SetDegree(180);
-        //turn right 45 so back is straight with wall (so y+ is up the ramp)
-        drivetrain.setMovementVector(0,0,0.5);
-        drivetrain.update();
-        if(timeUp(startTime,250)){
+        //move back to hit start
+        drivetrain.setTargetPose(0,-3,0);
+        drivetrain.runToPose();
+        if(drivetrain.getReachedTargetPos()){
             drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
@@ -73,80 +71,15 @@ void Composter::run(){
         
 
         case 1:
-        drivetrain.setTargetPose(-2,0,0);
+        //move forward again to return to original position
+        drivetrain.setTargetPose(0,0,0);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos()){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
-            i++; 
+            i++;
         }
         break;
-
-        case 2:
-        //move back to aling with wall
-        drivetrain.setTargetPose(-2,-2,0);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
-            drivetrain.setMovementVector(0,0,0);
-            //should now be aligned at y = 0
-            drivetrain.setPose(drivetrain.getPose()[0], 0, 0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 3:
-        //move forward 1 in to have room to rotate
-        drivetrain.setTargetPose(-2,1,0);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
-            drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 4:
-        drivetrain.setMovementVector(0,0,-0.5);
-        drivetrain.update();
-        if(timeUp(startTime,800)){
-            drivetrain.setMovementVector(0,0,0);
-            //robot SHOULD now be at  120 deg
-            drivetrain.setPose(-2,1,120);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 5:
-        //move towards composter
-        drivetrain.setTargetPose(-4,1,120);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
-            drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 6:
-        composterArm.SetPercent(80);
-        if(timeUp(startTime,1500)){
-            startTime = TimeNowMSec();
-            i++; 
-        composterArm.SetPercent(0);
-        }
-        break;
-
-        case 7:
-        composterArm.SetPercent(-80);
-        if(timeUp(startTime,1500)){
-            startTime = TimeNowMSec();
-            i++; 
-        composterArm.SetPercent(0);
-        }
-        break;
-
        
 
         default:
@@ -157,12 +90,12 @@ void Composter::run(){
 }
 
 //exit condition, returns true once command sequence has ended
-bool Composter::ended(){
+bool StartButton::ended(){
     return end;
 }
 
 //Stops the command even if end condition has not been reached and triggers ended to move to next command in sequence
-void Composter::stop(){end = true;}
+void StartButton::stop(){end = true;}
 
 //returns path name
-std::string Composter::getName(){return commandName;}
+std::string StartButton::getName(){return commandName;}

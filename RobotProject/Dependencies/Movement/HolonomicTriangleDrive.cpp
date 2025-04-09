@@ -229,69 +229,62 @@ void HolonomicTriangleDrive::setPose(float x, float y, float theta){
     PoseOffset[1] = y - Pose[1];
     PoseOffset[2] = theta - Pose[2];
 
+    Pose[2] = theta; //for now bc theta isnt being calculated
+
     updatePose();//apply offset to pose 
 }
 
 void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
+    prevPose[0] = Pose[0];
+    prevPose[1] = Pose[1];
+    prevPose[2] = Pose[2];
+
     TargetPose[0] = x;
     TargetPose[1] = y;
     TargetPose[2] = theta;
 }
 
 void HolonomicTriangleDrive::updatePose(){
-    float x = (Front.getTotalDisplacement() * cos(M1[1])) + 
-          (BackLeft.getTotalDisplacement() * cos(M2[1])) + 
-          (BackRight.getTotalDisplacement() * cos(M3[1])); // x component
-
-    float y = (Front.getTotalDisplacement() * sin(M1[1])) + 
-            (BackLeft.getTotalDisplacement() * sin(M2[1])) + 
-            (BackRight.getTotalDisplacement() * sin(M3[1])); // y component
-
-    float robotRadius = 4;//radius is 3.9 in
-
-    float d1 = Front.getTotalDisplacement();
-    float d2 = BackLeft.getTotalDisplacement();
-    float d3 = BackRight.getTotalDisplacement();
+    float currFront = Front.getCounts();
+    float currBL = BackLeft.getCounts();
+    float currBR = BackRight.getCounts();
 
 
-    float avgTranslational = (
-        d1 * cos(M1[1]) +
-        d2 * cos(M2[1]) +
-        d3 * cos(M3[1])
-    ) / 3.0;
-    
-    float avgStrafe = (
-        d1 * sin(M1[1]) +
-        d2 * sin(M2[1]) +
-        d3 * sin(M3[1])
-    ) / 3.0;
-    
-    // aproximate theta only from rotational components
-    float theta = (
-        (d1 - avgTranslational) * sin(M1[1] - M_PI/2) +
-        (d2 - avgTranslational) * sin(M2[1] - M_PI/2) +
-        (d3 - avgTranslational) * sin(M3[1] - M_PI/2)
+    //delta counts
+    float d1 = currFront - prevEncoderFront;
+    float d2 = currBL - prevEncoderBackLeft;
+    float d3 = currBR - prevEncoderBackRight;
+
+    prevEncoderFront = currFront;
+    prevEncoderBackLeft = currBL;
+    prevEncoderBackRight = currBR;
+
+    float dxLocal = (d1 * cos(M1[1]) + d2 * cos(M2[1]) + d3 * cos(M3[1])) / 3.0;
+    float dyLocal = (d1 * sin(M1[1]) + d2 * sin(M2[1]) + d3 * sin(M3[1])) / 3.0;
+
+    //estimate theta
+    float robotRadius = 4.109002;
+
+    float dTheta = (
+        (d1 - dxLocal) * sin(M1[1] - M_PI/2) +
+        (d2 - dxLocal) * sin(M2[1] - M_PI/2) +
+        (d3 - dxLocal) * sin(M3[1] - M_PI/2)
     ) / robotRadius;
 
+    float thetaRad = deg2rad(Pose[2]);
 
-    
-
-
-     theta = rad2deg(theta);
-     
-    //apply pose offset
-
-    Pose[0] = x + PoseOffset[0];
-    Pose[1] = y + PoseOffset[1];
-    if(fabs(Pose[2] - TargetPose[2]) < 0.1){
-        //trust me bro its straight
-    }else{
-        Pose[2] = theta + PoseOffset[2];
-    }
+    float dxGlobal = dxLocal * cos(thetaRad) - dyLocal * sin(thetaRad);
+    float dyGlobal = dxLocal * sin(thetaRad) + dyLocal * cos(thetaRad);
 
 
+    //update global pose
+    Pose[0] += dxGlobal;
+    Pose[1] += dyGlobal;
+    Pose[2] += rad2deg(dTheta);
+    //fix angle
+    while (Pose[2] > 180) Pose[2] -= 360;
+    while (Pose[2] < -180) Pose[2] += 360;
 
-    // Pose[2] = 0; //disable theta calc for now
 }
 
 void HolonomicTriangleDrive::runToPose(){
@@ -309,14 +302,19 @@ void HolonomicTriangleDrive::runToPose(){
         deltaTheta += 360;
     }
 
-    if(fabs(deltaX) < positionEpsilon){deltaX  = 0;}
-    if(fabs(deltaY) < positionEpsilon){deltaY  = 0;}
     if(fabs(deltaTheta) < positionEpsilon){deltaTheta  = 0;}
 
 
+    float currThetaRad = deg2rad(Pose[2]);
+    //current theta with respect to map
 
-    MovementVector[0] = clamp(kp_translational*deltaX,-motorMaxVelocity,motorMaxVelocity);
-    MovementVector[1] = clamp(kp_translational*deltaY,-motorMaxVelocity,motorMaxVelocity);
+    float localX =  deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
+    float localY = -deltaX * sin(currThetaRad) + deltaY * cos(currThetaRad);
+
+    
+
+    MovementVector[0] = clamp(kp_translational*localX,-motorMaxVelocity,motorMaxVelocity);
+    MovementVector[1] = clamp(kp_translational*localY,-motorMaxVelocity,motorMaxVelocity);
     MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
 
     
@@ -340,9 +338,17 @@ void HolonomicTriangleDrive::runToPoseLim(float maxVel){
     float deltaY = TargetPose[1] - Pose[1];
     float deltaTheta = TargetPose[2] - Pose[2];
 
-    MovementVector[0] = clamp(kp_translational*deltaX, -maxVel,maxVel);
-    MovementVector[1] = clamp(kp_translational*deltaY, -maxVel,maxVel);
-    MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxVel,maxVel);
+    float currThetaRad = deg2rad(Pose[2]);
+    //current theta with respect to map
+
+    float globalX = -deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
+    float globalY = deltaY * sin(currThetaRad) + deltaY * cos(currThetaRad);
+
+    
+
+    MovementVector[0] = clamp(kp_translational*globalX,-motorMaxVelocity,motorMaxVelocity);
+    MovementVector[1] = clamp(kp_translational*globalY,-motorMaxVelocity,motorMaxVelocity);
+    // MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
 
 
     if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){

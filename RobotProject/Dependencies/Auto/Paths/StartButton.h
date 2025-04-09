@@ -9,16 +9,19 @@
 using namespace std;
 
 
-class MoveBackAgainstWall : public Command {
+class StartButton : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
-  float startTime;
+
+  float startTime; 
+  int i;//path counter
+  bool nextPathTriggered;
 
   bool end;
-  const std::string commandName = "MoveBackAgainstWall";
+  const std::string commandName = "StartButton";
 
   public:
-  MoveBackAgainstWall(HolonomicTriangleDrive &dt);
+  StartButton(HolonomicTriangleDrive &dt);
   void init() override;
   void run() override;    
   bool ended() override;  
