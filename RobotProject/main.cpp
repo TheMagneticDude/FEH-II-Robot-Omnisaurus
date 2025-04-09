@@ -135,10 +135,10 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
-
+    // autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo));
 
     // autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
     
@@ -278,10 +278,10 @@ int main(void)
                 
                 drivetrain.toggleVelocityControl(true);
 
-                LCD.WriteAt("Elapsed Time: ",0, 180+30);
-                LCD.WriteAt(timeNow,0, 195+30);
-                LCD.WriteAt("Current Command: ",0,150+30);
-                LCD.WriteAt(autonomous.getCurrentCommandName(),0,165+30);
+                // LCD.WriteAt("Elapsed Time: ",0, 180);
+                // LCD.WriteAt(timeNow,0, 195);
+                LCD.WriteAt("Current Command: ",0,180);
+                LCD.WriteAt(autonomous.getCurrentCommandName(),0,195);
                 
                 //run auto
                 autonomous.runSequencialCommand();
@@ -434,6 +434,7 @@ int main(void)
                 }
 
             } else if (menuMode == Menu::PoseEstimate){
+                drivetrain.updatePose();
                 float telemetryLineOffsetVel = 0;
                 float offset2 = 30;
                 float telemetryLineOffsetEncoder = 95;
@@ -506,9 +507,9 @@ int main(void)
                         //and so x is reversed
 
                         //calculate movement vector
-                        movementVector[0] = -((x_position - joystickCenterX) / joystickSize); 
+                        movementVector[0] = -((x_position - joystickCenterX) / joystickSize)*2; 
                         
-                        movementVector[1] = ((y_position - joystickCenterY) / joystickSize);
+                        // movementVector[1] = ((y_position - joystickCenterY) / joystickSize)*2;
                         //update rotation
 
                         drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);

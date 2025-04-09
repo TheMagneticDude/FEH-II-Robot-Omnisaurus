@@ -33,7 +33,7 @@ void StartButton::init(){
 void StartButton::run(){
     
     //Command stuff
-    std::string s = "Composter SubPath: " + std::to_string(i);
+    std::string s =  commandName + " SubPath: " + std::to_string(i);
     LCD.WriteAt(s.c_str(),0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
@@ -61,7 +61,7 @@ void StartButton::run(){
         case 0:
         //move back to hit start
         drivetrain.setTargetPose(0,-3,0);
-        drivetrain.runToPose();
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos()){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
@@ -73,7 +73,7 @@ void StartButton::run(){
         case 1:
         //move forward again to return to original position
         drivetrain.setTargetPose(0,0,0);
-        drivetrain.runToPose();
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos()){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();

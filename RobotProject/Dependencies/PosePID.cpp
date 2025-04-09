@@ -45,8 +45,15 @@ float PosePID::pidCalc(double desiredPos, double currentPos){
     //      as error goes to 0 P becomes very small. The velocity will decrease
     //      when you want it to stay at a constant high speed. This works because
     //      your taking the derivative of both sides of the equation
-    output = ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
+
+    output = (k_P * error) + (k_I * errorSum) + (k_D * errorRateOfChange);
+
+
     lastDesiredRPM = desiredPos;
+
+    double minVelocity = 0.3; 
+
+    
     return output;
 }
 
@@ -85,14 +92,14 @@ float PosePID::pidCalcLoopTime(double desiredPos, double currentPos, double loop
         //      as error goes to 0 P becomes very small. The velocity will decrease
         //      when you want it to stay at a constant high speed. This works because
         //      your taking the derivative of both sides of the equation
-        output += ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
+        output = ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
         lastDesiredRPM = desiredPos;
 
         const float MIN_OUTPUT_THRESHOLD = 0.1;
         if (fabs(output) < MIN_OUTPUT_THRESHOLD && fabs(error) > 0.1) {
             output = (output > 0) ? MIN_OUTPUT_THRESHOLD : -MIN_OUTPUT_THRESHOLD;
         }
-
+        
         return output;
     }
 

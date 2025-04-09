@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "Motor.h"
+#include "../Dependencies/PosePID.h"
 
 
 
@@ -69,6 +70,10 @@ class HolonomicTriangleDrive {
   float M1[2] = {1,0};
   float M2[2] = {-0.5,(std::sqrt(3) / 2.0)};
   float M3[2] = {-0.5,-(std::sqrt(3) / 2.0)};
+
+  float angle1 = atan2(M1[1], M1[0]);
+  float angle2 = atan2(M2[1], M2[0]);
+  float angle3 = atan2(M3[1], M3[0]);
   float MovementVector[3] = {0,0,0}; //<x,y,theta> components
   // float targetTheta = 0; //0 degrees is default
 
@@ -108,7 +113,7 @@ class HolonomicTriangleDrive {
   const float motorMaxVelocity = 12;//inch per sec
 
   //max rotation speed
-  const float maxRotationSpeed = 0.8 * motorMaxVelocity;
+  const float maxRotationSpeed = 0.5 * motorMaxVelocity;
   //how aggresivley robot rotates towards the target angle
   //will need to tune for robot
   const float rotationGain = 0.1;
@@ -120,14 +125,21 @@ class HolonomicTriangleDrive {
   float prevEncoderFront = 0;
   float prevEncoderBackLeft = 0;
   float prevEncoderBackRight = 0;
+  float prevTime;
 
 
   //P gains
-  float kp_translational = 1;
-  float kp_rotational = 0.3;
+  const float kp_translational = 1;
+  const float kp_rotational = 0.5;
 
-  float positionEpsilon = 0.1;//distance tolerance
-  float angleEpsilon = 0.1;//angle tolerance
+  const float positionEpsilon = 0.1; //distance tolerance
+  const float angleEpsilon = 1;// 1 deg angle tolerance
+
+  float angularVelocity = 0;
+
+  PosePID posePID;
+
+  const float posePIDVals[3] = {0.2,0,0};
 
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);

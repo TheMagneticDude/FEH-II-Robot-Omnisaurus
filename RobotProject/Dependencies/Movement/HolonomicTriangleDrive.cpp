@@ -40,7 +40,8 @@ float rad2deg(float rad){
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR) 
 : Front(F,FrontDefaultEncoder, defaultMotorMaxVolt), 
 BackLeft(BL,BackLeftDefaultEncoder, defaultMotorMaxVolt),
-BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
+BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt),
+posePID(0,0)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -48,13 +49,17 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 
     FrontEncoder = FrontDefaultEncoder;
     BackLeftEncoder = BackLeftDefaultEncoder;
-    BackRightEncoder = BackLeftDefaultEncoder;
+    BackRightEncoder = BackRightDefaultEncoder;
 
     motorMaxVolt = defaultMotorMaxVolt;
 
     velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
+
+    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
+
+    prevTime = TimeNowMSec();
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -69,7 +74,8 @@ BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR, float maxVolt) 
 : Front(F,FrontDefaultEncoder, maxVolt), 
 BackLeft(BL,BackLeftDefaultEncoder, maxVolt),
-BackRight(BR,BackRightDefaultEncoder,maxVolt)
+BackRight(BR,BackRightDefaultEncoder,maxVolt),
+posePID(0,0)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -77,13 +83,17 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
 
     FrontEncoder = FrontDefaultEncoder;
     BackLeftEncoder = BackLeftDefaultEncoder;
-    BackRightEncoder = BackLeftDefaultEncoder;
+    BackRightEncoder = BackRightDefaultEncoder;
 
     motorMaxVolt = maxVolt;
 
     velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
+
+    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
+
+    prevTime = TimeNowMSec();
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -98,7 +108,8 @@ BackRight(BR,BackRightDefaultEncoder,maxVolt)
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BL,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BR,FEHIO::FEHIOPin E3, float maxVolt)
 : Front(F,E1, maxVolt), 
 BackLeft(BL,E2, maxVolt),
-BackRight(BR,E3,maxVolt)
+BackRight(BR,E3,maxVolt),
+posePID(0,0)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -113,6 +124,10 @@ BackRight(BR,E3,maxVolt)
     velocityControl = true;
     reachedTargetPose = false;
     distanceSet = false;
+
+    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
+
+    prevTime = TimeNowMSec();
 
     Pose[0] = 0;
     Pose[1] = 0;
@@ -143,7 +158,7 @@ void HolonomicTriangleDrive::update(){
     float brSpd = proj(M3, MovementVector);
 
     float rotationPower = MovementVector[2];
-    float angularVelocity = clamp(rotationPower,-maxRotationSpeed,maxRotationSpeed);
+    angularVelocity = clamp(rotationPower,-maxRotationSpeed,maxRotationSpeed);
 
     //apply rotation
     fSpd += angularVelocity;
@@ -245,9 +260,11 @@ void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
 }
 
 void HolonomicTriangleDrive::updatePose(){
-    float currFront = Front.getCounts();
-    float currBL = BackLeft.getCounts();
-    float currBR = BackRight.getCounts();
+    float currTime = TimeNowMSec();
+
+    float currFront = Front.getTotalDisplacement();
+    float currBL = BackLeft.getTotalDisplacement();
+    float currBR = BackRight.getTotalDisplacement();
 
 
     //delta counts
@@ -259,32 +276,54 @@ void HolonomicTriangleDrive::updatePose(){
     prevEncoderBackLeft = currBL;
     prevEncoderBackRight = currBR;
 
-    float dxLocal = (d1 * cos(M1[1]) + d2 * cos(M2[1]) + d3 * cos(M3[1])) / 3.0;
-    float dyLocal = (d1 * sin(M1[1]) + d2 * sin(M2[1]) + d3 * sin(M3[1])) / 3.0;
+
+    float dxLocal = (d1 * M1[0] + d2 * M2[0] + d3 * M3[0]) / 3.0;
+    float dyLocal = (d1 * M1[1] + d2 * M2[1] + d3 * M3[1]) / 3.0;
+
 
     //estimate theta
-    float robotRadius = 4.109002;
+    float robotRadius = 4;
 
-    float dTheta = (
-        (d1 - dxLocal) * sin(M1[1] - M_PI/2) +
-        (d2 - dxLocal) * sin(M2[1] - M_PI/2) +
-        (d3 - dxLocal) * sin(M3[1] - M_PI/2)
-    ) / robotRadius;
+    float frontVel = Front.getVelocity();
+    float backLeftVel = BackLeft.getVelocity();
+    float backRightVel = BackRight.getVelocity();
+
+    
+    float omega = angularVelocity;
+    float deltaTime = (currTime - prevTime) / 1000;//convert to sec
+
+    if (deltaTime <= 0.001) {
+        deltaTime = 0.001;
+    }
+
+    //theta = omega * t
+    //omega * t is arclength in inches, divided by the circumference of robot is theta
+    float dTheta = (omega * deltaTime) / (2.0 * M_PI * robotRadius);
+    if (fabs(dTheta) < 0.001) {
+        dTheta = 0;  // no rotation needed if the angle difference is negligible
+    }
+
 
     float thetaRad = deg2rad(Pose[2]);
-
     float dxGlobal = dxLocal * cos(thetaRad) - dyLocal * sin(thetaRad);
     float dyGlobal = dxLocal * sin(thetaRad) + dyLocal * cos(thetaRad);
 
+
+    
 
     //update global pose
     Pose[0] += dxGlobal;
     Pose[1] += dyGlobal;
     Pose[2] += rad2deg(dTheta);
-    //fix angle
-    while (Pose[2] > 180) Pose[2] -= 360;
-    while (Pose[2] < -180) Pose[2] += 360;
 
+    while (Pose[2] > 180) {
+        Pose[2] -= 360;
+    }
+    while (Pose[2] < -180) {
+        Pose[2] += 360;
+    }
+    
+    prevTime = TimeNowMSec();
 }
 
 void HolonomicTriangleDrive::runToPose(){
@@ -303,8 +342,11 @@ void HolonomicTriangleDrive::runToPose(){
     }
 
     if(fabs(deltaTheta) < positionEpsilon){deltaTheta  = 0;}
+    if(fabs(deltaX) < positionEpsilon){deltaX  = 0;}
+    if(fabs(deltaY) < positionEpsilon){deltaY  = 0;}
 
 
+    
     float currThetaRad = deg2rad(Pose[2]);
     //current theta with respect to map
 
@@ -338,18 +380,33 @@ void HolonomicTriangleDrive::runToPoseLim(float maxVel){
     float deltaY = TargetPose[1] - Pose[1];
     float deltaTheta = TargetPose[2] - Pose[2];
 
+    //use while to safeguard against angles outside of -360 to 360 range
+    //just in case, it should never get stuck in an infinite loop
+    while (deltaTheta > 180) {
+        deltaTheta -= 360;
+    }
+    while (deltaTheta < -180) {
+        deltaTheta += 360;
+    }
+
+    if(fabs(deltaTheta) < positionEpsilon){deltaTheta  = 0;}
+    if(fabs(deltaX) < positionEpsilon){deltaX  = 0;}
+    if(fabs(deltaY) < positionEpsilon){deltaY  = 0;}
+
+
     float currThetaRad = deg2rad(Pose[2]);
     //current theta with respect to map
 
-    float globalX = -deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
-    float globalY = deltaY * sin(currThetaRad) + deltaY * cos(currThetaRad);
+    float localX =  deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
+    float localY = -deltaX * sin(currThetaRad) + deltaY * cos(currThetaRad);
 
     
 
-    MovementVector[0] = clamp(kp_translational*globalX,-motorMaxVelocity,motorMaxVelocity);
-    MovementVector[1] = clamp(kp_translational*globalY,-motorMaxVelocity,motorMaxVelocity);
-    // MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
+    MovementVector[0] = clamp(kp_translational*localX,-maxVel,maxVel);
+    MovementVector[1] = clamp(kp_translational*localY,-maxVel,maxVel);
+    MovementVector[2] = clamp(kp_rotational*deltaTheta,-maxRotationSpeed,maxRotationSpeed);
 
+    
 
     if(fabs(deltaX) < positionEpsilon && fabs(deltaY) < positionEpsilon && fabs(deltaTheta) < angleEpsilon){
         MovementVector[0] = 0;
