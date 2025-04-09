@@ -16,9 +16,22 @@ class OptoSensorArray {
   const float triggerThresholdMin = 1.9;//min threashold to detect nonreflective line
   const float triggerThresholdMax = 3.3;//max threashold for nonreflective line (0 reflection)
   
+  //2.751 avg when on black line
+                //L offset = -0.212
+                //M offset = +0.101
+                //R offset = +0.111
+
+  float Loffset = -0.212;
+  float Moffset= 0.101;
+  float Roffset = 0.111;
+
   AnalogInputPin LOpto;
   AnalogInputPin MOpto;
   AnalogInputPin ROpto;
+
+  float valL;
+  float valM;
+  float valR;
 
   int gridLineCount = 0;
   int targetGridLines = 0;

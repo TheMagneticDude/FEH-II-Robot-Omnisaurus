@@ -23,13 +23,21 @@ bool threshold(float x, float e){
      previousCrossed = false;
 
      suggestedDirection = Direction::LOST;
+
+     valL = 0;
+     valM = 0;
+     valR = 0;
  }
 
  void OptoSensorArray::update(){
 
-    LStat = isWithin(LOpto.Value(), triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
-    MStat = isWithin(MOpto.Value(), triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
-    RStat = isWithin(ROpto.Value(), triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
+    valL = LOpto.Value() + Loffset;
+    valM = MOpto.Value() + Moffset;
+    valR = ROpto.Value() + Roffset;
+
+    LStat = isWithin(valL, triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
+    MStat = isWithin(valM, triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
+    RStat = isWithin(valR, triggerThresholdMin, triggerThresholdMax) ? OptoState::ACTIVE : OptoState::INACTIVE;
 
     switch(arrayState){
         case LineStates::MIDDLE:
@@ -70,14 +78,14 @@ bool threshold(float x, float e){
         suggestedDirection =  Direction::LOST;
  }
 
- float OptoSensorArray::optoLValue(){return LOpto.Value();}
- float OptoSensorArray::optoMValue(){return MOpto.Value();}
- float OptoSensorArray::optoRValue(){return ROpto.Value();}
+ float OptoSensorArray::optoLValue(){return valL;}
+ float OptoSensorArray::optoMValue(){return valM;}
+ float OptoSensorArray::optoRValue(){return valR;}
 
  OptoSensorArray::LineStates OptoSensorArray::getArrayState(){return arrayState;}
 
  bool OptoSensorArray::crossedLine(){
-    bool currentCrossed = isWithin(MOpto.Value(), triggerThresholdMin,triggerThresholdMax);
+    bool currentCrossed = isWithin(valM, triggerThresholdMin,triggerThresholdMax);
     bool crossed = (currentCrossed != previousCrossed);
     previousCrossed = currentCrossed;
     return crossed; 
