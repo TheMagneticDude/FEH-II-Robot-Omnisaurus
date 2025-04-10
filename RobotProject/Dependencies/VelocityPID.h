@@ -31,4 +31,5 @@ class VelocityPID{
   float pidCalc(double desiredRPM, double currentRPM);
   float pidCalcLoopTime(double desiredRPM, double currentRPM,double loopTime);
   void setPID(float P, float I, float D);
+  double smoothTargetVelocity(double desiredRPM, double previousTarget);
 };

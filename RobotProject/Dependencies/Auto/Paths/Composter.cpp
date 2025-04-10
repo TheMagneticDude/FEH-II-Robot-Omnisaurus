@@ -23,9 +23,10 @@ void Composter::init(){
     //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
     //robot starts at a -45 degree angle  
     drivetrain.resetMotorCounts();
-    drivetrain.setPose(0,0,-45);
+    
     startTime = TimeNowMSec();
     i = 0;
+    drivetrain.setPose(0,0,-45);
     drivetrain.resetMotorCounts();
 }
 
@@ -61,9 +62,10 @@ void Composter::run(){
         case 0:
         arm.SetDegree(180);
         //turn right 45 so back is straight with wall (so y+ is up the ramp)
-        drivetrain.setTargetPose(0,0,-90);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+        if(timeUp(startTime,400)){
+            drivetrain.setPose(0,0,0);
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -72,10 +74,9 @@ void Composter::run(){
         
 
         case 1:
-        drivetrain.setTargetPose(-2,0,-90);
+        drivetrain.setTargetPose(-3,0,0);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos()){
-            drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
@@ -83,10 +84,10 @@ void Composter::run(){
 
         case 2:
         //move back to aling with wall
-        drivetrain.setTargetPose(-2,-2,-90);
+        drivetrain.setTargetPose(-2,-5,0);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos()){
-            drivetrain.setMovementVector(0,0,0);
+            // drivetrain.setMovementVector(0,0,0);
             //should now be aligned at y = 0
             drivetrain.setPose(drivetrain.getPose()[0], 0, 0);
             startTime = TimeNowMSec();
@@ -94,57 +95,57 @@ void Composter::run(){
         }
         break;
 
-        // case 3:
-        // //move forward 1 in to have room to rotate
-        // drivetrain.setTargetPose(-2,1,-90);
-        // drivetrain.runToPose();
-        // if(drivetrain.getReachedTargetPos()){
-        //     drivetrain.setMovementVector(0,0,0);
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // }
-        // break;
+        case 3:
+        //move forward 0.5 in to have room to rotate
+        drivetrain.setTargetPose(-2,0.5,0);
+        drivetrain.runToPose();
+        if(drivetrain.getReachedTargetPos()){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
 
-        // case 4:
-        // drivetrain.setMovementVector(0,0,-0.5);
-        // drivetrain.update();
-        // if(timeUp(startTime,800)){
-        //     drivetrain.setMovementVector(0,0,0);
-        //     //robot SHOULD now be at  120 deg
-        //     drivetrain.setPose(-2,1,120);
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // }
-        // break;
+        case 4:
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1240)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  150 deg
+            drivetrain.setPose(-2,0.5,150);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
 
-        // case 5:
-        // //move towards composter
-        // drivetrain.setTargetPose(-4,1,120);
-        // drivetrain.runToPose();
-        // if(drivetrain.getReachedTargetPos()){
-        //     drivetrain.setMovementVector(0,0,0);
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // }
-        // break;
+        case 5:
+        //move towards composter
+        drivetrain.setTargetPose(-6,0.5,-150);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos()){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
 
-        // case 6:
-        // composterArm.SetPercent(80);
-        // if(timeUp(startTime,1500)){
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // composterArm.SetPercent(0);
-        // }
-        // break;
+        case 6:
+        composterArm.SetPercent(80);
+        if(timeUp(startTime,1500)){
+            startTime = TimeNowMSec();
+            i++; 
+        composterArm.SetPercent(0);
+        }
+        break;
 
-        // case 7:
-        // composterArm.SetPercent(-80);
-        // if(timeUp(startTime,1500)){
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // composterArm.SetPercent(0);
-        // }
-        // break;
+        case 7:
+        composterArm.SetPercent(-80);
+        if(timeUp(startTime,1500)){
+            startTime = TimeNowMSec();
+            i++; 
+        composterArm.SetPercent(0);
+        }
+        break;
 
        
 

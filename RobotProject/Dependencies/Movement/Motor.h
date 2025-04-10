@@ -76,6 +76,8 @@ class Motor {
   float pidOut;
   
   float totalDisplacement;
+
+  float velocityDeltaTime;
   
   
   public:

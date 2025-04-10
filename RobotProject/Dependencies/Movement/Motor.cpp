@@ -19,6 +19,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt) : M(p,m
     targetVelocity = 0;
     pidOut=0;
     totalDisplacement = 0;
+    velocityDeltaTime = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
@@ -36,6 +37,7 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt, float c
     targetVelocity = 0;
     pidOut=0;
     totalDisplacement = 0;
+    velocityDeltaTime = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
@@ -81,7 +83,6 @@ void Motor::setTargetPos(float pos){
 }
 void Motor::resetEncoderCounts(){
     MotorEncoder.ResetCounts();
-    totalDisplacement = 0;
 }
 float Motor::getCounts(){
     return MotorEncoder.Counts();
@@ -108,35 +109,16 @@ float Motor::getVelocity(){
     if (motorDirection == Direction::BACKWARD) {
         deltaCounts = -deltaCounts;
     }
-    
 
-    if(!velocityLoopTimerPass){
-        lastTime = currTime;
-        velocityLoopTimerPass = true;
-        lastEncoderCount = currCount;
-    }
-    
-    
-    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
-    if((fabs(deltaCounts) < velocityEpsilon) && (deltaTime <= velocityLoopTimerMs)){
-        return currentVelocity;
-    }
-
-    
-
-        
     if(deltaTime <= 0){
         //no divide by zero error
         return currentVelocity;
     }
 
-
-    //prevent float error issues
-    if (deltaCounts == 0) {
-        currentVelocity = 0;
-        return 0;
+    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
+    if((fabs(deltaCounts) < velocityEpsilon) && (deltaTime <= velocityLoopTimerMs)){
+        return currentVelocity;
     }
-
     
 
     float rotations = deltaCounts / encoderCountsPerRev;
@@ -149,7 +131,7 @@ float Motor::getVelocity(){
 
 
     //calculate totalDisplacement
-    totalDisplacement += distance;
+    totalDisplacement += distance; 
 
 
 
@@ -164,8 +146,6 @@ float Motor::getVelocity(){
 
     return velocity;
 }
-
-
 void Motor::runAtVelocity(float v){
     if(motorMode == Mode::VELOCITY){
         targetVelocity = v;

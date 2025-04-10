@@ -19,3 +19,6 @@ RobotProject/Dependencies/Movement/HolonomicTriangleDrive.o
 RobotProject/Dependencies/Auto/Paths/Composter.o
 RobotProject/main.o
 RobotProject/fehproteusfirmware
+*.o
+*.elf
+*.map

@@ -276,7 +276,7 @@ int main(void)
 
 
                 
-                drivetrain.toggleVelocityControl(true);
+                // drivetrain.toggleVelocityControl(true);
 
                 // LCD.WriteAt("Elapsed Time: ",0, 180);
                 // LCD.WriteAt(timeNow,0, 195);
@@ -383,13 +383,13 @@ int main(void)
 
 
                 LCD.WriteAt("TV: ", 0, 100);
-                LCD.WriteAt(drivetrain.getFrontTargetVel(), 40, 100);
+                LCD.WriteAt(drivetrain.getBackRightTargetVel(), 40, 100);
 
                 LCD.WriteAt("AV: ", 0, 120);
-                LCD.WriteAt(drivetrain.getFrontVelocity(), 40, 120);
+                LCD.WriteAt(drivetrain.getBackRightVelocity(), 40, 120);
 
                 LCD.WriteAt("PO: ", 0, 140);
-                LCD.WriteAt(drivetrain.getFrontPIDOut(), 40, 140);
+                LCD.WriteAt(drivetrain.getBackRightPIDOut(), 40, 140);
 
 
                 float telemetryOffsetTwo = 150;

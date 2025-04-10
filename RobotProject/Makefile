@@ -13,7 +13,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 all:
-ifeq ($(OS),Windows_NT)	
+ifeq ($(OS),Windows_NT)
 # check for internet connection
 # if there's internet, check to see if FEHproteusfirmware folder exists
 # if it does, remove it before cloning the repo
