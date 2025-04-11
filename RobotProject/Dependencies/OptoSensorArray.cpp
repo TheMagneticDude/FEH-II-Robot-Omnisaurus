@@ -134,6 +134,10 @@ bool threshold(float x, float e){
     }
 }
 
+bool OptoSensorArray::getLState(){update(); return LStat == OptoSensorArray::OptoState::ACTIVE;}
+bool OptoSensorArray::getMState(){update(); return MStat == OptoSensorArray::OptoState::ACTIVE;}
+bool OptoSensorArray::getRState(){update(); return RStat == OptoSensorArray::OptoState::ACTIVE;}
+
 //interrupts grid line counter so it can be called again or whatever
 void OptoSensorArray::interruptGridLineCounter(){
     gridCounterActive = false;

@@ -49,9 +49,6 @@ float VelocityPID::pidCalc(double desiredRPM, double currentRPM){
     const double maxIntegral = 5;
     errorSum = clamp(errorSum, -maxIntegral, maxIntegral);
 
-    const double maxErrorRate = 10;
-    errorRateOfChange = clamp(errorRateOfChange, -maxErrorRate, maxErrorRate);
-
     errorRateOfChange = (error - previousError)/CONTROL_LOOP_TIME;
     previousError = error;
     //Note: I'm adding the output of the PID to itself because with velocity pid
@@ -74,25 +71,12 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
         //EFFECTS: Returns motor speed based on PID calculation using current
         //         motor RPM (I'm assuming that this function will be executed
         //         during each control loop
-
-
-
-
-        desiredRPM = smoothTargetVelocity(desiredRPM,lastDesiredRPM);
-
-
         error = desiredRPM - currentRPM;
-        if(currentRPM > 20){
-            //bad data input
-            return output;
-        }
         
-        if (loopTime < 0.01) {  // Prevent division issues
-            //max 10ms control loop
-            loopTime = 0.01;
-        }
-
         errorSum = errorSum + (error*loopTime);
+        if (loopTime < 0.001) {  // Prevent division issues
+            loopTime = 0.001;
+        }
 
 
         //integral windup prevention
@@ -100,29 +84,22 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
             errorSum = 0;
         }
 
-        // if(fabs(lastDesiredRPM - desiredRPM) >= 0.1){
-        //     errorSum = 0;
-        // }
+        if(fabs(lastDesiredRPM - desiredRPM) >= 0.1){
+            errorSum = 0;
+        }
         
-        // if(fabs(lastDesiredRPM - desiredRPM) >= 0.5){
-        //     //reset output if desired RPM changed enough
-        //     output = 0;
-        // }
+        if(fabs(lastDesiredRPM - desiredRPM) >= 0.5){
+            //reset output if desired RPM changed enough
+            output = 0;
+        }
         
         const double maxIntegral = 50;
         errorSum = clamp(errorSum, -maxIntegral, maxIntegral);
+    
+        errorRateOfChange = (error - previousError)/loopTime;
 
-        errorRateOfChange = (error - previousError) / loopTime;
-        const double maxErrorRate = 10;
-        errorRateOfChange = clamp(errorRateOfChange, -maxErrorRate, maxErrorRate);
 
         previousError = error;
-
-        float deadband = 0.6;
-        if (fabs(error) < deadband) {
-            // Ignore small errors
-            return output;
-        }
         //Note: I'm adding the output of the PID to itself because with velocity pid
         //      as error goes to 0 P becomes very small. The velocity will decrease
         //      when you want it to stay at a constant high speed. This works because
@@ -131,10 +108,7 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
         output += ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
         lastDesiredRPM = desiredRPM;
 
-        const float MIN_OUTPUT_THRESHOLD = 0.1;
-        if (fabs(output) < MIN_OUTPUT_THRESHOLD && fabs(error) > 0.1) {
-            output = (output > 0) ? MIN_OUTPUT_THRESHOLD : -MIN_OUTPUT_THRESHOLD;
-        }
+        
 
         return output;
     }
@@ -144,9 +118,4 @@ void VelocityPID::setPID(float P, float I, float D){
     k_I = I;
     k_D = D;
 
-}
-
-double VelocityPID::smoothTargetVelocity(double desiredRPM, double previousTarget) {
-    const double smoothingFactor = 0.8;  //how quickly the target velocity changes
-    return smoothingFactor * desiredRPM + (1 - smoothingFactor) * previousTarget;
 }

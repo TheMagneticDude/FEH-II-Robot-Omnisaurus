@@ -9,7 +9,7 @@
  Libraries/FEHBuzzer.h Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h \
  Drivers/ff.h Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h \
  Libraries/FEHFile.h ../Dependencies/Movement/Motor.h Drivers/uart.h \
- ../Dependencies/VelocityPID.h ../Dependencies/PosePID.h
+ ../Dependencies/VelocityPID.h
 ../Dependencies/Movement/HolonomicTriangleDrive.h:
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -38,4 +38,3 @@ Libraries/FEHFile.h:
 ../Dependencies/Movement/Motor.h:
 Drivers/uart.h:
 ../Dependencies/VelocityPID.h:
-../Dependencies/PosePID.h:

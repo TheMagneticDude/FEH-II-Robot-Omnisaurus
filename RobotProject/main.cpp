@@ -43,8 +43,9 @@
 #include "../Dependencies/Auto/Paths/WaitForStartButton.h"
 #include "../Dependencies/Auto/Paths/StartButton.h"
 #include "../Dependencies/Auto/Paths/Composter.h"
-
 #include "../Dependencies/Auto/Paths/AppleBasket.h"
+#include "../Dependencies/Auto/Paths/Window1.h"
+
 #include "../Dependencies/Auto/Paths/PoseTest.h"
 
 //menu selector________________________________________________________
@@ -138,7 +139,11 @@ int main(void)
     // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
-    // autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo));
+    // autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
+    // autonomous.addCommand(std::make_unique<Window1>(drivetrain));
+
+
+
 
     // autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
     
@@ -266,8 +271,8 @@ int main(void)
             if(menuMode == Menu::Auto){
                 //initialize RCS_________________________________________________________________________________________________
                 //UNCOMMENT RCS INITIALIZATION WHEN DOING RUN
-                // RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
-                // int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
+                RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
+                int lever = RCS.GetCorrectLever(); // Get a 0, 1, or 2 indicating which lever to pull
 
                 
                 //measure loopspeed
@@ -280,8 +285,8 @@ int main(void)
 
                 // LCD.WriteAt("Elapsed Time: ",0, 180);
                 // LCD.WriteAt(timeNow,0, 195);
-                LCD.WriteAt("Current Command: ",0,180);
-                LCD.WriteAt(autonomous.getCurrentCommandName(),0,195);
+                // LCD.WriteAt("Current Command: ",0,180);
+                // LCD.WriteAt(autonomous.getCurrentCommandName(),0,195);
                 
                 //run auto
                 autonomous.runSequencialCommand();
@@ -430,7 +435,8 @@ int main(void)
                     }
 
                 }else{
-                    drivetrain.stop();
+                    drivetrain.update();
+                    // drivetrain.stop();
                 }
 
             } else if (menuMode == Menu::PoseEstimate){
@@ -454,12 +460,16 @@ int main(void)
                 //L offset = -0.212
                 //M offset = +0.101
                 //R offset = +0.111
+
+                float Loffset = -0.212 + 0.18033333333;
+                float Moffset= 0.101-0.04966666667;
+                float Roffset = 0.111-0.13066666667;
                 LCD.WriteAt("OptoL: ",0,90+offset2);
-                LCD.WriteAt(OptoSensorL.Value()-0.212,0,105+offset2);
+                LCD.WriteAt(OptoSensorL.Value()+Loffset,0,105+offset2);
                 LCD.WriteAt("OptoM: ",0,130+offset2);
-                LCD.WriteAt(OptoSensorM.Value()+0.101,0,145+offset2);
+                LCD.WriteAt(OptoSensorM.Value()+Moffset,0,145+offset2);
                 LCD.WriteAt("OptoR: ",0,160+offset2);
-                LCD.WriteAt(OptoSensorR.Value()+0.111,0,175+offset2);
+                LCD.WriteAt(OptoSensorR.Value()+Roffset,0,175+offset2);
 
                 Button runComposter(0,"Composter->",GREEN,DARKGREEN);
                 runComposter.setHeight(30);

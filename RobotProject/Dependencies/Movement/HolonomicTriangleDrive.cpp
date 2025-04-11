@@ -40,8 +40,7 @@ float rad2deg(float rad){
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR) 
 : Front(F,FrontDefaultEncoder, defaultMotorMaxVolt), 
 BackLeft(BL,BackLeftDefaultEncoder, defaultMotorMaxVolt),
-BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt),
-posePID(0,0)
+BackRight(BR,BackRightDefaultEncoder,defaultMotorMaxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -57,7 +56,6 @@ posePID(0,0)
     reachedTargetPose = false;
     distanceSet = false;
 
-    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
 
     prevTime = TimeNowMSec();
 
@@ -74,8 +72,7 @@ posePID(0,0)
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F, FEHMotor::FEHMotorPort BL, FEHMotor::FEHMotorPort BR, float maxVolt) 
 : Front(F,FrontDefaultEncoder, maxVolt), 
 BackLeft(BL,BackLeftDefaultEncoder, maxVolt),
-BackRight(BR,BackRightDefaultEncoder,maxVolt),
-posePID(0,0)
+BackRight(BR,BackRightDefaultEncoder,maxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -91,7 +88,6 @@ posePID(0,0)
     reachedTargetPose = false;
     distanceSet = false;
 
-    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
 
     prevTime = TimeNowMSec();
 
@@ -108,8 +104,7 @@ posePID(0,0)
 HolonomicTriangleDrive::HolonomicTriangleDrive(FEHMotor::FEHMotorPort F,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BL,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BR,FEHIO::FEHIOPin E3, float maxVolt)
 : Front(F,E1, maxVolt), 
 BackLeft(BL,E2, maxVolt),
-BackRight(BR,E3,maxVolt),
-posePID(0,0)
+BackRight(BR,E3,maxVolt)
 {
     FrontPort = F;
     BackLeftPort = BL;
@@ -125,7 +120,6 @@ posePID(0,0)
     reachedTargetPose = false;
     distanceSet = false;
 
-    posePID.setPID(posePIDVals[0],posePIDVals[1],posePIDVals[2]);
 
     prevTime = TimeNowMSec();
 
@@ -245,7 +239,7 @@ void HolonomicTriangleDrive::setPose(float x, float y, float theta){
     Pose[0] = x;
     Pose[1] = y;
 
-    Pose[2] = theta; //for now bc theta isnt being calculated
+    Pose[2] = -theta; //for now bc theta isnt being calculated
 
     updatePose();//apply offset to pose 
 }
@@ -346,7 +340,7 @@ void HolonomicTriangleDrive::runToPose(){
 
 
     
-    float currThetaRad = deg2rad(Pose[2]);//add pi/2 bc heading 0 is actually 90 degrees normally
+    float currThetaRad = deg2rad(Pose[2]);
     //current theta with respect to map
 
     float localX =  deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);

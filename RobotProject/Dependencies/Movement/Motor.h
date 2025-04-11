@@ -78,6 +78,8 @@ class Motor {
   float totalDisplacement;
 
   float velocityDeltaTime;
+  float velLoopTime = 0;
+
   
   
   public:

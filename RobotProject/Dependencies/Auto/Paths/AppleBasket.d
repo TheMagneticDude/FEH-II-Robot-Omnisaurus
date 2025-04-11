@@ -11,7 +11,7 @@
  Libraries/FEHSD.h Drivers/SDHC.h Drivers/diskio.h Drivers/ff.h \
  Drivers/ffconf.h Drivers/ffconf.h Drivers/diskio.h Libraries/FEHFile.h \
  ../Dependencies/Auto/../Movement/Motor.h Drivers/uart.h \
- ../Dependencies/VelocityPID.h ../Dependencies/PosePID.h
+ ../Dependencies/VelocityPID.h ../Dependencies/OptoSensorArray.h
 Drivers/FEHXBee.h:
 Startup/derivative.h:
 Startup/MK60DZ10.h:
@@ -43,4 +43,4 @@ Libraries/FEHFile.h:
 ../Dependencies/Auto/../Movement/Motor.h:
 Drivers/uart.h:
 ../Dependencies/VelocityPID.h:
-../Dependencies/PosePID.h:
+../Dependencies/OptoSensorArray.h:

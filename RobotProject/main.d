@@ -9,14 +9,14 @@
  Drivers/diskio.h Libraries/FEHFile.h \
  ../Dependencies/Movement/HolonomicTriangleDrive.h \
  ../Dependencies/Movement/Motor.h Drivers/uart.h \
- ../Dependencies/VelocityPID.h ../Dependencies/PosePID.h \
- ../Dependencies/Auto/SequencialCommand.h ../Dependencies/Auto/Command.h \
- ../Dependencies/Button.h ../Dependencies/Slider.h \
- ../Dependencies/OptosensorArray.h \
+ ../Dependencies/VelocityPID.h ../Dependencies/Auto/SequencialCommand.h \
+ ../Dependencies/Auto/Command.h ../Dependencies/Button.h \
+ ../Dependencies/Slider.h ../Dependencies/OptosensorArray.h \
  ../Dependencies/Auto/Paths/WaitForStartButton.h \
  ../Dependencies/Auto/Paths/StartButton.h \
  ../Dependencies/Auto/Paths/Composter.h \
  ../Dependencies/Auto/Paths/AppleBasket.h \
+ ../Dependencies/Auto/Paths/Window1.h \
  ../Dependencies/Auto/Paths/PoseTest.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -48,7 +48,6 @@ Libraries/FEHFile.h:
 ../Dependencies/Movement/Motor.h:
 Drivers/uart.h:
 ../Dependencies/VelocityPID.h:
-../Dependencies/PosePID.h:
 ../Dependencies/Auto/SequencialCommand.h:
 ../Dependencies/Auto/Command.h:
 ../Dependencies/Button.h:
@@ -58,4 +57,5 @@ Drivers/uart.h:
 ../Dependencies/Auto/Paths/StartButton.h:
 ../Dependencies/Auto/Paths/Composter.h:
 ../Dependencies/Auto/Paths/AppleBasket.h:
+../Dependencies/Auto/Paths/Window1.h:
 ../Dependencies/Auto/Paths/PoseTest.h:

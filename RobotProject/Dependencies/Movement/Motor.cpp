@@ -68,7 +68,7 @@ void Motor::runToPosition(){
 
         float delta = targetPos - currPosition;
 
-        float power = clamp(delta,-maxSpeed,maxSpeed);
+        float power = clamp(delta,-100,100);
 
         (power > 0) ? motorDirection = Direction::FORWARD : motorDirection = Direction::BACKWARD;
         if(power ==0){motorDirection = Direction::Idle;}
@@ -99,27 +99,45 @@ float Motor::getTotalDisplacement(){
 //get velocity in inch per second
 float Motor::getVelocity(){
     float velocityEpsilon = 1; //Min amount of encoder delta to update velocity
-    float velocityLoopTimerMs = 1;//max loop time of 1ms    
+    float velocityLoopTimerMsMin = 5;//min loop time of 5 ms  
+    float velocityLoopTimerMsMax = 50;//max loop time of 50 ms  
+    
 
     float currTime = TimeNowMSec();
-    float deltaTime = (currTime - lastTime); //in milisecs
+    float deltaTime = currTime - lastTime;
     float currCount = MotorEncoder.Counts();
-
     float deltaCounts = currCount - lastEncoderCount;
+
+    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
+    if((fabs(deltaCounts) < velocityEpsilon) &&  (deltaTime >= velocityLoopTimerMsMin) && (deltaTime <= velocityLoopTimerMsMax)){
+        return currentVelocity;
+    }
+
     if (motorDirection == Direction::BACKWARD) {
         deltaCounts = -deltaCounts;
     }
 
+        
     if(deltaTime <= 0){
         //no divide by zero error
         return currentVelocity;
     }
 
-    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
-    if((fabs(deltaCounts) < velocityEpsilon) && (deltaTime <= velocityLoopTimerMs)){
-        return currentVelocity;
+
+    //prevent float error issues
+    if (deltaCounts == 0) {
+        if (deltaTime >= velocityLoopTimerMsMax) {
+            //exceeded max loop time, most likely velocity 0
+            currentVelocity = 0;
+            return 0;
+        } else {
+            //return old velocity, wait until next loop to get accurate velocity
+            return currentVelocity;
+        }
     }
+
     
+    velLoopTime = deltaTime;//update loop time for use in PID loop
 
     float rotations = deltaCounts / encoderCountsPerRev;
         
@@ -131,7 +149,7 @@ float Motor::getVelocity(){
 
 
     //calculate totalDisplacement
-    totalDisplacement += distance; 
+    totalDisplacement += distance;
 
 
 
@@ -140,12 +158,10 @@ float Motor::getVelocity(){
     lastTime = currTime;
 
     currentVelocity = velocity;
-        
-    // reset the timer pass so it waits for another interval
-    velocityLoopTimerPass = false;
 
     return velocity;
 }
+
 void Motor::runAtVelocity(float v){
     if(motorMode == Mode::VELOCITY){
         targetVelocity = v;
@@ -154,17 +170,18 @@ void Motor::runAtVelocity(float v){
 
         float currentVelocity = getVelocity();
         float currTime = TimeNowMSec();
-        float loopTime = (currTime - lastTime);
+        // float loopTime = (currTime - lastTime);
 
-        if(loopTime <= 0){
-            loopTime = 0.001; //assume smol time if no time passed
+        if(velLoopTime <= 0){
+            velLoopTime = 0.001; //assume smol time if no time passed
         }
 
         //get PID calculation
-        float pidOutput = velocityPID.pidCalcLoopTime(targetVelocity,currentVelocity,loopTime);
+        float pidOutput = velocityPID.pidCalcLoopTime(targetVelocity,currentVelocity,velLoopTime);
         pidOut = pidOutput;
         //convert pid output to motor percentage
         float motorPower = (pidOutput/maxSpeed) * 100.0;
+        
         motorPower = clamp(motorPower, -100,100);//clamp percentage between -100% and 100%
 
 
@@ -174,6 +191,7 @@ void Motor::runAtVelocity(float v){
     }
     
 }
+
 
 void Motor::setPID(float P, float I, float D){
     //set constants for PID loop for this specific motor

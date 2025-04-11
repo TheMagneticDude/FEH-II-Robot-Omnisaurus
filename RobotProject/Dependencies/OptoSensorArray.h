@@ -13,7 +13,7 @@ class OptoSensorArray {
   private:
   //nonreflective is 3.3V
     //reflective is 0
-  const float triggerThresholdMin = 1.9;//min threashold to detect nonreflective line
+  const float triggerThresholdMin = 2.76;//min threashold to detect nonreflective line
   const float triggerThresholdMax = 3.3;//max threashold for nonreflective line (0 reflection)
   
   //2.751 avg when on black line
@@ -21,9 +21,9 @@ class OptoSensorArray {
                 //M offset = +0.101
                 //R offset = +0.111
 
-  float Loffset = -0.212;
-  float Moffset= 0.101;
-  float Roffset = 0.111;
+  float Loffset = -0.212 + 0.18033333333;
+  float Moffset= 0.101-0.04966666667;
+  float Roffset = 0.111-0.13066666667;
 
   AnalogInputPin LOpto;
   AnalogInputPin MOpto;
@@ -81,6 +81,9 @@ class OptoSensorArray {
     float optoLValue();
     float optoMValue();
     float optoRValue();
+    bool getLState();
+    bool getMState();
+    bool getRState();
     int getGridLineCount();
     LineStates getArrayState();
     Direction getSuggestedDirection();

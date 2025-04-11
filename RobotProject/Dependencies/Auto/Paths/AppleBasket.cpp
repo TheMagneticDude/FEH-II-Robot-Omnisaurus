@@ -11,7 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-AppleBasket::AppleBasket(HolonomicTriangleDrive &dt, FEHServo &a) : drivetrain(dt), arm(a){
+AppleBasket::AppleBasket(HolonomicTriangleDrive &dt, FEHServo &a, OptoSensorArray &opt) : drivetrain(dt), arm(a), opto(opt){
 
     //save start timepoint
     startTime = TimeNowMSec();
@@ -23,7 +23,7 @@ AppleBasket::AppleBasket(HolonomicTriangleDrive &dt, FEHServo &a) : drivetrain(d
 void AppleBasket::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(-6,0.5,-150);
+    drivetrain.setPose(0,0,-45);
     drivetrain.resetMotorCounts();
 }
 
@@ -55,50 +55,63 @@ void AppleBasket::run(){
 
     
     switch(i){
+        // case 0:
+        // //path 1
+        // arm.SetDegree(180);
+        // //reverse from composter
+        // drivetrain.setTargetPose(-2,0.5,-150);
+        // drivetrain.runToPose();
+        // if(drivetrain.getReachedTargetPos()){
+        //     drivetrain.setPose(-2,0.5,-150);
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
+
+
         case 0:
-        //path 1
-        arm.SetDegree(180);
-        //reverse from composter
-        drivetrain.setTargetPose(-2,0.5,-150);
-        drivetrain.runToPose();
+        //move towards apple basket
+        drivetrain.setTargetPose(-7,7,-45);
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos()){
-            drivetrain.setPose(-6,0.5,-150);
+            drivetrain.setPose(-7, 7, -45);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 1:
-        //turn back to zero
-        drivetrain.setMovementVector(0,0,0.5);
+        arm.SetDegree(180);
+        //turn right 45 so back is straight with wall (so forwards is -x))
+        drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
-        if(timeUp(startTime,1240)){
+        if(timeUp(startTime,400)){
             drivetrain.setMovementVector(0,0,0);
-            //robot SHOULD now be at  0 deg
-            drivetrain.setPose(-2,0.5,0);
+            drivetrain.setPose(-7,7,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
+        
+
         case 2:
-        //move back to aling with wall
-        drivetrain.setTargetPose(-2,-5,0);
-        drivetrain.runToPose();
+        //go towards apple basket
+        arm.SetDegree(120);
+        drivetrain.setTargetPose(-12,7,0);
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos()){
-            // drivetrain.setMovementVector(0,0,0);
-            //should now be aligned at y = 0
-            drivetrain.setPose(drivetrain.getPose()[0], 0, 0);
+            drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 3:
-        //move forwards until in line with apple basket
-        drivetrain.setTargetPose(-2,6,0);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos()){
+        arm.SetDegree(0);
+        //pick up basket
+        //can add a delay
+        if(timeUp(startTime,0)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -106,22 +119,9 @@ void AppleBasket::run(){
         break;
 
         case 4:
-        arm.SetDegree(120);
-        //move sideways towards apple basket
-        drivetrain.setTargetPose(-6,6,0);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos()){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 5:
-        arm.SetDegree(120);
-        //move back to original pos: prepare for window path
-        drivetrain.setTargetPose(-2,6,0);
-        drivetrain.runToPoseLim(0.4);
+        //move away from apple bucket
+        drivetrain.setTargetPose(-7,7,0);
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos()){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
@@ -135,6 +135,43 @@ void AppleBasket::run(){
         break;
     }
 }
+
+// case 5:
+// //rotate 90 to face apple basket
+// drivetrain.setMovementVector(0,0,-0.5);
+// drivetrain.update();
+// if(timeUp(startTime,800)){
+//     drivetrain.setPose(0,7,0);
+//     drivetrain.setMovementVector(0,0,0);
+//     startTime = TimeNowMSec();
+//     i++; 
+// }
+// break;
+
+        // case 3:
+        // //rotate 90 to align with wall
+        // drivetrain.setMovementVector(0,0,0.5);
+        // drivetrain.update();
+        // if(timeUp(startTime,800)){
+        //     drivetrain.setPose(-2,7,-90);
+        //     drivetrain.setMovementVector(0,0,0);
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
+
+        // case 4:
+        
+        // //move sideways towards apple basket until optosensors are triggered
+        // drivetrain.setMovementVector(-0.3,0,0);
+        // drivetrain.update();
+        // if(opto.getLState() || opto.getRState() || opto.getMState()){
+        //     drivetrain.setMovementVector(0,0,0);
+        //     drivetrain.setPose(0,7,0);//apple basket is at x = 0 now
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
 
 //exit condition, returns true once command sequence has ended
 bool AppleBasket::ended(){

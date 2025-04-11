@@ -85,8 +85,8 @@ void Composter::run(){
         case 2:
         //move back to aling with wall
         drivetrain.setTargetPose(-2,-5,0);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
             // drivetrain.setMovementVector(0,0,0);
             //should now be aligned at y = 0
             drivetrain.setPose(drivetrain.getPose()[0], 0, 0);
@@ -97,7 +97,7 @@ void Composter::run(){
 
         case 3:
         //move forward 0.5 in to have room to rotate
-        drivetrain.setTargetPose(-2,0.5,0);
+        drivetrain.setTargetPose(-2,1,0);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos()){
             // drivetrain.setMovementVector(0,0,0);
@@ -109,18 +109,29 @@ void Composter::run(){
         case 4:
         drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
-        if(timeUp(startTime,1240)){
+        if(timeUp(startTime,1350)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  150 deg
-            drivetrain.setPose(-2,0.5,150);
+            drivetrain.setPose(-2,1,-150);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 5:
+        //move back towards wall
+        drivetrain.setTargetPose(-2,0,-150);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 6:
         //move towards composter
-        drivetrain.setTargetPose(-6,0.5,-150);
+        drivetrain.setTargetPose(-6,0,-150);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos()){
             drivetrain.setMovementVector(0,0,0);
@@ -129,7 +140,7 @@ void Composter::run(){
         }
         break;
 
-        case 6:
+        case 7:
         composterArm.SetPercent(80);
         if(timeUp(startTime,1500)){
             startTime = TimeNowMSec();
@@ -138,12 +149,24 @@ void Composter::run(){
         }
         break;
 
-        case 7:
+        case 8:
         composterArm.SetPercent(-80);
         if(timeUp(startTime,1500)){
             startTime = TimeNowMSec();
             i++; 
         composterArm.SetPercent(0);
+        drivetrain.setPose(-6,0,-150);
+        }
+        break;
+
+        case 9:
+        //move away from composter
+        drivetrain.setTargetPose(-3,0,-150);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos()){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
         }
         break;
 

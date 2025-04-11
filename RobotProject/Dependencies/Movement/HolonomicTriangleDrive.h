@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <cmath>
 #include "Motor.h"
-#include "../Dependencies/PosePID.h"
 
 
 
@@ -137,7 +136,6 @@ class HolonomicTriangleDrive {
 
   float angularVelocity = 0;
 
-  PosePID posePID;
 
   const float posePIDVals[3] = {0.2,0,0};
 
