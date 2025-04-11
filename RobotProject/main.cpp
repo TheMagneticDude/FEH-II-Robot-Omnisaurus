@@ -180,7 +180,7 @@ int main(void)
     float I = 0;
     float D = 0;
 
-    //RCS_______________________________________________________________________________________________________________________
+    //RCS_________________________________________________________________________________________________________________________________________________
     std::string RCS_String = "0150F2QWD";
     
 
@@ -232,6 +232,9 @@ int main(void)
                     init = true;
                 }
                 if(autoModeButton.onButtonClicked()){
+                    //UNCOMMENT RCS INITIALIZATION WHEN DOING RUN
+                 // Run Menu to select Region (e.g., A, B, C, D)____________________________________________________________________________________________________________________________________
+                    // RCS.InitializeTouchMenu("0150F2QWD");
                     menuMode = Menu::Auto;
                     init = true;
                 }
@@ -270,9 +273,8 @@ int main(void)
 
             if(menuMode == Menu::Auto){
                 //initialize RCS_________________________________________________________________________________________________
-                //UNCOMMENT RCS INITIALIZATION WHEN DOING RUN
-                RCS.InitializeTouchMenu(RCS_String.c_str()); // Run Menu to select Region (e.g., A, B, C, D)
-                int lever = RCS.GetCorrectLever(); // Get a 0, 1, or 2 indicating which lever to pull
+                
+                // int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
 
                 
                 //measure loopspeed

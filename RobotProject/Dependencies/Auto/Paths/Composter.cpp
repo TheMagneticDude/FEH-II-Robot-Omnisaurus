@@ -76,7 +76,7 @@ void Composter::run(){
         case 1:
         drivetrain.setTargetPose(-3,0,0);
         drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             startTime = TimeNowMSec();
             i++; 
         }
@@ -99,7 +99,7 @@ void Composter::run(){
         //move forward 0.5 in to have room to rotate
         drivetrain.setTargetPose(-2,1,0);
         drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos()){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -133,8 +133,9 @@ void Composter::run(){
         //move towards composter
         drivetrain.setTargetPose(-6,0,-150);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos()){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1500)){
             drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
             startTime = TimeNowMSec();
             i++; 
         }
@@ -142,7 +143,7 @@ void Composter::run(){
 
         case 7:
         composterArm.SetPercent(80);
-        if(timeUp(startTime,1500)){
+        if(timeUp(startTime,1800)){
             startTime = TimeNowMSec();
             i++; 
         composterArm.SetPercent(0);
@@ -151,7 +152,7 @@ void Composter::run(){
 
         case 8:
         composterArm.SetPercent(-80);
-        if(timeUp(startTime,1500)){
+        if(timeUp(startTime,1800)){
             startTime = TimeNowMSec();
             i++; 
         composterArm.SetPercent(0);
@@ -163,7 +164,29 @@ void Composter::run(){
         //move away from composter
         drivetrain.setTargetPose(-3,0,-150);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos()){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 10:
+        //run to final button
+        drivetrain.setTargetPose(10,0,-150);
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.getReachedTargetPos()||timeUp(startTime,1500)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 11:
+        //run to final button
+        drivetrain.setTargetPose(10,-30,-150);
+        drivetrain.runToPose();
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 

@@ -105,7 +105,7 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
         //      when you want it to stay at a constant high speed. This works because
         //      your taking the derivative of both sides of the equation
         
-        output += ((k_P*error) + (k_I*errorSum) + (k_D*errorRateOfChange));
+        output += (k_P*error); //+ (k_I*errorSum) + (k_D*errorRateOfChange));
         lastDesiredRPM = desiredRPM;
 
         

@@ -22,7 +22,6 @@ StartButton::StartButton(HolonomicTriangleDrive &dt) : drivetrain(dt){
 void StartButton::init(){
     //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
     //robot starts at a -45 degree angle  
-    drivetrain.resetMotorCounts();
     drivetrain.setPose(0,0,0);
     startTime = TimeNowMSec();
     i = 0;
@@ -31,7 +30,6 @@ void StartButton::init(){
 
 //Runs the command every tick
 void StartButton::run(){
-    
     //Command stuff
     std::string s =  commandName + " SubPath: " + std::to_string(i);
     LCD.WriteAt(s.c_str(),0,0);

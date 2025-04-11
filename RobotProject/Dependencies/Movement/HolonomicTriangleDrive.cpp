@@ -283,19 +283,15 @@ void HolonomicTriangleDrive::updatePose(){
     float backLeftVel = BackLeft.getVelocity();
     float backRightVel = BackRight.getVelocity();
 
-    
-    float omega = angularVelocity;
+
     float deltaTime = (currTime - prevTime) / 1000;//convert to sec
 
     if (deltaTime <= 0.001) {
         deltaTime = 0.001;
     }
 
-    //theta = omega * t
-    float dTheta = (omega * deltaTime);
-    if (fabs(dTheta) < 0.001) {
-        dTheta = 0;  // no rotation needed if the angle difference is negligible
-    }
+    float inchPerCount = M_PI * 2.5 / 318.0;
+    float deltaProjectedAngle = inchPerCount * ( (d1/robotRadius) + (d2 / (sqrt(3) * robotRadius)) - (d3 / (sqrt(3) * robotRadius)) );
 
 
     float thetaRad = deg2rad(Pose[2]);
@@ -307,15 +303,15 @@ void HolonomicTriangleDrive::updatePose(){
     //update global pose
     Pose[0] += dxGlobal;
     Pose[1] += dyGlobal;
-    // Pose[2] += rad2deg(dTheta);
+    // Pose[2] += rad2deg(deltaProjectedAngle);
 
-    // while (Pose[2] > 180) {
-    //     Pose[2] -= 360;
+    //Wraps theta to [0,360]
+    // Pose[2] = fmod(Pose[2], 360.0);
+    // if (Pose[2] < 0) {
+    //     Pose[2] += 360.0;
     // }
-    // while (Pose[2] < -180) {
-    //     Pose[2] += 360;
-    // }
-    
+
+
     prevTime = TimeNowMSec();
 }
 
@@ -380,6 +376,7 @@ void HolonomicTriangleDrive::runToPoseLim(float maxVel){
 
     //use while to safeguard against angles outside of -360 to 360 range
     //just in case, it should never get stuck in an infinite loop
+    //wrap to [-180,180) (will never reach +180)
     while (deltaTheta > 180) {
         deltaTheta -= 360;
     }
