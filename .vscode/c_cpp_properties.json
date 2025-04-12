@@ -20,7 +20,8 @@
                 "${workspaceFolder}/RobotProject/Assets/**",
                 "C:/MinGW/mingw32/lib/gcc/i686-w64-mingw32/8.1.0/include/c++/parallel",
                 "${workspaceFolder}/RobotProject/fehproteusfirmware/Libraries",
-                "Dependencies"
+                "Dependencies",
+                "${workspaceFolder}/RobotProject/Assets"
             ]
         }
     ],

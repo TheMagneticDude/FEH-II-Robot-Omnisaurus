@@ -82,6 +82,7 @@ void Motor::setTargetPos(float pos){
     targetPos = pos;
 }
 void Motor::resetEncoderCounts(){
+    lastEncoderCount = 0;
     MotorEncoder.ResetCounts();
 }
 float Motor::getCounts(){
@@ -98,7 +99,8 @@ float Motor::getTotalDisplacement(){
 }
 //get velocity in inch per second
 float Motor::getVelocity(){
-    float velocityEpsilon = 1; //Min amount of encoder delta to update velocity
+    float velocityEpsilon = 60; //approx 20 percent of 318 counts per rev //Min amount of encoder delta to update velocity
+
     float velocityLoopTimerMsMin = 5;//min loop time of 5 ms  
     float velocityLoopTimerMsMax = 50;//max loop time of 50 ms  
     
