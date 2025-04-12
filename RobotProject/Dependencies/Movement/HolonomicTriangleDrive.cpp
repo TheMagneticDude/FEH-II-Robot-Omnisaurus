@@ -239,7 +239,7 @@ void HolonomicTriangleDrive::setPose(float x, float y, float theta){
     Pose[0] = x;
     Pose[1] = y;
 
-    Pose[2] = -theta; //for now bc theta isnt being calculated
+    Pose[2] = theta; //for now bc theta isnt being calculated
 
     updatePose();//apply offset to pose 
 }
@@ -294,7 +294,7 @@ void HolonomicTriangleDrive::updatePose(){
     float deltaProjectedAngle = inchPerCount * ( (d1/robotRadius) + (d2 / (sqrt(3) * robotRadius)) - (d3 / (sqrt(3) * robotRadius)) );
 
 
-    float thetaRad = deg2rad(Pose[2]);
+    float thetaRad = -deg2rad(Pose[2]);
     float dxGlobal = dxLocal * cos(thetaRad) - dyLocal * sin(thetaRad);
     float dyGlobal = dxLocal * sin(thetaRad) + dyLocal * cos(thetaRad);
 
@@ -336,7 +336,7 @@ void HolonomicTriangleDrive::runToPose(){
 
 
     
-    float currThetaRad = deg2rad(Pose[2]);
+    float currThetaRad = -deg2rad(Pose[2]);
     //current theta with respect to map
 
     float localX =  deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
@@ -389,7 +389,7 @@ void HolonomicTriangleDrive::runToPoseLim(float maxVel){
     if(fabs(deltaY) < positionEpsilon){deltaY  = 0;}
 
 
-    float currThetaRad = deg2rad(Pose[2]);
+    float currThetaRad = -deg2rad(Pose[2]);
     //current theta with respect to map
 
     float localX =  deltaX * cos(currThetaRad) + deltaY * sin(currThetaRad);
