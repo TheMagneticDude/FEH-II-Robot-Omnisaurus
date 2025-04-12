@@ -14,12 +14,13 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt) : M(p,m
     port = p;
     MotorMaxVolt = maxvolt;
     encoderCountsPerRev = defaultCountsPerRev;
-    encoderPort = encoderPort;
+    encoderPort = ep;
     MotorEncoder.ResetCounts();
     targetVelocity = 0;
     pidOut=0;
     totalDisplacement = 0;
     velocityDeltaTime = 0;
+    currentVelocity = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
@@ -27,23 +28,27 @@ Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt) : M(p,m
     lastEncoderCount = 0;
     lastTime = TimeNowMSec();
     velocityLoopTimerPass = false;
+    currPosition = 0;
 }
 
 Motor::Motor(FEHMotor::FEHMotorPort p, FEHIO::FEHIOPin ep,float maxvolt, float countsperrev) : M(p,maxvolt), MotorEncoder(ep),velocityPID(0, 0){
     port = p;
     MotorMaxVolt = maxvolt;
+    encoderPort = ep;
     encoderCountsPerRev = countsperrev;
     MotorEncoder.ResetCounts();
     targetVelocity = 0;
     pidOut=0;
     totalDisplacement = 0;
     velocityDeltaTime = 0;
+    currentVelocity = 0;
 
     //default mode is power
     motorMode = Mode::POWER;
     lastEncoderCount = 0;
     lastTime = TimeNowMSec();
     velocityLoopTimerPass = false;
+    currPosition = 0;
 }
 
 void Motor::setMode(Mode m){
@@ -99,18 +104,20 @@ float Motor::getTotalDisplacement(){
 }
 //get velocity in inch per second
 float Motor::getVelocity(){
-    float velocityEpsilon = 60; //approx 20 percent of 318 counts per rev //Min amount of encoder delta to update velocity
+    float velocityEpsilon = 1;
 
     float velocityLoopTimerMsMin = 5;//min loop time of 5 ms  
     float velocityLoopTimerMsMax = 50;//max loop time of 50 ms  
     
 
     float currTime = TimeNowMSec();
+    
     float deltaTime = currTime - lastTime;
     float currCount = MotorEncoder.Counts();
+    currPosition = currCount;
     float deltaCounts = currCount - lastEncoderCount;
 
-    //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
+    // //wait until count has changed enough by at least epsilon, or it has not changed enough in 1ms and remeasure
     if((fabs(deltaCounts) < velocityEpsilon) &&  (deltaTime >= velocityLoopTimerMsMin) && (deltaTime <= velocityLoopTimerMsMax)){
         return currentVelocity;
     }
@@ -120,8 +127,8 @@ float Motor::getVelocity(){
     }
 
         
-    if(deltaTime <= 0){
-        //no divide by zero error
+    if(deltaTime < velocityLoopTimerMsMin){
+        // not enough time has passed for a reliable velocity calculation
         return currentVelocity;
     }
 
@@ -140,6 +147,7 @@ float Motor::getVelocity(){
 
     
     velLoopTime = deltaTime;//update loop time for use in PID loop
+    velCurrTime = currTime;
 
     float rotations = deltaCounts / encoderCountsPerRev;
         
@@ -153,6 +161,15 @@ float Motor::getVelocity(){
     //calculate totalDisplacement
     totalDisplacement += distance;
 
+    //telemetry
+    telemetryTime[telemetryIndex] = velCurrTime;
+    telemetryTargetVel[telemetryIndex] = targetVelocity;
+    telemetryEncoder[telemetryIndex] = currPosition;
+    telemetryIndex++;
+    if(telemetryIndex >= telemetryArrLen){
+        //loop through array again once its full
+        telemetryIndex = 0;
+    }
 
 
     //update values for next loop
@@ -177,7 +194,8 @@ void Motor::runAtVelocity(float v){
         if(velLoopTime <= 0){
             velLoopTime = 0.001; //assume smol time if no time passed
         }
-
+        //telemetry current velocity
+        telemetryVel[telemetryIndex] = currentVelocity;
         //get PID calculation
         float pidOutput = velocityPID.pidCalcLoopTime(targetVelocity,currentVelocity,velLoopTime);
         pidOut = pidOutput;
@@ -187,14 +205,9 @@ void Motor::runAtVelocity(float v){
         motorPower = clamp(motorPower, -100,100);//clamp percentage between -100% and 100%
 
         //debug stuff
-        telemetryVel[telemetryIndex] = currentVelocity;
-        telemetryPIDOut[telemetryIndex] = pidOutput;
-        telemetryTime[telemetryIndex] = currTime;
-        telemetryIndex++;
-        if(telemetryIndex > telemetryArrLen){
-            //loop through array again once its full
-            telemetryIndex = 0;
-        }
+        
+        // telemetryPIDOut[telemetryIndex] = pidOutput;
+        
 
         SetPercent(motorPower);
     }else{
@@ -218,6 +231,15 @@ float* Motor::getTelemetryPIDOut(){
 
 float* Motor::getTelemetryTime(){
     return telemetryTime;
+}
+float* Motor::getTelemetryTargetVel(){
+    return telemetryTargetVel;
+}
+int Motor::getTelemetryIndex(){
+    return telemetryIndex;
+}
+int* Motor::getTelemetryEncoder(){
+    return telemetryEncoder;
 }
 unsigned int Motor::getTelemetryLen(){
     return telemetryArrLen;

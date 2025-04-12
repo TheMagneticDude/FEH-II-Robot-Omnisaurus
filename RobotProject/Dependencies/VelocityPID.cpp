@@ -88,10 +88,10 @@ float VelocityPID::pidCalcLoopTime(double desiredRPM, double currentRPM, double 
             errorSum = 0;
         }
         
-        if(fabs(lastDesiredRPM - desiredRPM) >= 0.5){
-            //reset output if desired RPM changed enough
-            output = 0;
-        }
+        // if(fabs(lastDesiredRPM - desiredRPM) >= 0.5){
+        //     //reset output if desired RPM changed enough
+        //     output = 0;
+        // }
         
         const double maxIntegral = 50;
         errorSum = clamp(errorSum, -maxIntegral, maxIntegral);

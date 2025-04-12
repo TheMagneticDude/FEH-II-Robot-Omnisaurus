@@ -434,7 +434,7 @@ void HolonomicTriangleDrive::turnToTheta(float theta){
 
 void HolonomicTriangleDrive::toggleVelocityControl(bool b){
     velocityControl = b;
-    b ? setMotorsToRunAtVelocityMode():setMotorsToRunToPositionMode();
+    b ? setMotorsToRunAtVelocityMode():setMotorsToPowerMode();
 }
 
 void HolonomicTriangleDrive::setMotorsToRunAtVelocityMode(){

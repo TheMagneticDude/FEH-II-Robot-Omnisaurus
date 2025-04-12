@@ -390,31 +390,45 @@ int main(void)
 
 
                 LCD.WriteAt("TV: ", 0, 100);
-                LCD.WriteAt(drivetrain.getBackRightTargetVel(), 40, 100);
+                LCD.WriteAt(drivetrain.getBackLeftTargetVel(), 40, 100);
 
                 LCD.WriteAt("AV: ", 0, 120);
-                LCD.WriteAt(drivetrain.getBackRightVelocity(), 40, 120);
+                LCD.WriteAt(drivetrain.getBackLeftVelocity(), 40, 120);
 
                 LCD.WriteAt("PO: ", 0, 140);
-                LCD.WriteAt(drivetrain.getBackRightPIDOut(), 40, 140);
+                LCD.WriteAt(drivetrain.getBackLeftPIDOut(), 40, 140);
 
 
-                Button Debug(15,0, "Debug",WHITE,GRAY);
+                Button Debug(0, "Debug",WHITE,GRAY);
                 Debug.setHeight(30);
                 Debug.updateButtonState();
+
+                Motor *motorInstancePtr = drivetrain.getMotorInstance(2); //back left
+                int index = motorInstancePtr->getTelemetryIndex();
+                LCD.WriteAt(index,150,60);
                 //dump telemetry to SD card:
                 if(Debug.onButtonClicked()){
-                    Motor *motorInstancePtr = drivetrain.getMotorInstance(3); //back right
+                    
                     float* telemVel = motorInstancePtr->getTelemetryVel();
-                    float* telemPIDout = motorInstancePtr->getTelemetryPIDOut();
+                    float* telemTVel = motorInstancePtr->getTelemetryTargetVel();
+                    // float* telemPIDout = motorInstancePtr->getTelemetryPIDOut();
                     float* telemTime = motorInstancePtr->getTelemetryTime();
 
+                    int* telemEnc = motorInstancePtr->getTelemetryEncoder();
+
+                    
 
 
-                    FEHFile *ofptr = SD.FOpen("Telemetry.txt", "w");
+
+                    FEHFile *ofptr = SD.FOpen("Tel.txt", "w");
+                    drivetrain.stop();
                     //Print data using formatted string
+                    SD.FPrintf(ofptr,"Telemetry:\n");
                     for(int i = 0; i < motorInstancePtr->getTelemetryLen(); i++){
-                        SD.FPrintf(ofptr, "Vel: %g.3, PID: %g.3, Time: %g.3", telemVel[i], telemPIDout[i],telemTime[i]);
+                        LCD.WriteAt(i,200,60);
+                        // SD.FPrintf(ofptr, "Vel: %.2f, TargetVel: %.2f, PID: %.2f, Encoder: %d Time: %.2f \n", telemVel[i], telemTVel[i], telemPIDout[i],telemEnc[i],telemTime[i]);
+                        SD.FPrintf(ofptr, "Vel: %.2f, TargetVel: %.2f, Encoder: %d Time: %.2f \n", telemVel[i], telemTVel[i],telemEnc[i],telemTime[i]);
+                        Sleep(150);
                     }
                     // SD.FPrintf(ofptr,"HOLAR\n");
                     // SD.FPrintf(ofptr, "Straight: On line Left: %f, Middle: %f, Right: %f\n", onLine[0], onLine[1], onLine[3]);

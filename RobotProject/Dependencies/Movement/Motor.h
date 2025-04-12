@@ -53,8 +53,8 @@ class Motor {
 
   FEHIO::FEHIOPin encoderPort;
 
-  float currPosition;
-  float targetPos;
+  int currPosition;
+  int targetPos;
 
 
   bool velocityLoopTimerPass;
@@ -65,7 +65,7 @@ class Motor {
 
   //For IGWAN is 318
   float encoderCountsPerRev;
-  const unsigned int defaultCountsPerRev = 318;
+  const float defaultCountsPerRev = 318.0;
   
   //VEX Omni wheel is about 2.5 inch in diameter
   const float wheelCircumference = M_PI * 2.5;
@@ -79,12 +79,17 @@ class Motor {
 
   float velocityDeltaTime;
   float velLoopTime = 0;
+  float velCurrTime = 0;
 
-  static const unsigned int telemetryArrLen = 200;
+  static const unsigned int telemetryArrLen = 100;
   int telemetryIndex = 0;
   float telemetryVel[telemetryArrLen];
+  float telemetryTargetVel[telemetryArrLen];
   float telemetryPIDOut[telemetryArrLen];
   float telemetryTime[telemetryArrLen];
+
+  //encoder telemetry
+  int telemetryEncoder[telemetryArrLen];
 
   
   
@@ -126,6 +131,9 @@ class Motor {
   void setPID(float P, float I, float D);
   float* getTelemetryVel();
   float* getTelemetryPIDOut();
+  float* getTelemetryTargetVel();
   float* getTelemetryTime();
+  int* getTelemetryEncoder();
+  int getTelemetryIndex();
   unsigned int getTelemetryLen();
 };
