@@ -283,7 +283,7 @@ int main(void)
 
 
                 
-                // drivetrain.toggleVelocityControl(true);
+                drivetrain.toggleVelocityControl(true);
 
                 // LCD.WriteAt("Elapsed Time: ",0, 180);
                 // LCD.WriteAt(timeNow,0, 195);
