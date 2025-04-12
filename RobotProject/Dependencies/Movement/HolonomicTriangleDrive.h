@@ -190,6 +190,6 @@ class HolonomicTriangleDrive {
   float getBackRightPIDOut();
   bool getReachedTargetPos();
 
- 
+  Motor* getMotorInstance(unsigned int i);
     
 };

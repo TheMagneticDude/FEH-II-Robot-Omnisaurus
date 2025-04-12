@@ -186,6 +186,15 @@ void Motor::runAtVelocity(float v){
         
         motorPower = clamp(motorPower, -100,100);//clamp percentage between -100% and 100%
 
+        //debug stuff
+        telemetryVel[telemetryIndex] = currentVelocity;
+        telemetryPIDOut[telemetryIndex] = pidOutput;
+        telemetryTime[telemetryIndex] = currTime;
+        telemetryIndex++;
+        if(telemetryIndex > telemetryArrLen){
+            //loop through array again once its full
+            telemetryIndex = 0;
+        }
 
         SetPercent(motorPower);
     }else{
@@ -199,6 +208,21 @@ void Motor::setPID(float P, float I, float D){
     //set constants for PID loop for this specific motor
     velocityPID.setPID(P,I,D);
 }
+
+float* Motor::getTelemetryVel(){
+    return telemetryVel;
+}
+float* Motor::getTelemetryPIDOut(){
+    return telemetryPIDOut;
+}
+
+float* Motor::getTelemetryTime(){
+    return telemetryTime;
+}
+unsigned int Motor::getTelemetryLen(){
+    return telemetryArrLen;
+}
+
 
 
 

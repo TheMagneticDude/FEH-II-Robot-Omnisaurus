@@ -471,6 +471,17 @@ void HolonomicTriangleDrive::setMotorPID(int motor, float P, float I, float D){
     }
 }
 
+Motor* HolonomicTriangleDrive::getMotorInstance(unsigned int i){
+    switch(i){
+        case 1:
+        return &Front;
+        case 2:
+        return &BackLeft;
+        case 3:
+        return &BackRight;
+    }
+}
+
 void HolonomicTriangleDrive::updateMotorDistances(){
         Front.getVelocity();
         BackLeft.getVelocity();

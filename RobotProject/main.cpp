@@ -399,6 +399,32 @@ int main(void)
                 LCD.WriteAt(drivetrain.getBackRightPIDOut(), 40, 140);
 
 
+                Button Debug(15,0, "Debug",WHITE,GRAY);
+                Debug.setHeight(30);
+                Debug.updateButtonState();
+                //dump telemetry to SD card:
+                if(Debug.onButtonClicked()){
+                    Motor *motorInstancePtr = drivetrain.getMotorInstance(3); //back right
+                    float* telemVel = motorInstancePtr->getTelemetryVel();
+                    float* telemPIDout = motorInstancePtr->getTelemetryPIDOut();
+                    float* telemTime = motorInstancePtr->getTelemetryTime();
+
+
+
+                    FEHFile *ofptr = SD.FOpen("Telemetry.txt", "w");
+                    //Print data using formatted string
+                    for(int i = 0; i < motorInstancePtr->getTelemetryLen(); i++){
+                        SD.FPrintf(ofptr, "Vel: %g.3, PID: %g.3, Time: %g.3", telemVel[i], telemPIDout[i],telemTime[i]);
+                    }
+                    // SD.FPrintf(ofptr,"HOLAR\n");
+                    // SD.FPrintf(ofptr, "Straight: On line Left: %f, Middle: %f, Right: %f\n", onLine[0], onLine[1], onLine[3]);
+                    // SD.FPrintf(ofptr, "Straight: On Back Left: %f, Middle: %f, CHAR: %f\n", onBack[0], onBack[1], onBack[3]);
+                    //Close output log file
+                    SD.FClose(ofptr);
+                    LCD.WriteAt("SD Saved",0,120);
+                    LCD.Clear();
+                }
+
                 float telemetryOffsetTwo = 150;
                 float telemetryYPos = 120+60;
                 LCD.WriteAt("MovVecX ",telemetryYPos,90+telemetryOffsetTwo);

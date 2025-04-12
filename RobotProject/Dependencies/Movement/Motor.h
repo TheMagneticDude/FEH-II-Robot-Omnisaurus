@@ -80,6 +80,12 @@ class Motor {
   float velocityDeltaTime;
   float velLoopTime = 0;
 
+  static const unsigned int telemetryArrLen = 200;
+  int telemetryIndex = 0;
+  float telemetryVel[telemetryArrLen];
+  float telemetryPIDOut[telemetryArrLen];
+  float telemetryTime[telemetryArrLen];
+
   
   
   public:
@@ -118,5 +124,8 @@ class Motor {
   float getPIDOut();
   void runAtVelocity(float v);
   void setPID(float P, float I, float D);
-  
+  float* getTelemetryVel();
+  float* getTelemetryPIDOut();
+  float* getTelemetryTime();
+  unsigned int getTelemetryLen();
 };
