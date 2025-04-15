@@ -59,8 +59,8 @@ void StartButton::run(){
         case 0:
         //move back to hit start
         drivetrain.setTargetPose(0,-3,0);
-        drivetrain.runToPoseLim(0.6);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+        drivetrain.runTilStalled(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -71,8 +71,8 @@ void StartButton::run(){
         case 1:
         //move forward again to return to original position
         drivetrain.setTargetPose(0,0,0);
-        drivetrain.runToPoseLim(0.6);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+        drivetrain.runTilStalled(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++;

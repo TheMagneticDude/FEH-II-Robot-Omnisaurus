@@ -139,7 +139,8 @@ int main(void)
     // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
-    // autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
+    autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
+    
     // autonomous.addCommand(std::make_unique<Window1>(drivetrain));
 
 

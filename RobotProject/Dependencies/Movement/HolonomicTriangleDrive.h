@@ -139,6 +139,16 @@ class HolonomicTriangleDrive {
 
   const float posePIDVals[3] = {0.2,0,0};
 
+  //run till stalled
+  bool isStalled = false;
+  float lastAboveThresholdTime = 0;
+  float stallDebounceDuration = 300; // milliseconds
+  float velocityThreshold = 0.01; 
+  float previousEncoderValues[3];
+
+  float runStallTime = 0;
+  bool hasMoved = false;
+
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front, FEHMotor::FEHMotorPort BackLeft, FEHMotor::FEHMotorPort BackRight, float maxVolt);
   HolonomicTriangleDrive(FEHMotor::FEHMotorPort Front,FEHIO::FEHIOPin E1, FEHMotor::FEHMotorPort BackLeft,FEHIO::FEHIOPin E2, FEHMotor::FEHMotorPort BackRight,FEHIO::FEHIOPin E3, float maxVolt);
@@ -169,6 +179,10 @@ class HolonomicTriangleDrive {
   void turnToTheta(float theta);
   void runToPose();
   void runToPoseLim(float maxVel);
+  void runTilStalled(float maxVel);
+  bool isCurrStalled();
+
+
   void updatePose();
   void toggleVelocityControl(bool b);
 

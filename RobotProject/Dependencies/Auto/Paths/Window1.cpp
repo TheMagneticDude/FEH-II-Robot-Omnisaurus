@@ -23,7 +23,7 @@ Window1::Window1(HolonomicTriangleDrive &dt) : drivetrain(dt){
 void Window1::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(-7,7,0);
+    drivetrain.setPose(-7,9,0);
     drivetrain.resetMotorCounts();
 }
 
@@ -59,29 +59,41 @@ void Window1::run(){
         //turn towards window (to 90 deg)
         drivetrain.setMovementVector(0,0,0.5);
         drivetrain.update();
-        if(timeUp(startTime,800)){
+        if(timeUp(startTime,1000)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  90 deg
-            drivetrain.setPose(-7,7,90);
+            drivetrain.setPose(-7,9,90);
             startTime = TimeNowMSec();
             i++; 
         }
+        break;
 
         case 1:
         //move towards window
-        drivetrain.setTargetPose(-7,10,90);
+        drivetrain.setTargetPose(-10,16,90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(-7,0,90);//reset y axis against window wall
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 2:
+        //align in corner
+        drivetrain.setTargetPose(-25,20,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(0,0,90); //0,0 is now the window corner
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 3:
         //move window
-        drivetrain.setTargetPose(6,0,90);
+        drivetrain.setTargetPose(12,-0.5,90);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
             drivetrain.setMovementVector(0,0,0);

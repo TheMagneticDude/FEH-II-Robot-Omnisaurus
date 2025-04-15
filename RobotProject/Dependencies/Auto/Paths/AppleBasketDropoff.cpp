@@ -2,7 +2,7 @@
 #include <string>
 #include <FEHXBee.h>
 #include <FEHLCD.h>
-#include "AppleBasket.h"
+#include "AppleBasketDropoff.h"
 #include <cstring>
 #include <iomanip>
 
@@ -11,7 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-AppleBasket::AppleBasket(HolonomicTriangleDrive &dt, FEHServo &a, OptoSensorArray &opt) : drivetrain(dt), arm(a), opto(opt){
+AppleBasketDropoff::AppleBasketDropoff(HolonomicTriangleDrive &dt) : drivetrain(dt){
 
     //save start timepoint
     startTime = TimeNowMSec();
@@ -20,18 +20,18 @@ AppleBasket::AppleBasket(HolonomicTriangleDrive &dt, FEHServo &a, OptoSensorArra
     i = 0;
 }
 
-void AppleBasket::init(){
+void AppleBasketDropoff::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(-3,0,-150);
+    drivetrain.setPose(-7,9,0);
     drivetrain.resetMotorCounts();
 }
 
 //Runs the command every tick
-void AppleBasket::run(){
+void AppleBasketDropoff::run(){
     
     //Command stuff
-    std::string s = "AppleBasket SubPath: " + i;
+    std::string s = "AppleBasketDropoff SubPath: " + i;
     LCD.WriteAt(s.c_str(),0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
@@ -55,80 +55,27 @@ void AppleBasket::run(){
 
     
     switch(i){
-
         case 0:
-        //turn back so heading is 0
-        drivetrain.setMovementVector(0,0,0.5);
-        drivetrain.update();
-        if(timeUp(startTime,1750)){
-            drivetrain.setMovementVector(0,0,0);
-            //robot SHOULD now be at  0  deg
-            drivetrain.setPose(-3,0,0);
+        //move towards ramp
+        drivetrain.setTargetPose(-4,5,0);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 1:
-        //move back to align against wall
-        drivetrain.setTargetPose(-3,-10,0);
+        //move back up ramp
+        drivetrain.setTargetPose(-4,5,0);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 1000)){
-            // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(drivetrain.getPose()[0],0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 2:
-        //move towards apple basket
-        drivetrain.setTargetPose(-7,9,0);
-        drivetrain.runToPoseLim(0.6);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
-
-        case 3:
-        arm.SetDegree(110);
-        //extend arm and move towards apple basket
-        drivetrain.setTargetPose(-10,9,0);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++;
-            drivetrain.stop();
-        }
-        break;
-
-        case 4:
-        //raise arm
-        arm.SetDegree(0);
-        //can lower time limit
-        if(timeUp(startTime, 100)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 5:
-
-        //back up from apple  basket
-        drivetrain.setTargetPose(-7,9,0);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++;
-            drivetrain.stop();
-        }
-        break;
-
         
 
         default:
@@ -139,12 +86,12 @@ void AppleBasket::run(){
 }
 
 //exit condition, returns true once command sequence has ended
-bool AppleBasket::ended(){
+bool AppleBasketDropoff::ended(){
     return end;
 }
 
 //Stops the command even if end condition has not been reached and triggers ended to move to next command in sequence
-void AppleBasket::stop(){end = true;}
+void AppleBasketDropoff::stop(){end = true;}
 
 //returns path name
-std::string AppleBasket::getName(){return commandName;}
+std::string AppleBasketDropoff::getName(){return commandName;}
