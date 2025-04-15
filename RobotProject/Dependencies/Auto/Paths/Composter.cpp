@@ -120,31 +120,30 @@ void Composter::run(){
 
         case 5:
         //move back towards wall
-        drivetrain.setTargetPose(-3,0,-150);
+        drivetrain.setTargetPose(-3,0.3,-150);
         drivetrain.runToPoseLim(0.3);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
             drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(0,0,-150);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
+
+        // case 6:
+        // //move away slightly for leeway
+        // drivetrain.setTargetPose(-2,0.5,-150);
+        // drivetrain.runToPoseLim(0.2);
+        // if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+        //     drivetrain.setMovementVector(0,0,0);
+        //     drivetrain.setPose(0,0,-150);
+        //     startTime = TimeNowMSec();
+        //     i++; 
+        // }
+        // break;
 
         case 6:
-        //move away slightly for leeway
-        drivetrain.setTargetPose(-2,0.3,-150);
-        drivetrain.runToPoseLim(0.2);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
-            drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(0,0,-150);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 7:
         //move towards composter
-        drivetrain.setTargetPose(-6,0,-150);
+        drivetrain.setTargetPose(-7,0,-150);
         drivetrain.runToPoseLim(0.3);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
             drivetrain.setMovementVector(0,0,0);
@@ -155,7 +154,7 @@ void Composter::run(){
         }
         break;
 
-        case 8:
+        case 7:
         //move back one bit
         drivetrain.setTargetPose(-5.8,0,-150);
         drivetrain.runToPoseLim(0.2);
@@ -167,8 +166,8 @@ void Composter::run(){
         }
         break;
 
-        case 9:
-        // composterArm.SetPercent(100);
+        case 8:
+        composterArm.SetPercent(100);
         if(timeUp(startTime,1800)){
             startTime = TimeNowMSec();
             i++; 
@@ -176,8 +175,8 @@ void Composter::run(){
         }
         break;
 
-        case 10:
-        // composterArm.SetPercent(-100);
+        case 9:
+        composterArm.SetPercent(-100);
         if(timeUp(startTime,1800)){
             startTime = TimeNowMSec();
             i++; 
@@ -186,7 +185,7 @@ void Composter::run(){
         }
         break;
 
-        case 11:
+        case 10:
         //move away from composter
         drivetrain.setTargetPose(-3,0,-150);
         drivetrain.runToPoseLim(0.4);

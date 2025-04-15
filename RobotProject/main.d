@@ -16,6 +16,8 @@
  ../Dependencies/Auto/Paths/StartButton.h \
  ../Dependencies/Auto/Paths/Composter.h \
  ../Dependencies/Auto/Paths/AppleBasket.h \
+ ../Dependencies/Auto/Paths/AppleBasketDropoff.h \
+ ../Dependencies/Auto/Paths/Buttons.h \
  ../Dependencies/Auto/Paths/Window1.h \
  ../Dependencies/Auto/Paths/PoseTest.h
 Libraries/FEHLCD.h:
@@ -57,5 +59,7 @@ Drivers/uart.h:
 ../Dependencies/Auto/Paths/StartButton.h:
 ../Dependencies/Auto/Paths/Composter.h:
 ../Dependencies/Auto/Paths/AppleBasket.h:
+../Dependencies/Auto/Paths/AppleBasketDropoff.h:
+../Dependencies/Auto/Paths/Buttons.h:
 ../Dependencies/Auto/Paths/Window1.h:
 ../Dependencies/Auto/Paths/PoseTest.h:

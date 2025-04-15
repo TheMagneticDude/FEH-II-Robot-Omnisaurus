@@ -44,6 +44,9 @@
 #include "../Dependencies/Auto/Paths/StartButton.h"
 #include "../Dependencies/Auto/Paths/Composter.h"
 #include "../Dependencies/Auto/Paths/AppleBasket.h"
+#include "../Dependencies/Auto/Paths/AppleBasketDropoff.h"
+#include "../Dependencies/Auto/Paths/Buttons.h"
+
 #include "../Dependencies/Auto/Paths/Window1.h"
 
 #include "../Dependencies/Auto/Paths/PoseTest.h"
@@ -140,7 +143,9 @@ int main(void)
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
     autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
-    
+    autonomous.addCommand(std::make_unique<AppleBasketDropoff>(drivetrain));
+    autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
+
     // autonomous.addCommand(std::make_unique<Window1>(drivetrain));
 
 

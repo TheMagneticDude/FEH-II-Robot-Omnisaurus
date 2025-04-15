@@ -55,9 +55,23 @@ void AppleBasketDropoff::run(){
 
     
     switch(i){
+
         case 0:
+        //turn towards ramp wall (to 90 deg)
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1000)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  -90 deg
+            drivetrain.setPose(-7,9,-90);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 1:
         //move towards ramp
-        drivetrain.setTargetPose(-4,5,0);
+        drivetrain.setTargetPose(-4,5,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -66,13 +80,97 @@ void AppleBasketDropoff::run(){
         }
         break;
 
-        case 1:
-        //move back up ramp
-        drivetrain.setTargetPose(-4,5,0);
+        case 2:
+        //move to wall next to ramp
+        drivetrain.setTargetPose(6,5,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(0,5,0);
             startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 3:
+        //move -x some to rotate
+        drivetrain.setTargetPose(5,5,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 4:
+        //turn towards ramp (to 0 deg)
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1000)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  0 deg
+            drivetrain.setPose(5,5,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 5:
+        //move up ramp
+        drivetrain.setTargetPose(5,50,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,6000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 6:
+        //turn towards window to align in corner (to -90 deg)
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1000)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  -90 deg
+            drivetrain.setPose(5,25,-90);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 7:
+        //align x
+        drivetrain.setTargetPose(25,25,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(0,25,-90);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 8:
+        //move forwards slightly and align y
+        drivetrain.setTargetPose(1,35,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 9:
+        //align x and y
+        drivetrain.setTargetPose(10,35,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,3000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            drivetrain.setPose(0,0,-90);//0,0 set in corner of apple basket top drawer
             i++; 
         }
         break;
