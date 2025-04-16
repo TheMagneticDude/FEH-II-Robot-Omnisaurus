@@ -83,7 +83,7 @@ void AppleBasket::run(){
 
         case 2:
         //move towards apple basket
-        drivetrain.setTargetPose(-7,9,0);
+        drivetrain.setTargetPose(-5,8.5,0);
         drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -93,9 +93,9 @@ void AppleBasket::run(){
         break;
 
         case 3:
-        arm.SetDegree(110);
+        arm.SetDegree(130);
         //extend arm and move towards apple basket
-        drivetrain.setTargetPose(-10,9,0);
+        drivetrain.setTargetPose(-10,8.5,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -107,6 +107,28 @@ void AppleBasket::run(){
 
         case 4:
         //raise arm
+        arm.SetDegree(120);
+        //can lower time limit
+        if(timeUp(startTime, 300)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 5:
+        //raise arm (split up so its slower)
+        arm.SetDegree(100);
+        //can lower time limit
+        if(timeUp(startTime, 100)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 6:
+        //raise arm (split up so its slower)
         arm.SetDegree(0);
         //can lower time limit
         if(timeUp(startTime, 100)){
@@ -116,7 +138,7 @@ void AppleBasket::run(){
         }
         break;
 
-        case 5:
+        case 7:
 
         //back up from apple  basket
         drivetrain.setTargetPose(-7,9,0);

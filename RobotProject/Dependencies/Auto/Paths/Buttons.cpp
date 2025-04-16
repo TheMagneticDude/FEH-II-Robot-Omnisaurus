@@ -12,7 +12,6 @@ using namespace std;
 
 //take in the drivetrain object and any subsystems needed for path
 Buttons::Buttons(HolonomicTriangleDrive &dt, AnalogInputPin cds) : drivetrain(dt), CDS(cds){
-
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
@@ -64,6 +63,16 @@ void Buttons::run(){
     switch(i){
 
         case 0:
+        //move -x away from cabinet
+        drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+
+        case 1:
         //move towards button
         drivetrain.setTargetPose(-6,-1,-90);
         drivetrain.runToPoseLim(0.4);
@@ -74,17 +83,15 @@ void Buttons::run(){
         }
         break;
 
-        case 1:
+        case 2:
         //scan CDS
         //if button is red
         if(CDS.Value() > CDS_Red){
             CDSisRed = true;
             didInit = true;
-            startTime = TimeNowMSec();
         }else if (CDS.Value() > CDS_Blue && CDS.Value() < CDS_Red){
             CDSisRed = false;
             didInit = true;
-            startTime = TimeNowMSec();
             //reset start time timer for path once color is determined
         }
 
@@ -96,17 +103,23 @@ void Buttons::run(){
         }
         break;
 
-        case 2:
+        case 3:
         if(CDSisRed){
             drivetrain.setTargetPose(-8,0,-90);
             drivetrain.runToPoseLim(0.4);
+            LCD.Clear();
+            LCD.SetBackgroundColor(RED);
         }else{
             drivetrain.setTargetPose(-8,-2,-90);
             drivetrain.runToPoseLim(0.4);
+            LCD.Clear();
+            LCD.SetBackgroundColor(BLUE);
         }
 
+        
 
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -123,6 +136,8 @@ void Buttons::run(){
 
 //exit condition, returns true once command sequence has ended
 bool Buttons::ended(){
+    LCD.Clear();
+    LCD.SetBackgroundColor(BLACK);
     return end;
 }
 

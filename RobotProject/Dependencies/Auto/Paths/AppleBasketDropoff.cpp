@@ -81,12 +81,12 @@ void AppleBasketDropoff::run(){
         break;
 
         case 2:
-        //move to wall next to ramp
-        drivetrain.setTargetPose(6,5,-90);
+        //align to wall next to ramp
+        drivetrain.setTargetPose(25,5,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
             // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(0,5,0);
+            drivetrain.setPose(0,5,-90);
             startTime = TimeNowMSec();
             i++; 
         }
@@ -94,9 +94,9 @@ void AppleBasketDropoff::run(){
 
         case 3:
         //move -x some to rotate
-        drivetrain.setTargetPose(5,5,-90);
+        drivetrain.setTargetPose(-1,5,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -107,10 +107,10 @@ void AppleBasketDropoff::run(){
         //turn towards ramp (to 0 deg)
         drivetrain.setMovementVector(0,0,0.5);
         drivetrain.update();
-        if(timeUp(startTime,1000)){
+        if(timeUp(startTime,1050)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  0 deg
-            drivetrain.setPose(5,5,0);
+            drivetrain.setPose(-1,5,0);
             startTime = TimeNowMSec();
             i++; 
         }
@@ -118,7 +118,7 @@ void AppleBasketDropoff::run(){
 
         case 5:
         //move up ramp
-        drivetrain.setTargetPose(5,50,-90);
+        drivetrain.setTargetPose(0.5,60,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,6000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -153,19 +153,19 @@ void AppleBasketDropoff::run(){
         break;
 
         case 8:
-        //move forwards slightly and align y
-        drivetrain.setTargetPose(1,35,-90);
+        //forward one to avoid bumping into acryllic 
+        drivetrain.setTargetPose(-1,25,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
-            i++; 
+            i++;
         }
         break;
 
         case 9:
         //align x and y
-        drivetrain.setTargetPose(10,35,-90);
+        drivetrain.setTargetPose(-5,35,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,3000)){
             // drivetrain.setMovementVector(0,0,0);

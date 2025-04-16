@@ -60,7 +60,7 @@ void Composter::run(){
     
     switch(i){
         case 0:
-        arm.SetDegree(180);
+        arm.SetDegree(0);
         //turn right 45 so back is straight with wall (so y+ is up the ramp)
         drivetrain.setMovementVector(0,0,0.5);
         drivetrain.update();

@@ -246,6 +246,10 @@ void HolonomicTriangleDrive::setPose(float x, float y, float theta){
 
 void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
     isStalled = false;
+    hasMoved = false;
+    lastAboveThresholdTime = TimeNowMSec();
+    runStallTime = 0;
+    reachedTargetPose = false;
     prevPose[0] = Pose[0];
     prevPose[1] = Pose[1];
     prevPose[2] = Pose[2];
@@ -291,8 +295,11 @@ void HolonomicTriangleDrive::updatePose(){
         deltaTime = 0.001;
     }
 
-    float inchPerCount = M_PI * 2.5 / 318.0;
-    float deltaProjectedAngle = inchPerCount * ( (d1/robotRadius) + (d2 / (sqrt(3) * robotRadius)) - (d3 / (sqrt(3) * robotRadius)) );
+
+    
+    float inchPerCount = (M_PI * 2.5) / 318.0;
+    float deltaTheta = (inchPerCount / (robotRadius * sqrt(3))) * (d1 + d2 + d3);
+
 
 
     float thetaRad = deg2rad(Pose[2]);
@@ -304,14 +311,11 @@ void HolonomicTriangleDrive::updatePose(){
     //update global pose
     Pose[0] += dxGlobal;
     Pose[1] += dyGlobal;
-    // Pose[2] += rad2deg(deltaProjectedAngle);
+    // Pose[2] += rad2deg(deltaTheta) * 24.406779661;
 
-    //Wraps theta to [0,360]
-    // Pose[2] = fmod(Pose[2], 360.0);
-    // if (Pose[2] < 0) {
-    //     Pose[2] += 360.0;
-    // }
-
+    //wrap to -180 180
+    while (Pose[2] >= 180) Pose[2] -= 360;
+    while (Pose[2] < -180) Pose[2] += 360;
 
     prevTime = TimeNowMSec();
 }
