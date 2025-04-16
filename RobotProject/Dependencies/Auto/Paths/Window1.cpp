@@ -23,7 +23,7 @@ Window1::Window1(HolonomicTriangleDrive &dt) : drivetrain(dt){
 void Window1::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(0,-1,90);
+    drivetrain.setPose(0,-1,-90);
     drivetrain.resetMotorCounts();
 }
 
@@ -55,32 +55,32 @@ void Window1::run(){
 
     
     switch(i){
-        case 1:
+        case 0:
         //move towards window
-        drivetrain.setTargetPose(-6,-1,90);
+        drivetrain.setTargetPose(-7,-1,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 1:
+        //align to side of window
+        drivetrain.setTargetPose(-7,-8,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(-6,0,-90); //is now at window side
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
         case 2:
-        //align to side of window
-        drivetrain.setTargetPose(-6,-8,90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(-6,0,90); //is now at window side
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 3:
         //move window open
-        drivetrain.setTargetPose(-12,0,90);
+        drivetrain.setTargetPose(-12,0,-90);
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
             drivetrain.setMovementVector(0,0,0);

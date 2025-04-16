@@ -190,7 +190,7 @@ void AppleBasketDropoff::run(){
         //turn towards apple basket to drop off (to 90 deg)
         drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
-        if(timeUp(startTime,2000)){
+        if(timeUp(startTime,2050)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  90 deg
             drivetrain.setPose(0,0,90);
@@ -199,22 +199,43 @@ void AppleBasketDropoff::run(){
         }
         break;
 
+
         case 12:
-        //Move towards apple basket drawer
-        drivetrain.setTargetPose(-0.5,1,90);
+        //Move towards wall to align front wheel
+        drivetrain.setTargetPose(5,1,90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
-            drivetrain.setMovementVector(0,0,0);
-            drivetrain.stop();
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
             startTime = TimeNowMSec();
-            // drivetrain.setPose(0,0,-90);
+            drivetrain.setPose(0,1,90);
             i++; 
         }
         break;
 
         case 13:
+        //Move away from wall to move towards apple basket deposit
+        drivetrain.setTargetPose(-0.1,1,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 14:
+        //Move towards cabinet to deposit basket
+        drivetrain.setTargetPose(-0.1,3,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            startTime = TimeNowMSec();
+            drivetrain.setPose(-0.1,0,90);
+            drivetrain.stop();
+            i++; 
+        }
+        break;
+
+        case 15:
         //lower arm
-        arm.SetDegree(30);//need to change angle to dropoff
+        arm.SetDegree(90);//need to change angle to dropoff
         if(timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             drivetrain.stop();
@@ -224,9 +245,9 @@ void AppleBasketDropoff::run(){
         }
         break;
 
-        case 14:
-        //Move backwards to deposit basket
-        drivetrain.setTargetPose(-0.5,-1,90);
+        case 16:
+        //Move back away from apple basket
+        drivetrain.setTargetPose(-0.1,-1,90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
             startTime = TimeNowMSec();
@@ -234,7 +255,7 @@ void AppleBasketDropoff::run(){
         }
         break;
 
-        case 15:
+        case 17:
         //Raise arm again
         arm.SetDegree(0);
         if(timeUp(startTime,500)){
@@ -246,14 +267,27 @@ void AppleBasketDropoff::run(){
         }
         break;
 
-        case 16:
-        //Move towards wall to align front wheel
-        drivetrain.setTargetPose(5,-1,90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+        case 18:
+        //turn for window (to -90 deg)
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+        if(timeUp(startTime,2050)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  -90 deg
+            drivetrain.setPose(0,0,-90);
             startTime = TimeNowMSec();
-            drivetrain.setPose(0,-1,90);
             i++; 
+        }
+        break;
+
+        case 19:
+        //Move towards wall to align front wheel again
+        drivetrain.setTargetPose(5,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1100)){
+            startTime = TimeNowMSec();
+            drivetrain.setPose(0,-0.1,-90);
+            i++;
         }
         break;
 

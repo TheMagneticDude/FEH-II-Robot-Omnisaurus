@@ -149,8 +149,10 @@ int main(void)
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
     autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
-    autonomous.addCommand(std::make_unique<AppleBasketDropoff>(drivetrain));
-    autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
+    autonomous.addCommand(std::make_unique<AppleBasketDropoff>(drivetrain, arm_servo));
+    autonomous.addCommand(std::make_unique<Window1>(drivetrain));
+
+    // autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
 
   
 
@@ -229,6 +231,8 @@ int main(void)
                     menuMode = Menu::PoseEstimate;
                     init = true;
                 }
+
+                LCD.WriteAt(Battery.Voltage(),0,115);
             }
 
         drivetrain.setMovementVector(movementVector[0],movementVector[1],movementVector[2]);

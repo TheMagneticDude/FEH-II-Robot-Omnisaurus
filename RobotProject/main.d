@@ -19,6 +19,8 @@
  ../Dependencies/Auto/Paths/AppleBasketDropoff.h \
  ../Dependencies/Auto/Paths/Buttons.h \
  ../Dependencies/Auto/Paths/Window1.h \
+ ../Dependencies/Auto/Paths/LeversDown.h \
+ ../Dependencies/Auto/Paths/ReturnToStart.h \
  ../Dependencies/Auto/Paths/PoseTest.h
 Libraries/FEHLCD.h:
 Drivers/spi.h:
@@ -62,4 +64,6 @@ Drivers/uart.h:
 ../Dependencies/Auto/Paths/AppleBasketDropoff.h:
 ../Dependencies/Auto/Paths/Buttons.h:
 ../Dependencies/Auto/Paths/Window1.h:
+../Dependencies/Auto/Paths/LeversDown.h:
+../Dependencies/Auto/Paths/ReturnToStart.h:
 ../Dependencies/Auto/Paths/PoseTest.h:
