@@ -2,7 +2,7 @@
 #include <string>
 #include <FEHXBee.h>
 #include <FEHLCD.h>
-#include "Window1.h"
+#include "ReturnToStart.h"
 #include <cstring>
 #include <iomanip>
 
@@ -11,8 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-Window1::Window1(HolonomicTriangleDrive &dt) : drivetrain(dt){
-
+ReturnToStart::ReturnToStart(HolonomicTriangleDrive &dt) : drivetrain(dt){
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
@@ -20,25 +19,26 @@ Window1::Window1(HolonomicTriangleDrive &dt) : drivetrain(dt){
     i = 0;
 }
 
-void Window1::init(){
+void ReturnToStart::init(){
+    //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
+    //robot starts at a -45 degree angle  
+    drivetrain.setPose(0,0,0);
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(0,-1,90);
     drivetrain.resetMotorCounts();
 }
 
 //Runs the command every tick
-void Window1::run(){
-    
+void ReturnToStart::run(){
     //Command stuff
-    std::string s = "Window1 SubPath: " + i;
+    std::string s =  commandName + " SubPath: " + std::to_string(i);
     LCD.WriteAt(s.c_str(),0,0);
 
     auto elapsed = TimeNowMSec() - startTime;
     std::string elapsedS = "Elapsed: " + std::to_string(elapsed) + " ms";
-
+    // LCD.WriteAt("Elapsed: ",0,15);
     LCD.WriteAt(elapsedS.c_str(),0,30);
-
+    // LCD.WriteAt("ms",0,45);
 
     stringstream pose;
     pose << "Po: [" << std::fixed << std::setprecision(2) << drivetrain.getPose()[0] << ", " << std::fixed << std::setprecision(2) << drivetrain.getPose()[1] << ", " << std::fixed << std::setprecision(2) << drivetrain.getPose()[2] << "]";
@@ -53,43 +53,32 @@ void Window1::run(){
     LCD.WriteAt(movementVector.str(),0,90);
 
 
+
     
     switch(i){
-        case 1:
-        //move towards window
-        drivetrain.setTargetPose(-6,-1,90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 2:
-        //align to side of window
-        drivetrain.setTargetPose(-6,-8,90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(-6,0,90); //is now at window side
-            startTime = TimeNowMSec();
-            i++; 
-        }
-        break;
-
-        case 3:
-        //move window open
-        drivetrain.setTargetPose(-12,0,90);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
+        case 0:
+        //move back to hit start
+        drivetrain.setTargetPose(0,-3,0);
+        drivetrain.runTilStalled(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
-
         
+
+        case 1:
+        //move forward again to return to original position
+        drivetrain.setTargetPose(0,0,0);
+        drivetrain.runTilStalled(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++;
+        }
+        break;
+       
 
         default:
         drivetrain.stop();
@@ -99,12 +88,12 @@ void Window1::run(){
 }
 
 //exit condition, returns true once command sequence has ended
-bool Window1::ended(){
+bool ReturnToStart::ended(){
     return end;
 }
 
 //Stops the command even if end condition has not been reached and triggers ended to move to next command in sequence
-void Window1::stop(){end = true;}
+void ReturnToStart::stop(){end = true;}
 
 //returns path name
-std::string Window1::getName(){return commandName;}
+std::string ReturnToStart::getName(){return commandName;}

@@ -11,7 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-AppleBasketDropoff::AppleBasketDropoff(HolonomicTriangleDrive &dt) : drivetrain(dt){
+AppleBasketDropoff::AppleBasketDropoff(HolonomicTriangleDrive &dt, FEHServo &a) : drivetrain(dt), arm(a){
 
     //save start timepoint
     startTime = TimeNowMSec();
@@ -174,7 +174,88 @@ void AppleBasketDropoff::run(){
             i++; 
         }
         break;
-        
+
+        case 10:
+        //move away to turn
+        drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 11:
+        //turn towards apple basket to drop off (to 90 deg)
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,2000)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  90 deg
+            drivetrain.setPose(0,0,90);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 12:
+        //Move towards apple basket drawer
+        drivetrain.setTargetPose(-0.5,1,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
+            startTime = TimeNowMSec();
+            // drivetrain.setPose(0,0,-90);
+            i++; 
+        }
+        break;
+
+        case 13:
+        //lower arm
+        arm.SetDegree(30);//need to change angle to dropoff
+        if(timeUp(startTime,500)){
+            drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
+            startTime = TimeNowMSec();
+            // drivetrain.setPose(0,0,-90);
+            i++; 
+        }
+        break;
+
+        case 14:
+        //Move backwards to deposit basket
+        drivetrain.setTargetPose(-0.5,-1,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 15:
+        //Raise arm again
+        arm.SetDegree(0);
+        if(timeUp(startTime,500)){
+            drivetrain.setMovementVector(0,0,0);
+            drivetrain.stop();
+            startTime = TimeNowMSec();
+            // drivetrain.setPose(0,0,-90);
+            i++; 
+        }
+        break;
+
+        case 16:
+        //Move towards wall to align front wheel
+        drivetrain.setTargetPose(5,-1,90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            startTime = TimeNowMSec();
+            drivetrain.setPose(0,-1,90);
+            i++; 
+        }
+        break;
 
         default:
         drivetrain.stop();

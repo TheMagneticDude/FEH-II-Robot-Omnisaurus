@@ -9,20 +9,19 @@
 using namespace std;
 
 
-class AppleBasketDropoff : public Command {
+class ReturnToStart : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
-  FEHServo &arm;
 
-  float startTime;
-  int i;//path counter 
+  float startTime; 
+  int i;//path counter
   bool nextPathTriggered;
 
   bool end;
-  const std::string commandName = "AppleBasketDropoff";
+  const std::string commandName = "ReturnToStart";
 
   public:
-  AppleBasketDropoff(HolonomicTriangleDrive &dt, FEHServo &a);
+  ReturnToStart(HolonomicTriangleDrive &dt);
   void init() override;
   void run() override;    
   bool ended() override;  

@@ -46,8 +46,11 @@
 #include "../Dependencies/Auto/Paths/AppleBasket.h"
 #include "../Dependencies/Auto/Paths/AppleBasketDropoff.h"
 #include "../Dependencies/Auto/Paths/Buttons.h"
-
 #include "../Dependencies/Auto/Paths/Window1.h"
+#include "../Dependencies/Auto/Paths/LeversDown.h"
+#include "../Dependencies/Auto/Paths/ReturnToStart.h"
+
+
 
 #include "../Dependencies/Auto/Paths/PoseTest.h"
 
@@ -137,6 +140,9 @@ int main(void)
     //Sequencial command group
     SequencialCommand autonomous;
 
+    int lever = 0;//will be changed
+    
+
     //Auto sequences (add paths below):
 
     // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
@@ -146,36 +152,7 @@ int main(void)
     autonomous.addCommand(std::make_unique<AppleBasketDropoff>(drivetrain));
     autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
 
-    // autonomous.addCommand(std::make_unique<Window1>(drivetrain));
-
-
-
-
-    // autonomous.addCommand(std::make_unique<PoseTest>(drivetrain));
-    
-
-
-
-    // autonomous.addCommand(std::make_unique<MoveForwardToWindow>(drivetrain));
-    // autonomous.addCommand(std::make_unique<TurnRight30Deg>(drivetrain));
-    // autonomous.addCommand(std::make_unique<MoveBackAgainstWall>(drivetrain));
-    
-
-
-    // autonomous.addCommand(std::make_unique<PressStartButton>(drivetrain));
-    // autonomous.addCommand(std::make_unique<Rotate45Right>(drivetrain));
-    // autonomous.addCommand(std::make_unique<PathTest>(drivetrain));
-    // autonomous.addCommand(std::make_unique<Rotate90Left>(drivetrain));
-    // autonomous.addCommand(std::make_unique<AlignInCorner>(drivetrain));
-    // autonomous.addCommand(std::make_unique<PathTest2>(drivetrain));
-    // autonomous.addCommand(std::make_unique<SelectButton>(drivetrain,CDS));
-    // autonomous.addCommand(std::make_unique<BackUpFromButton>(drivetrain));
-    // autonomous.addCommand(std::make_unique<Rotate90Left2>(drivetrain));
-    // autonomous.addCommand(std::make_unique<FinalButton>(drivetrain));
-    
-    
-    
-    
+  
 
 
     float x_position, y_position;
@@ -279,8 +256,8 @@ int main(void)
 
             if(menuMode == Menu::Auto){
                 //initialize RCS_________________________________________________________________________________________________
+                lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
                 
-                // int lever = RCS.GetLever(); // Get a 0, 1, or 2 indicating which lever to pull
 
                 
                 //measure loopspeed

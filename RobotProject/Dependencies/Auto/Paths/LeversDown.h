@@ -4,25 +4,31 @@
 #include <string>
 #include "../Dependencies/Auto/Command.h"
 #include "../Dependencies/Movement/HolonomicTriangleDrive.h"
+#include "../Dependencies/OptosensorArray.h"
 
 
 using namespace std;
 
 
-class AppleBasketDropoff : public Command {
+class LeversDown : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
-  FEHServo &arm;
+  int &lever;
+
+  OptoSensorArray &OptoArr;
 
   float startTime;
   int i;//path counter 
   bool nextPathTriggered;
 
+  bool didInit;
+  bool CDSisRed;
+
   bool end;
-  const std::string commandName = "AppleBasketDropoff";
+  const std::string commandName = "LeversDown";
 
   public:
-  AppleBasketDropoff(HolonomicTriangleDrive &dt, FEHServo &a);
+  LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsArr);
   void init() override;
   void run() override;    
   bool ended() override;  
