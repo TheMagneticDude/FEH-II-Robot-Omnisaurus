@@ -95,7 +95,7 @@ void AppleBasket::run(){
         case 3:
         arm.SetDegree(130);
         //extend arm and move towards apple basket
-        drivetrain.setTargetPose(-10,8.5,0);
+        drivetrain.setTargetPose(-10,8.8,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             // drivetrain.setMovementVector(0,0,0);

@@ -74,7 +74,7 @@ void Buttons::run(){
 
         case 1:
         //move towards button
-        drivetrain.setTargetPose(-6,-1,-90);
+        drivetrain.setTargetPose(-6,-2,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -110,7 +110,7 @@ void Buttons::run(){
             LCD.Clear();
             LCD.SetBackgroundColor(RED);
         }else{
-            drivetrain.setTargetPose(-8,-2,-90);
+            drivetrain.setTargetPose(-8,-4,-90);
             drivetrain.runToPoseLim(0.4);
             LCD.Clear();
             LCD.SetBackgroundColor(BLUE);
@@ -136,8 +136,8 @@ void Buttons::run(){
 
 //exit condition, returns true once command sequence has ended
 bool Buttons::ended(){
-    LCD.Clear();
-    LCD.SetBackgroundColor(BLACK);
+    // LCD.Clear();
+    // LCD.SetBackgroundColor(BLACK);
     return end;
 }
 

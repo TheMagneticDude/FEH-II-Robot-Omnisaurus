@@ -118,9 +118,9 @@ void AppleBasketDropoff::run(){
 
         case 5:
         //move up ramp
-        drivetrain.setTargetPose(0.5,60,-90);
+        drivetrain.setTargetPose(2,60,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,6000)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,6500)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -144,7 +144,7 @@ void AppleBasketDropoff::run(){
         //align x
         drivetrain.setTargetPose(25,25,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
             // drivetrain.setMovementVector(0,0,0);
             drivetrain.setPose(0,25,-90);
             startTime = TimeNowMSec();
@@ -165,7 +165,7 @@ void AppleBasketDropoff::run(){
 
         case 9:
         //align x and y
-        drivetrain.setTargetPose(-5,35,-90);
+        drivetrain.setTargetPose(5,35,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,3000)){
             // drivetrain.setMovementVector(0,0,0);
