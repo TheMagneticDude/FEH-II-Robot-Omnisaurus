@@ -9,7 +9,7 @@
 using namespace std;
 
 
-class Window1 : public Command {
+class Window2 : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
 
@@ -18,10 +18,10 @@ class Window1 : public Command {
   bool nextPathTriggered;
 
   bool end;
-  const std::string commandName = "Window1";
+  const std::string commandName = "Window2";
 
   public:
-  Window1(HolonomicTriangleDrive &dt);
+  Window2(HolonomicTriangleDrive &dt);
   void init() override;
   void run() override;    
   bool ended() override;  

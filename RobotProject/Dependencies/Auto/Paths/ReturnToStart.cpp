@@ -26,6 +26,7 @@ void ReturnToStart::init(){
     startTime = TimeNowMSec();
     i = 0;
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 }
 
 //Runs the command every tick

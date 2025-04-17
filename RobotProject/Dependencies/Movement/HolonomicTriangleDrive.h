@@ -180,6 +180,7 @@ class HolonomicTriangleDrive {
   void runToPose();
   void runToPoseLim(float maxVel);
   void runTilStalled(float maxVel);
+  void resetStallDetection();
   bool isCurrStalled();
 
 

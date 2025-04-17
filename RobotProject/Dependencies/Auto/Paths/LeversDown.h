@@ -14,6 +14,7 @@ class LeversDown : public Command {
   private:
   HolonomicTriangleDrive &drivetrain;
   int &lever;
+  FEHServo &arm;
 
   OptoSensorArray &OptoArr;
 
@@ -28,7 +29,7 @@ class LeversDown : public Command {
   const std::string commandName = "LeversDown";
 
   public:
-  LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsArr);
+  LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsArr, FEHServo &a);
   void init() override;
   void run() override;    
   bool ended() override;  

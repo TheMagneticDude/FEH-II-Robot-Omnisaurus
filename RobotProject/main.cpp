@@ -47,6 +47,7 @@
 #include "../Dependencies/Auto/Paths/AppleBasketDropoff.h"
 #include "../Dependencies/Auto/Paths/Buttons.h"
 #include "../Dependencies/Auto/Paths/Window1.h"
+#include "../Dependencies/Auto/Paths/Window2.h"
 #include "../Dependencies/Auto/Paths/LeversDown.h"
 #include "../Dependencies/Auto/Paths/ReturnToStart.h"
 
@@ -145,16 +146,15 @@ int main(void)
 
     //Auto sequences (add paths below):
 
-    // autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
+    autonomous.addCommand(std::make_unique<WaitForStartButton>(CDS));
     autonomous.addCommand(std::make_unique<StartButton>(drivetrain));
     autonomous.addCommand(std::make_unique<Composter>(drivetrain,arm_servo,hackedServo));
     autonomous.addCommand(std::make_unique<AppleBasket>(drivetrain,arm_servo,OptoArr));
     autonomous.addCommand(std::make_unique<AppleBasketDropoff>(drivetrain, arm_servo));
-    autonomous.addCommand(std::make_unique<Window1>(drivetrain));
-
-    // autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
-
-  
+    // autonomous.addCommand(std::make_unique<Window1>(drivetrain));
+    // autonomous.addCommand(std::make_unique<Window2>(drivetrain));
+    autonomous.addCommand(std::make_unique<Buttons>(drivetrain,CDS));
+    autonomous.addCommand(std::make_unique<LeversDown>(drivetrain,lever,OptoArr,arm_servo));
 
 
     float x_position, y_position;
@@ -219,7 +219,7 @@ int main(void)
                 if(autoModeButton.onButtonClicked()){
                     //UNCOMMENT RCS INITIALIZATION WHEN DOING RUN
                  // Run Menu to select Region (e.g., A, B, C, D)____________________________________________________________________________________________________________________________________
-                    // RCS.InitializeTouchMenu("0150F2QWD");
+                    RCS.InitializeTouchMenu("0150F2QWD");
                     menuMode = Menu::Auto;
                     init = true;
                 }
@@ -271,11 +271,6 @@ int main(void)
 
                 
                 drivetrain.toggleVelocityControl(true);
-
-                // LCD.WriteAt("Elapsed Time: ",0, 180);
-                // LCD.WriteAt(timeNow,0, 195);
-                // LCD.WriteAt("Current Command: ",0,180);
-                // LCD.WriteAt(autonomous.getCurrentCommandName(),0,195);
                 
                 //run auto
                 autonomous.runSequencialCommand();

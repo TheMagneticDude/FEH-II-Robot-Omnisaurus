@@ -22,8 +22,10 @@ Buttons::Buttons(HolonomicTriangleDrive &dt, AnalogInputPin cds) : drivetrain(dt
 void Buttons::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(0,0,-90);
+    drivetrain.setPose(-1,-1,-90);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
+
 
     //init end flag
     end = false;
@@ -63,18 +65,8 @@ void Buttons::run(){
     switch(i){
 
         case 0:
-        //move -x away from cabinet
-        drivetrain.setTargetPose(-1,-1,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-        }
-
-        case 1:
-        //move towards button
-        drivetrain.setTargetPose(-6,-2,-90);
+        //move towards buttons
+        drivetrain.setTargetPose(-16,-2,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -83,7 +75,7 @@ void Buttons::run(){
         }
         break;
 
-        case 2:
+        case 1:
         //scan CDS
         //if button is red
         if(CDS.Value() > CDS_Red){
@@ -103,14 +95,14 @@ void Buttons::run(){
         }
         break;
 
-        case 3:
+        case 2:
         if(CDSisRed){
-            drivetrain.setTargetPose(-8,0,-90);
+            drivetrain.setTargetPose(-20,-3,-90);
             drivetrain.runToPoseLim(0.4);
             LCD.Clear();
             LCD.SetBackgroundColor(RED);
         }else{
-            drivetrain.setTargetPose(-8,-4,-90);
+            drivetrain.setTargetPose(-20,-1,-90);
             drivetrain.runToPoseLim(0.4);
             LCD.Clear();
             LCD.SetBackgroundColor(BLUE);
@@ -126,6 +118,16 @@ void Buttons::run(){
         }
         break;
 
+        case 3:
+        //premove to reset location
+        drivetrain.setTargetPose(-16,-2,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
     
         default:
         drivetrain.stop();

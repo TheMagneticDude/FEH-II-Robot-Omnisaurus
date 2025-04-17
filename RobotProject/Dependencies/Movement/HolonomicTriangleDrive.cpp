@@ -245,10 +245,6 @@ void HolonomicTriangleDrive::setPose(float x, float y, float theta){
 }
 
 void HolonomicTriangleDrive::setTargetPose(float x, float y, float theta){
-    isStalled = false;
-    hasMoved = false;
-    lastAboveThresholdTime = TimeNowMSec();
-    runStallTime = 0;
     reachedTargetPose = false;
     prevPose[0] = Pose[0];
     prevPose[1] = Pose[1];
@@ -483,6 +479,13 @@ void HolonomicTriangleDrive::runTilStalled(float maxVel){
     if(getReachedTargetPos()){
         isStalled = true;//just in case
     }
+}
+
+void HolonomicTriangleDrive::resetStallDetection(){
+    isStalled = false;
+    hasMoved = false;
+    lastAboveThresholdTime = TimeNowMSec();
+    runStallTime = 0;
 }
 
 bool HolonomicTriangleDrive::isCurrStalled(){

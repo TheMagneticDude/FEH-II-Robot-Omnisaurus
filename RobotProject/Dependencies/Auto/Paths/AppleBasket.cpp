@@ -25,6 +25,7 @@ void AppleBasket::init(){
     i = 0;
     drivetrain.setPose(-3,0,-150);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 }
 
 //Runs the command every tick
@@ -83,7 +84,7 @@ void AppleBasket::run(){
 
         case 2:
         //move towards apple basket
-        drivetrain.setTargetPose(-5,8.5,0);
+        drivetrain.setTargetPose(-5,8.65,0);
         drivetrain.runToPoseLim(0.6);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             // drivetrain.setMovementVector(0,0,0);

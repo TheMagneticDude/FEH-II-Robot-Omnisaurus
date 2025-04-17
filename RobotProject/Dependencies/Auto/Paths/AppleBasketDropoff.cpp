@@ -25,6 +25,7 @@ void AppleBasketDropoff::init(){
     i = 0;
     drivetrain.setPose(-7,9,0);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 }
 
 //Runs the command every tick
@@ -77,18 +78,22 @@ void AppleBasketDropoff::run(){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.resetStallDetection();
         }
         break;
 
         case 2:
         //align to wall next to ramp
-        drivetrain.setTargetPose(25,5,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
+        drivetrain.setTargetPose(35,5,-90);
+        drivetrain.toggleVelocityControl(false);//so it can stall
+        drivetrain.runTilStalled(0.5);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,3000)){
             // drivetrain.setMovementVector(0,0,0);
             drivetrain.setPose(0,5,-90);
             startTime = TimeNowMSec();
-            i++; 
+            i++;
+            drivetrain.resetStallDetection();
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 
@@ -281,13 +286,36 @@ void AppleBasketDropoff::run(){
         break;
 
         case 19:
-        //Move towards wall to align front wheel again
+        //Move towards wall to align again
         drivetrain.setTargetPose(5,-1,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1100)){
             startTime = TimeNowMSec();
             drivetrain.setPose(0,-0.1,-90);
             i++;
+        }
+        break;
+
+        case 20:
+        //align x and y
+        drivetrain.setTargetPose(5,35,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            drivetrain.setPose(0,0,-90);//0,0 set in corner of apple basket top drawer
+            i++; 
+        }
+        break;
+
+        case 21:
+        //move away
+        drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
         }
         break;
 

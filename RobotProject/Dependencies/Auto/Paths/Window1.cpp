@@ -25,6 +25,7 @@ void Window1::init(){
     i = 0;
     drivetrain.setPose(0,-1,-90);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 }
 
 //Runs the command every tick
@@ -57,7 +58,7 @@ void Window1::run(){
     switch(i){
         case 0:
         //move towards window
-        drivetrain.setTargetPose(-8,-1,-90);
+        drivetrain.setTargetPose(-8.5,-1,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -68,24 +69,29 @@ void Window1::run(){
 
         case 1:
         //align to side of window
-        drivetrain.setTargetPose(-9,-8,-90);
+        drivetrain.setTargetPose(-8.5,-8,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             drivetrain.setPose(-6,0,-90); //is now at window side
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.resetStallDetection();
         }
         break;
 
         case 2:
         //move window open
-        drivetrain.setTargetPose(-12,0,-90);
-        drivetrain.runToPose();
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
+        //TODO: NEED TO ADD INPUT FROM WHETHER WINDOW IS OPEN TO KEEP GOING
+        drivetrain.setTargetPose(-11,-1,-90);
+        drivetrain.toggleVelocityControl(false);
+        drivetrain.runTilStalled(0.8);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,1200)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
-            i++; 
+            i++;
+            drivetrain.resetStallDetection();
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 

@@ -11,7 +11,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-LeversDown::LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsArr) : drivetrain(dt), OptoArr(opsArr), lever(l){
+LeversDown::LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsArr, FEHServo &a) : drivetrain(dt), OptoArr(opsArr), lever(l), arm(a){
     //save start timepoint
     startTime = TimeNowMSec();
     //init end flag
@@ -22,8 +22,9 @@ LeversDown::LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsAr
 void LeversDown::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(0,0,-90);
+    drivetrain.setPose(-16,-2,-90);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 
     //init end flag
     end = false;
@@ -42,6 +43,8 @@ void LeversDown::run(){
     std::string elapsedS = "Elapsed: " + std::to_string(elapsed) + " ms";
 
     LCD.WriteAt(elapsedS.c_str(),0,30);
+
+    LCD.WriteAt(lever,0,60);
 
 
     stringstream pose;
@@ -63,14 +66,110 @@ void LeversDown::run(){
     switch(i){
 
         case 0:
-        //move -x away from cabinet
+        //move towards reset corner
+        drivetrain.setTargetPose(15,15,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(0,0,-90);
+        }
+        break;//assume at reset corner
+
+        case 1:
+        //move slightly away to rotate
         drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 2:
+        //turn left 45 to align with levers
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,500)){
+            drivetrain.setPose(-1,-1,-45);
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+
+        case 3:
+        //move to levers
+        drivetrain.setTargetPose(-5,-1,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
         }
+        break;
+
+        case 4:
+        //lever down
+        arm.SetDegree(160);
+        drivetrain.setMovementVector(0,-0.5,0);
+        drivetrain.update();
+        if(timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 5:
+        //wait for 5sec for lever
+        arm.SetDegree(180);
+        if(timeUp(startTime,5200)){
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 6:
+        //move to levers again
+        drivetrain.setTargetPose(-5,-1,-90);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 7:
+        //move forward farther
+        drivetrain.setMovementVector(0,0.4,0);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,300)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 8:
+        //lever up
+        arm.SetDegree(130);
+
+        drivetrain.setMovementVector(0,-0.5,0);
+        drivetrain.update();
+        if(timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        
+
+        
 
     
         default:

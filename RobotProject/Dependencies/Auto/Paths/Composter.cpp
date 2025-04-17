@@ -28,6 +28,7 @@ void Composter::init(){
     i = 0;
     drivetrain.setPose(0,0,-45);
     drivetrain.resetMotorCounts();
+    drivetrain.toggleVelocityControl(true);
 }
 
 //Runs the command every tick
@@ -78,20 +79,24 @@ void Composter::run(){
         drivetrain.runToPose();
         if(drivetrain.getReachedTargetPos() || timeUp(startTime, 4000)){
             startTime = TimeNowMSec();
-            i++; 
+            i++;
+            drivetrain.resetStallDetection();
         }
         break;
 
         case 2:
         //move back to aling with wall
-        drivetrain.setTargetPose(-2,-5,0);
-        drivetrain.runToPoseLim(0.6);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+        drivetrain.setTargetPose(-2,-50,0);
+        drivetrain.toggleVelocityControl(false);//so they can stall out
+        drivetrain.runTilStalled(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,1500)){
             // drivetrain.setMovementVector(0,0,0);
             //should now be aligned at y = 0
             drivetrain.setPose(drivetrain.getPose()[0], 0, 0);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.toggleVelocityControl(true);
+            drivetrain.resetStallDetection();
         }
         break;
 
@@ -128,18 +133,6 @@ void Composter::run(){
             i++; 
         }
         break;
-
-        // case 6:
-        // //move away slightly for leeway
-        // drivetrain.setTargetPose(-2,0.5,-150);
-        // drivetrain.runToPoseLim(0.2);
-        // if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
-        //     drivetrain.setMovementVector(0,0,0);
-        //     drivetrain.setPose(0,0,-150);
-        //     startTime = TimeNowMSec();
-        //     i++; 
-        // }
-        // break;
 
         case 6:
         //move towards composter
