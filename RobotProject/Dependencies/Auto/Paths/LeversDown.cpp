@@ -22,7 +22,7 @@ LeversDown::LeversDown(HolonomicTriangleDrive &dt, int &l, OptoSensorArray opsAr
 void LeversDown::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(-16,-2,-90);
+    drivetrain.setPose(0,0,0);//starts in button corner
     drivetrain.resetMotorCounts();
     drivetrain.toggleVelocityControl(true);
 
@@ -66,20 +66,30 @@ void LeversDown::run(){
     switch(i){
 
         case 0:
-        //move towards reset corner
-        drivetrain.setTargetPose(15,15,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            startTime = TimeNowMSec();
-            i++; 
-            drivetrain.setPose(0,0,-90);
-        }
-        break;//assume at reset corner
+            if(lever == 0){
+                LCD.Clear();
+                LCD.SetBackgroundColor(ORANGE);
+            }
+            if(lever == 1){
+                LCD.Clear();
+                LCD.SetBackgroundColor(GREEN);
+            }
+            if(lever == 2){
+                LCD.Clear();
+                LCD.SetBackgroundColor(CYAN);
+            }
+            if(timeUp(startTime,0)){
+                drivetrain.setMovementVector(0,0,0);
+                startTime = TimeNowMSec();
+                i++; 
+            }
+        break;
+
 
         case 1:
+        //starts in corner of the button place
         //move slightly away to rotate
-        drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.setTargetPose(2,2,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             drivetrain.setMovementVector(0,0,0);
@@ -89,12 +99,12 @@ void LeversDown::run(){
         break;
 
         case 2:
-        //turn left 45 to align with levers
-        drivetrain.setMovementVector(0,0,-0.5);
+        //turn right 45 to align with levers
+        drivetrain.setMovementVector(0,0,0.5);
         drivetrain.update();
         if(timeUp(startTime,500)){
-            drivetrain.setPose(-1,-1,-45);
-            drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(-1,-1,45);
+            drivetrain.setMovementVector(2,2,0);
             startTime = TimeNowMSec();
             i++; 
         }
@@ -103,9 +113,9 @@ void LeversDown::run(){
 
         case 3:
         //move to levers
-        drivetrain.setTargetPose(-5,-1,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+        drivetrain.setTargetPose(-3,6,45);
+        drivetrain.runToPoseLim(0.5);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -114,10 +124,9 @@ void LeversDown::run(){
 
         case 4:
         //lever down
-        arm.SetDegree(160);
-        drivetrain.setMovementVector(0,-0.5,0);
-        drivetrain.update();
-        if(timeUp(startTime,800)){
+        arm.SetDegree(180);
+
+        if(timeUp(startTime,300)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -125,29 +134,33 @@ void LeversDown::run(){
         break;
 
         case 5:
-        //wait for 5sec for lever
+        //lever down
         arm.SetDegree(180);
-        if(timeUp(startTime,5200)){
+        drivetrain.setTargetPose(-3,4,45);
+        drivetrain.runToPoseLim(0.3);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+            // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.stop();
         }
         break;
 
         case 6:
-        //move to levers again
-        drivetrain.setTargetPose(-5,-1,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
+        //wait for 5sec for lever
+        arm.SetDegree(180);
+        if(timeUp(startTime,5000)){
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.stop();
         }
         break;
 
         case 7:
-        //move forward farther
-        drivetrain.setMovementVector(0,0.4,0);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,300)){
+        //move to levers again
+        drivetrain.setTargetPose(-3,7,45);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -157,10 +170,9 @@ void LeversDown::run(){
         case 8:
         //lever up
         arm.SetDegree(130);
-
-        drivetrain.setMovementVector(0,-0.5,0);
-        drivetrain.update();
-        if(timeUp(startTime,800)){
+        drivetrain.setTargetPose(-3,4,45);
+        drivetrain.runToPoseLim(0.3);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -168,8 +180,57 @@ void LeversDown::run(){
         break;
 
         
+        case 9:
+        //turn right 45 back to 0
+        arm.SetDegree(0);
+        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.update();
+        if(timeUp(startTime,500)){
+            drivetrain.setPose(drivetrain.getPose()[0],drivetrain.getPose()[1],0);
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
 
-        
+        case 10:
+        //to towards ramp to reset
+        drivetrain.setTargetPose(2,2,0);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 11:
+        //turn towards wall -90
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1050)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  -90 deg
+            drivetrain.setPose(2,6,-90);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 12:
+        //align x
+        drivetrain.toggleVelocityControl(false);
+        drivetrain.setTargetPose(20,6,-90);
+        drivetrain.runTilStalled(0.5);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,1500)){
+            // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(0,6,-90);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.resetStallDetection();
+            drivetrain.toggleVelocityControl(true);
+        }
+        break;
 
     
         default:

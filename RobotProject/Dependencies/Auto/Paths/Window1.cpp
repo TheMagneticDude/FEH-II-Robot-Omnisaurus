@@ -23,7 +23,7 @@ Window1::Window1(HolonomicTriangleDrive &dt) : drivetrain(dt){
 void Window1::init(){
     startTime = TimeNowMSec();
     i = 0;
-    drivetrain.setPose(0,-1,-90);
+    drivetrain.setPose(0,6,-90);
     drivetrain.resetMotorCounts();
     drivetrain.toggleVelocityControl(true);
 }
@@ -57,8 +57,8 @@ void Window1::run(){
     
     switch(i){
         case 0:
-        //move towards window
-        drivetrain.setTargetPose(-8.5,-1,-90);
+        //align against window
+        drivetrain.setTargetPose(-2,-20,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -68,19 +68,6 @@ void Window1::run(){
         break;
 
         case 1:
-        //align to side of window
-        drivetrain.setTargetPose(-8.5,-8,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
-            // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(-6,0,-90); //is now at window side
-            startTime = TimeNowMSec();
-            i++; 
-            drivetrain.resetStallDetection();
-        }
-        break;
-
-        case 2:
         //move window open
         //TODO: NEED TO ADD INPUT FROM WHETHER WINDOW IS OPEN TO KEEP GOING
         drivetrain.setTargetPose(-11,-1,-90);

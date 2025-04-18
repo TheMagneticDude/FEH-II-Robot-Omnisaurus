@@ -12,6 +12,7 @@ using namespace std;
 class WaitForStartButton : public Command {
   private:
   AnalogInputPin &CDS;
+  int &lever;
   bool CDSTriggered;
   float startTime;
 
@@ -19,7 +20,7 @@ class WaitForStartButton : public Command {
   const std::string commandName = "Wait for start";
 
   public:
-  WaitForStartButton( AnalogInputPin &CDS);
+  WaitForStartButton( AnalogInputPin &CDS, int &lever);
   void init() override;
   void run() override;    
   bool ended() override;  

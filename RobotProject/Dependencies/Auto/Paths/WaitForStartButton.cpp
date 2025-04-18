@@ -10,7 +10,7 @@ using namespace std;
 
 
 //take in the drivetrain object and any subsystems needed for path
-WaitForStartButton::WaitForStartButton(AnalogInputPin &CDS) : CDS(CDS){
+WaitForStartButton::WaitForStartButton(AnalogInputPin &CDS, int &l) : CDS(CDS), lever(l){
     
 
     //save start timepoint
@@ -39,6 +39,8 @@ void WaitForStartButton::run(){
 
     std::string CDSStr = "CDS:" + std::to_string(CDS.Value());
     LCD.WriteAt(CDSStr,0,60);
+
+    LCD.WriteAt(lever,0,80);
 
     
     const float CDS_Red = 2.9;//need to change to threshold for CDS cell red light

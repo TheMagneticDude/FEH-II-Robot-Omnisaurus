@@ -73,7 +73,7 @@ void AppleBasketDropoff::run(){
         case 1:
         //move towards ramp
         drivetrain.setTargetPose(-4,5,-90);
-        drivetrain.runToPoseLim(0.4);
+        drivetrain.runToPoseLim(0.8);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
@@ -142,22 +142,27 @@ void AppleBasketDropoff::run(){
             drivetrain.setPose(5,25,-90);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.resetStallDetection();
         }
         break;
 
         case 7:
         //align x
+        drivetrain.toggleVelocityControl(false);
         drivetrain.setTargetPose(25,25,-90);
-        drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1200)){
+        drivetrain.runTilStalled(0.4);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,1500)){
             // drivetrain.setMovementVector(0,0,0);
             drivetrain.setPose(0,25,-90);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.resetStallDetection();
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 
         case 8:
+        drivetrain.toggleVelocityControl(true);
         //forward one to avoid bumping into acryllic 
         drivetrain.setTargetPose(-1,25,-90);
         drivetrain.runToPoseLim(0.4);
@@ -269,6 +274,7 @@ void AppleBasketDropoff::run(){
             startTime = TimeNowMSec();
             // drivetrain.setPose(0,0,-90);
             i++; 
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 
@@ -282,6 +288,7 @@ void AppleBasketDropoff::run(){
             drivetrain.setPose(0,0,-90);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 
@@ -289,18 +296,20 @@ void AppleBasketDropoff::run(){
         //Move towards wall to align again
         drivetrain.setTargetPose(5,-1,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1100)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1800)){
             startTime = TimeNowMSec();
             drivetrain.setPose(0,-0.1,-90);
             i++;
+            drivetrain.toggleVelocityControl(true);
         }
         break;
 
         case 20:
+        drivetrain.toggleVelocityControl(true);
         //align x and y
-        drivetrain.setTargetPose(5,35,-90);
+        drivetrain.setTargetPose(10,35,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,900)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             drivetrain.setPose(0,0,-90);//0,0 set in corner of apple basket top drawer
@@ -309,8 +318,19 @@ void AppleBasketDropoff::run(){
         break;
 
         case 21:
+        //Move towards wall to align again
+        drivetrain.setTargetPose(5,0,-90);
+        drivetrain.runToPoseLim(0.2);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,500)){
+            startTime = TimeNowMSec();
+            drivetrain.setPose(0,-0.1,-90);
+            i++;
+        }
+        break;
+
+        case 22:
         //move away
-        drivetrain.setTargetPose(-1,-1,-90);
+        drivetrain.setTargetPose(0,-1,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
             // drivetrain.setMovementVector(0,0,0);

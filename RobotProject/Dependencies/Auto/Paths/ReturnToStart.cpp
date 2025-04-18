@@ -20,9 +20,7 @@ ReturnToStart::ReturnToStart(HolonomicTriangleDrive &dt) : drivetrain(dt){
 }
 
 void ReturnToStart::init(){
-    //starting circle is 0,0 with -x being sideways towards composter and +y being forwards towards ramp
-    //robot starts at a -45 degree angle  
-    drivetrain.setPose(0,0,0);
+    drivetrain.setPose(0,6,-90);
     startTime = TimeNowMSec();
     i = 0;
     drivetrain.resetMotorCounts();
@@ -58,9 +56,9 @@ void ReturnToStart::run(){
     
     switch(i){
         case 0:
-        //move back to hit start
-        drivetrain.setTargetPose(0,-3,0);
-        drivetrain.runTilStalled(0.6);
+        //move forwards one bit
+        drivetrain.setTargetPose(-1,0,0);
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
@@ -70,13 +68,26 @@ void ReturnToStart::run(){
         
 
         case 1:
-        //move forward again to return to original position
-        drivetrain.setTargetPose(0,0,0);
-        drivetrain.runTilStalled(0.6);
+        //turn towards ramp (to -180 deg)
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1050)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  0 deg
+            drivetrain.setPose(-1,0,-180);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 2:
+        //run down ramp
+        drivetrain.setTargetPose(-1,-60,0);
+        drivetrain.runToPoseLim(0.6);
         if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
-            i++;
+            i++; 
         }
         break;
        
