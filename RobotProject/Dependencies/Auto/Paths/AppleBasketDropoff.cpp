@@ -309,7 +309,7 @@ void AppleBasketDropoff::run(){
         //align x and y
         drivetrain.setTargetPose(10,35,-90);
         drivetrain.runToPoseLim(0.4);
-        if(drivetrain.getReachedTargetPos() || timeUp(startTime,900)){
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1100)){
             // drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             drivetrain.setPose(0,0,-90);//0,0 set in corner of apple basket top drawer

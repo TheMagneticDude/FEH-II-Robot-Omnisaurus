@@ -94,16 +94,17 @@ void LeversDown::run(){
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
-            i++; 
+            i++;
         }
         break;
+
 
         case 2:
         //turn right 45 to align with levers
         drivetrain.setMovementVector(0,0,0.5);
         drivetrain.update();
         if(timeUp(startTime,500)){
-            drivetrain.setPose(-1,-1,45);
+            drivetrain.setPose(2,2,45);
             drivetrain.setMovementVector(2,2,0);
             startTime = TimeNowMSec();
             i++; 
@@ -113,7 +114,7 @@ void LeversDown::run(){
 
         case 3:
         //move to levers
-        drivetrain.setTargetPose(-3,6,45);
+        drivetrain.setTargetPose(1,8,45);
         drivetrain.runToPoseLim(0.5);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
             // drivetrain.setMovementVector(0,0,0);
@@ -136,7 +137,7 @@ void LeversDown::run(){
         case 5:
         //lever down
         arm.SetDegree(180);
-        drivetrain.setTargetPose(-3,4,45);
+        drivetrain.setTargetPose(1,5,45);
         drivetrain.runToPoseLim(0.3);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,800)){
             // drivetrain.setMovementVector(0,0,0);
@@ -158,7 +159,7 @@ void LeversDown::run(){
 
         case 7:
         //move to levers again
-        drivetrain.setTargetPose(-3,7,45);
+        drivetrain.setTargetPose(1,8,45);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -170,7 +171,7 @@ void LeversDown::run(){
         case 8:
         //lever up
         arm.SetDegree(130);
-        drivetrain.setTargetPose(-3,4,45);
+        drivetrain.setTargetPose(1,5,45);
         drivetrain.runToPoseLim(0.3);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -183,19 +184,20 @@ void LeversDown::run(){
         case 9:
         //turn right 45 back to 0
         arm.SetDegree(0);
-        drivetrain.setMovementVector(0,0,0.5);
+        drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
         if(timeUp(startTime,500)){
             drivetrain.setPose(drivetrain.getPose()[0],drivetrain.getPose()[1],0);
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
+            drivetrain.setPose(0,0,0);
             i++; 
         }
         break;
 
         case 10:
-        //to towards ramp to reset
-        drivetrain.setTargetPose(2,2,0);
+        //to towards window to reset
+        drivetrain.setTargetPose(8,-5,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -205,30 +207,66 @@ void LeversDown::run(){
         break;
 
         case 11:
+        //to towards window to reset
+        drivetrain.setTargetPose(7,-15,0);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(7,0,0);
+        }
+        break;
+
+
+        case 12:
+        //align xy/wndow
+        drivetrain.toggleVelocityControl(false);
+        drivetrain.setTargetPose(-20,-10,0);
+        drivetrain.runTilStalled(0.5);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,2500)){
+            // drivetrain.setMovementVector(0,0,0);
+            drivetrain.setPose(0,0,-90);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.resetStallDetection();
+            drivetrain.toggleVelocityControl(true);
+        }
+        break;
+
+        case 13:
+        //move away from window to turn
+        drivetrain.setTargetPose(0,4,0);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+        }
+        break;
+
+        case 14:
         //turn towards wall -90
         drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
         if(timeUp(startTime,1050)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  -90 deg
-            drivetrain.setPose(2,6,-90);
+            drivetrain.setPose(0,0,-90);
             startTime = TimeNowMSec();
             i++; 
         }
         break;
 
-        case 12:
-        //align x
-        drivetrain.toggleVelocityControl(false);
-        drivetrain.setTargetPose(20,6,-90);
-        drivetrain.runTilStalled(0.5);
-        if(drivetrain.isCurrStalled() || timeUp(startTime,1500)){
+        case 15:
+        //reset against wall
+        drivetrain.setTargetPose(35,0,-90);
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,2500)){
             // drivetrain.setMovementVector(0,0,0);
-            drivetrain.setPose(0,6,-90);
             startTime = TimeNowMSec();
             i++; 
-            drivetrain.resetStallDetection();
-            drivetrain.toggleVelocityControl(true);
+            drivetrain.setPose(0,0,-90);
         }
         break;
 

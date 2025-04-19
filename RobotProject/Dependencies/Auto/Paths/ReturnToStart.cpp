@@ -57,7 +57,7 @@ void ReturnToStart::run(){
     switch(i){
         case 0:
         //move forwards one bit
-        drivetrain.setTargetPose(-1,0,0);
+        drivetrain.setTargetPose(-1,0,-90);
         drivetrain.runToPoseLim(0.6);
         if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
             drivetrain.setMovementVector(0,0,0);
@@ -71,7 +71,7 @@ void ReturnToStart::run(){
         //turn towards ramp (to -180 deg)
         drivetrain.setMovementVector(0,0,-0.5);
         drivetrain.update();
-        if(timeUp(startTime,1050)){
+        if(timeUp(startTime,1100)){
             drivetrain.setMovementVector(0,0,0);
             //robot SHOULD now be at  0 deg
             drivetrain.setPose(-1,0,-180);
@@ -84,10 +84,35 @@ void ReturnToStart::run(){
         //run down ramp
         drivetrain.setTargetPose(-1,-60,0);
         drivetrain.runToPoseLim(0.6);
-        if(drivetrain.isCurrStalled() || timeUp(startTime,500)){
+        if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
+            drivetrain.setPose(0,0,0);
+        }
+        break;
+
+        case 3:
+        //run towards final button
+        drivetrain.setTargetPose(4,-60,0);
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(0,0,0);
+        }
+        break;
+
+        case 4:
+        //run towards final button again
+        drivetrain.setTargetPose(-10,-60,0);
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(0,0,0);
         }
         break;
        

@@ -59,14 +59,14 @@ void Buttons::run(){
     LCD.WriteAt(movementVector.str(),0,90);
 
     float CDS_None = 1;//0.8
-    float CDS_Red = 3;//3.18
-    float CDS_Blue = 2.6;//2.8
+    float CDS_Red = 3.18;//3.18
+    float CDS_Blue = 2.7;//2.8
     
     switch(i){
         case 0:
         drivetrain.toggleVelocityControl(true);
         //move towards buttons
-        drivetrain.setTargetPose(-9,-1.5,-90);
+        drivetrain.setTargetPose(-9,-1.8,-90);
         drivetrain.runToPoseLim(1);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -106,12 +106,12 @@ void Buttons::run(){
 
         case 3:
         if(CDSisRed){
-            drivetrain.setTargetPose(-16,0,-90);
+            drivetrain.setTargetPose(-16,0.3,-90);
             drivetrain.runTilStalled(0.4);
             LCD.Clear();
             LCD.SetBackgroundColor(RED);
         }else{
-            drivetrain.setTargetPose(-16,-3,-90);
+            drivetrain.setTargetPose(-16,-3.3,-90);
             drivetrain.runTilStalled(0.4);
             LCD.Clear();
             LCD.SetBackgroundColor(BLUE);
@@ -129,7 +129,7 @@ void Buttons::run(){
 
         case 4:
         //premove to reset location 
-        drivetrain.setTargetPose(-14,-2,-90);
+        drivetrain.setTargetPose(-15,-4,-90);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -153,7 +153,7 @@ void Buttons::run(){
 
         case 6:
         //move towards reset corner
-        drivetrain.setTargetPose(-16,-20,0);
+        drivetrain.setTargetPose(-16,-10,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);
@@ -166,6 +166,18 @@ void Buttons::run(){
         case 7:
         //reset x y
         drivetrain.setTargetPose(-50,-30,0);
+        drivetrain.runToPoseLim(0.4);
+        if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
+            // drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(0,0,0);
+        }
+        break;//assume at reset corner
+
+        case 8:
+        //reset y
+        drivetrain.setTargetPose(-50,0,0);
         drivetrain.runToPoseLim(0.4);
         if(drivetrain.getReachedTargetPos() || timeUp(startTime,1000)){
             // drivetrain.setMovementVector(0,0,0);
