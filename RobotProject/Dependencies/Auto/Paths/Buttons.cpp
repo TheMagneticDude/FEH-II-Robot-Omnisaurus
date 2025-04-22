@@ -105,17 +105,17 @@ void Buttons::run(){
         break;
 
         case 3:
-        if(CDSisRed){
+        // if(CDSisRed){
             drivetrain.setTargetPose(-16,0.3,-90);
-            drivetrain.runTilStalled(0.4);
+            drivetrain.runTilStalled(0.3);
             LCD.Clear();
             LCD.SetBackgroundColor(RED);
-        }else{
-            drivetrain.setTargetPose(-16,-3.3,-90);
-            drivetrain.runTilStalled(0.4);
-            LCD.Clear();
-            LCD.SetBackgroundColor(BLUE);
-        }
+        // }else{
+        //     drivetrain.setTargetPose(-16,-3.3,-90);
+        //     drivetrain.runTilStalled(0.4);
+        //     LCD.Clear();
+        //     LCD.SetBackgroundColor(BLUE);
+        // }
 
         if(drivetrain.isCurrStalled() || timeUp(startTime,2000)){
             // drivetrain.setMovementVector(0,0,0);

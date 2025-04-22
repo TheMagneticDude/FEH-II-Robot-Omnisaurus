@@ -82,7 +82,7 @@ void ReturnToStart::run(){
 
         case 2:
         //run down ramp
-        drivetrain.setTargetPose(-1,-60,0);
+        drivetrain.setTargetPose(-1,-50,0);
         drivetrain.runToPoseLim(0.6);
         if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
             drivetrain.setMovementVector(0,0,0);
@@ -94,9 +94,9 @@ void ReturnToStart::run(){
 
         case 3:
         //run towards final button
-        drivetrain.setTargetPose(4,-60,0);
+        drivetrain.setTargetPose(-3,0,0);
         drivetrain.runToPoseLim(0.6);
-        if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
+        if(drivetrain.isCurrStalled() || timeUp(startTime,5000)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
@@ -106,13 +106,40 @@ void ReturnToStart::run(){
 
         case 4:
         //run towards final button again
-        drivetrain.setTargetPose(-10,-60,0);
+        drivetrain.setTargetPose(-3,0,0);
         drivetrain.runToPoseLim(0.6);
-        if(drivetrain.isCurrStalled() || timeUp(startTime,10000)){
+        if(drivetrain.isCurrStalled() || timeUp(startTime,5000)){
             drivetrain.setMovementVector(0,0,0);
             startTime = TimeNowMSec();
             i++; 
             drivetrain.setPose(0,0,0);
+        }
+        break;
+
+        case 5:
+        //run towards final button
+        drivetrain.setTargetPose(5,-10,0);
+        drivetrain.runToPoseLim(0.6);
+        if(drivetrain.isCurrStalled() || timeUp(startTime,5000)){
+            drivetrain.setMovementVector(0,0,0);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.setPose(0,0,0);
+            drivetrain.stop();
+        }
+        break;
+
+        case 6:
+        //turn to hit button
+        drivetrain.setMovementVector(0,0,-0.5);
+        drivetrain.update();
+        if(timeUp(startTime,1050)){
+            drivetrain.setMovementVector(0,0,0);
+            //robot SHOULD now be at  -90 deg
+            drivetrain.setPose(0,0,-90);
+            startTime = TimeNowMSec();
+            i++; 
+            drivetrain.resetStallDetection();
         }
         break;
        
